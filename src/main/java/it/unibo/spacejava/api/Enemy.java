@@ -6,11 +6,26 @@ package it.unibo.spacejava.api;
 
 public interface Enemy {
 
+    /**
+     * Erminio
+     * @return int
+     */
     int getDamage();
 
+    /**
+     * Erminio
+     * @return int
+     */
     int getHealth();
 
+    /**
+     * Erminio
+     * @return int
+     */
     int getSize();
 
+    /**
+     * Erminio
+     */
     void attack();
 }
