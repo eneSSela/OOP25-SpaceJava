@@ -2,6 +2,9 @@ package it.unibo.spacejava.controller;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.sql.Time;
+import java.util.List;
+import javax.swing.Timer;
 
 import it.unibo.spacejava.model.StartMenuModel;
 import it.unibo.spacejava.view.StartMenuView;
@@ -9,18 +12,22 @@ import it.unibo.spacejava.view.StartMenuView;
 public class StartMenuController implements KeyListener {
 
     private final StartMenuModel model;
-    private final StartMenuView view;
     private final Runnable onPlay;
     private final Runnable onExit;
+    private final Timer blinkTimer;
 
     private boolean upDown = false;
     private boolean downDown = false;
 
-    public StartMenuController(StartMenuModel model, StartMenuView view, Runnable onPlay, Runnable onExit) {
+    public StartMenuController(StartMenuModel model, Runnable onPlay, Runnable onExit) {
         this.model = model;
-        this.view = view;
         this.onPlay = onPlay;
         this.onExit = onExit;
+
+        //model.addChangeListener(this::repaint);
+
+        blinkTimer = new Timer(500, e -> model.setBlinkOn(!model.isBlinkOn()));
+        blinkTimer.start();
     }
 
     @Override
@@ -45,7 +52,6 @@ public class StartMenuController implements KeyListener {
             }
         }
 
-        view.repaint();
     }
 
     @Override
@@ -62,5 +68,20 @@ public class StartMenuController implements KeyListener {
     @Override
     public void keyTyped(KeyEvent e) {
         // Not used
+    }
+
+    public List<String> getOptions() {
+        return model.getOptions();
+    }
+
+    public int getSelectedIndex() {
+        return model.getSelectedIndex();
+    }
+
+    public boolean isBlinkOn() {
+        return model.isBlinkOn();
+    }
+    public void stop() {
+        blinkTimer.stop();
     }
 }

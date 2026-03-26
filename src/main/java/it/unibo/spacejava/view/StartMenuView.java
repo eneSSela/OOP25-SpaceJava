@@ -6,27 +6,25 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.event.KeyListener;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import it.unibo.spacejava.controller.StartMenuController;
 import it.unibo.spacejava.model.StartMenuModel;
 
 public class StartMenuView extends JPanel {
 
-    private final StartMenuModel model;
-    private final Timer blinkTimer;
+    private final StartMenuController controller;
+    //private final Timer blinkTimer;
 
-    public StartMenuView(StartMenuModel model) {
-        this.model = model;
+    public StartMenuView(StartMenuController controller) {
+        this.controller = controller;
+        //this.controller = new StartMenuController(model, () -> {}, () -> {});
         setBackground(Color.BLACK);
         setFocusable(true);
 
-        model.addChangeListener(this::repaint);
-
-        blinkTimer = new Timer(500, e -> model.setBlinkOn(!model.isBlinkOn()));
-        blinkTimer.start();
+        
     }
 
     @Override
@@ -59,14 +57,14 @@ public class StartMenuView extends JPanel {
         int startY = h / 2;
         int gap = fm.getHeight() + 12;
 
-        for (int i = 0; i < model.getOptions().size(); i++) {
-            String option = model.getOptions().get(i);
+        for (int i = 0; i < controller.getOptions().size(); i++) {
+            String option = controller.getOptions().get(i);
             int optionW = fm.stringWidth(option);
             int x = (w - optionW) / 2;
             int y = startY + i * gap;
 
-            boolean selected = model.getSelectedIndex() == i;
-            boolean blink = selected && model.isBlinkOn();
+            boolean selected = controller.getSelectedIndex() == i;
+            boolean blink = selected && controller.isBlinkOn();
 
             if (selected) {
                 g2.setColor(blink ? Color.YELLOW : Color.ORANGE);
@@ -86,6 +84,6 @@ public class StartMenuView extends JPanel {
     }
 
     public void stop() {
-        blinkTimer.stop();
+        controller.stop();
     }
 }

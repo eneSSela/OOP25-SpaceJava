@@ -24,8 +24,8 @@ public class GameManagerImpl implements GameManger, Runnable{
     private KeyHandler keyHandler = new KeyHandler();
     //private StartMenu startMenu = new StartMenu(keyHandler);
     private StartMenuModel startMenuModel = new StartMenuModel();
-    private StartMenuView startMenuView = new StartMenuView(startMenuModel);
     private StartMenuController startMenuController;
+    private StartMenuView startMenuView;
 
     @Override
     public void startGame() {
@@ -47,16 +47,16 @@ public class GameManagerImpl implements GameManger, Runnable{
         
         this.startThreadGame();
         */
-       JFrame window = new JFrame("SpaceJava");
-       window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-       window.setResizable(false);
+        JFrame window = new JFrame("SpaceJava");
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setResizable(false);
        
-       CardLayout cardLayout = new CardLayout();
-       JPanel cards = new JPanel(cardLayout);
+        CardLayout cardLayout = new CardLayout();
+        JPanel cards = new JPanel(cardLayout);
        
-       gamePanel.setPreferredSize(new Dimension(screenWidth, screenHeight));
-       startMenuController = new StartMenuController(startMenuModel, startMenuView, () -> cardLayout.show(cards, "GAME"), () -> System.exit(0));
-        
+        gamePanel.setPreferredSize(new Dimension(screenWidth, screenHeight));
+        startMenuController = new StartMenuController(startMenuModel,  () -> cardLayout.show(cards, "GAME"), () -> System.exit(0));
+        startMenuView = new StartMenuView(startMenuController);
         startMenuView.addKeyListener(startMenuController);
         cards.add(startMenuView, "MENU");
         cards.add(gamePanel, "GAME");
