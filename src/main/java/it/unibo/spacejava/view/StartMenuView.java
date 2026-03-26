@@ -13,23 +13,22 @@ import java.util.Objects;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-import javax.swing.Timer;
 
 import it.unibo.spacejava.controller.StartMenuController;
-import it.unibo.spacejava.model.StartMenuModel;
 
 public class StartMenuView extends JPanel {
 
     private final StartMenuController controller;
-    //private final Timer blinkTimer;
-    Image logo;
+    private Image logo;
+    private Image background;
 
     public StartMenuView(StartMenuController controller) {
         this.controller = controller;
-        //this.controller = new StartMenuController(model, () -> {}, () -> {});
         setBackground(Color.BLACK);
         setFocusable(true);
-        this.logo = loadImage();
+
+        this.background = loadImage("/background.png");
+        this.logo = loadImage("/logo.png");
     }
 
     @Override
@@ -40,14 +39,15 @@ public class StartMenuView extends JPanel {
 
         int w = getWidth();
         int h = getHeight();
-        /*
-        for (int y = 0; y < h; y += 5) {
-            float ratio = (float) y / h;
-            g2.setColor(new Color(0, 0, 10 + (int) (150 * (1 - ratio))));
-            g2.fillRect(0, y, w, 5);
+        
+        if (background != null) {
+            g2.drawImage(background, 0, 0, w, h, null);
+        } else {
+            g2.setColor(Color.BLACK);
+            g2.fillRect(0, 0, w, h);
         }
-        */
-       int startY = h / 2;
+
+        int startY = h / 2;
 
         if (logo != null) {
             int originalW = logo.getWidth(null);
@@ -78,7 +78,7 @@ public class StartMenuView extends JPanel {
             g2.drawString(title, (w - titleW) / 2, h / 4);
         }
 
-        Font menuFont = new Font("Monospaced", Font.BOLD, Math.max(24, w / 30));
+        Font menuFont = new Font("SansSerif", Font.BOLD, Math.max(30, w / 20));
         g2.setFont(menuFont);
         FontMetrics fm = g2.getFontMetrics();
 
@@ -94,19 +94,35 @@ public class StartMenuView extends JPanel {
             boolean blink = selected && controller.isBlinkOn();
 
             if (selected) {
+                /*
                 g2.setColor(blink ? Color.YELLOW : Color.ORANGE);
-                //g2.setColor(Color.ORANGE);
                 g2.drawString(">", x - 40, y);
                 g2.setColor(blink ? Color.WHITE : Color.LIGHT_GRAY);
                 g2.drawString(option, x, y);
             } else {
                 g2.setColor(Color.WHITE);
                 g2.drawString(option, x, y);
+                */
+               g2.setColor(Color.BLACK);
+               g2.drawString(">", x - 40 + 2, y + 2);
+               g2.drawString(option, x + 2, y + 2);
+
+               g2.setColor(blink ? Color.WHITE : new Color(57, 255, 20));
+               g2.drawString(">", x - 40, y);
+               g2.setColor(blink ? new Color(57, 255, 20) : Color.WHITE);
+               g2.drawString(option, x, y);
+            
+            } else {
+                g2.setColor(Color.BLACK);
+                g2.drawString(option, x + 2, y + 2);
+
+                g2.setColor(Color.LIGHT_GRAY);
+                g2.drawString(option, x, y);
             }
         }
 
         String instruction = "Usa frecce su/giù e Invio";
-        g2.setFont(new Font("Monospaced", Font.PLAIN, Math.max(12, w / 80)));
+        g2.setFont(new Font("SansSerif", Font.BOLD, Math.max(12, w / 80)));
         g2.setColor(Color.LIGHT_GRAY);
         FontMetrics instructionFm = g2.getFontMetrics();
         int instructionW = instructionFm.stringWidth(instruction);
@@ -117,8 +133,8 @@ public class StartMenuView extends JPanel {
         controller.stop();
     }
 
-    private Image loadImage() {
-        try (InputStream in = getClass().getResourceAsStream("/logo.png")) {
+    private Image loadImage(String path) {
+        try (InputStream in = getClass().getResourceAsStream(path)) {
             return ImageIO.read(Objects.requireNonNull(in));
         } catch (IOException ignored) {
             System.out.println(ignored.getMessage());
