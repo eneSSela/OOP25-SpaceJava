@@ -6,8 +6,6 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -20,10 +18,8 @@ public class StartMenu extends JPanel {
     private final AtomicInteger selected = new AtomicInteger(0);
     private Runnable onPlay = () -> {};
     private Runnable onExit = () -> {};
-    private KeyListener keyHandler;
 
-    public StartMenu(KeyListener keyHandler) {
-        this.keyHandler = keyHandler;
+    public StartMenu() {
         setBackground(Color.BLACK);
         setFocusable(true);
         //addKeyListener(this);

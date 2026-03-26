@@ -10,7 +10,6 @@ import javax.swing.JPanel;
 import it.unibo.spacejava.api.GameManger;
 import it.unibo.spacejava.controller.StartMenuController;
 import it.unibo.spacejava.view.GamePanel;
-import it.unibo.spacejava.view.StartMenu;
 import it.unibo.spacejava.view.StartMenuView;
 
 public class GameManagerImpl implements GameManger, Runnable{
@@ -21,8 +20,6 @@ public class GameManagerImpl implements GameManger, Runnable{
     private int screenWidth = tileSize * 16;
     private int screenHeight = tileSize * 12;
     private  GamePanel gamePanel = new GamePanel(screenWidth, screenHeight);
-    private KeyHandler keyHandler = new KeyHandler();
-    //private StartMenu startMenu = new StartMenu(keyHandler);
     private StartMenuModel startMenuModel = new StartMenuModel();
     private StartMenuController startMenuController;
     private StartMenuView startMenuView;

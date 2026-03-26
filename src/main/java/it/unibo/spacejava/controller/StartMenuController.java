@@ -2,12 +2,10 @@ package it.unibo.spacejava.controller;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.sql.Time;
 import java.util.List;
 import javax.swing.Timer;
 
 import it.unibo.spacejava.model.StartMenuModel;
-import it.unibo.spacejava.view.StartMenuView;
 
 public class StartMenuController implements KeyListener {
 
