@@ -8,8 +8,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import it.unibo.spacejava.api.GameManger;
+import it.unibo.spacejava.controller.StartMenuController;
 import it.unibo.spacejava.view.GamePanel;
 import it.unibo.spacejava.view.StartMenu;
+import it.unibo.spacejava.view.StartMenuView;
 
 public class GameManagerImpl implements GameManger, Runnable{
 
@@ -20,7 +22,10 @@ public class GameManagerImpl implements GameManger, Runnable{
     private int screenHeight = tileSize * 12;
     private  GamePanel gamePanel = new GamePanel(screenWidth, screenHeight);
     private KeyHandler keyHandler = new KeyHandler();
-    private StartMenu startMenu = new StartMenu(keyHandler);
+    //private StartMenu startMenu = new StartMenu(keyHandler);
+    private StartMenuModel startMenuModel = new StartMenuModel();
+    private StartMenuView startMenuView = new StartMenuView(startMenuModel);
+    private StartMenuController startMenuController;
 
     @Override
     public void startGame() {
@@ -42,24 +47,18 @@ public class GameManagerImpl implements GameManger, Runnable{
         
         this.startThreadGame();
         */
-        JFrame window = new JFrame("SpaceJava");
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setResizable(false);
-
-        CardLayout cardLayout = new CardLayout();
-        JPanel cards = new JPanel(cardLayout);
-
-        //GamePanel gamePanel = new GamePanel(screenWidth, screenHeight);
-        gamePanel.setPreferredSize(new Dimension(screenWidth, screenHeight));
-
-        startMenu.setOnPlay(() -> {
-            cardLayout.show(cards, "GAME");
-            gamePanel.requestFocusInWindow();
-        });
-        startMenu.setOnExit(() -> System.exit(0));
-        startMenu.addKeyListener(keyHandler);
+       JFrame window = new JFrame("SpaceJava");
+       window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+       window.setResizable(false);
+       
+       CardLayout cardLayout = new CardLayout();
+       JPanel cards = new JPanel(cardLayout);
+       
+       gamePanel.setPreferredSize(new Dimension(screenWidth, screenHeight));
+       startMenuController = new StartMenuController(startMenuModel, startMenuView, () -> cardLayout.show(cards, "GAME"), () -> System.exit(0));
         
-        cards.add(startMenu, "MENU");
+        startMenuView.addKeyListener(startMenuController);
+        cards.add(startMenuView, "MENU");
         cards.add(gamePanel, "GAME");
         
         window.setContentPane(cards);
@@ -67,7 +66,7 @@ public class GameManagerImpl implements GameManger, Runnable{
         window.setLocationRelativeTo(null);
         window.setVisible(true);
         
-        startMenu.requestFocusInWindow();
+        //startMenu.requestFocusInWindow();
         this.startThreadGame();
     }
     
@@ -108,9 +107,10 @@ public class GameManagerImpl implements GameManger, Runnable{
             lastTime = currentTime;
 
             if (delta >= 1) {
+                /*
                 if (keyHandler.upPressed) {
-                startMenu.getSelected().set((startMenu.getSelected().get() - 1 + startMenu.getOptionMenu().size()) % startMenu.getOptionMenu().size());
-                startMenu.repaint();
+                    startMenu.getSelected().set((startMenu.getSelected().get() - 1 + startMenu.getOptionMenu().size()) % startMenu.getOptionMenu().size());
+                    startMenu.repaint();
                 } else if (keyHandler.downPressed) {
                     startMenu.getSelected().set((startMenu.getSelected().get() + 1) % startMenu.getOptionMenu().size());
                     startMenu.repaint();
@@ -119,8 +119,10 @@ public class GameManagerImpl implements GameManger, Runnable{
                         startMenu.getOnPlay().run();
                     } else {
                         startMenu.getOnExit().run();
-                    }
                 }
+                }
+                */
+                startMenuView.repaint();
                 //gamePanel.repaint();
                 frames++;
                 delta--;

@@ -14,20 +14,19 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.swing.JPanel;
 
 
-public class StartMenu extends JPanel implements KeyListener {
+public class StartMenu extends JPanel {
 
     private final List<String> optionMenu = List.of("Gioca", "Esci");
     private final AtomicInteger selected = new AtomicInteger(0);
     private Runnable onPlay = () -> {};
-    private Runnable onExit = () -> System.exit(0);
+    private Runnable onExit = () -> {};
+    private KeyListener keyHandler;
 
-    private boolean arrowUpDown = false;
-    private boolean arrowDownDown = false;
-
-    public StartMenu() {
+    public StartMenu(KeyListener keyHandler) {
+        this.keyHandler = keyHandler;
         setBackground(Color.BLACK);
         setFocusable(true);
-        addKeyListener(this);
+        //addKeyListener(this);
     }
 
     public void setOnPlay(Runnable r) {
@@ -114,44 +113,5 @@ public class StartMenu extends JPanel implements KeyListener {
     public List<String> getOptionMenu() {
         return optionMenu;
     }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_UP -> {
-                if (!arrowUpDown) {
-                    selected.set((selected.get() - 1 + optionMenu.size()) % optionMenu.size());
-                    arrowUpDown = true;
-                    repaint();
-                }
-            }
-            case KeyEvent.VK_DOWN -> {
-                if (!arrowDownDown) {
-                    selected.set((selected.get() + 1) % optionMenu.size());
-                    arrowDownDown = true;
-                    repaint();
-                }
-            }
-            case KeyEvent.VK_ENTER -> {
-                if (selected.get() == 0) {
-                    onPlay.run();
-                } else {
-                    onExit.run();
-                }
-            }
-        }
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_UP -> arrowUpDown = false;
-            case KeyEvent.VK_DOWN -> arrowDownDown = false;
-        }
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {}
 }
-
 
