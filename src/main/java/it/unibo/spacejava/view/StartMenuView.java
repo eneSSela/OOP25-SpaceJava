@@ -5,8 +5,13 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.RenderingHints;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Objects;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -17,14 +22,14 @@ public class StartMenuView extends JPanel {
 
     private final StartMenuController controller;
     //private final Timer blinkTimer;
+    Image logo;
 
     public StartMenuView(StartMenuController controller) {
         this.controller = controller;
         //this.controller = new StartMenuController(model, () -> {}, () -> {});
         setBackground(Color.BLACK);
         setFocusable(true);
-
-        
+        this.logo = loadImage();
     }
 
     @Override
@@ -42,26 +47,48 @@ public class StartMenuView extends JPanel {
             g2.fillRect(0, y, w, 5);
         }
         */
+       int startY = h / 2;
 
-        Font titleFont = new Font("Monospaced", Font.BOLD, Math.max(32, w / 15));
-        g2.setFont(titleFont);
-        g2.setColor(new Color(64, 224, 208));
-        String title = "SPACE JAVA";
-        int titleW = g2.getFontMetrics().stringWidth(title);
-        g2.drawString(title, (w - titleW) / 2, h / 4);
+        if (logo != null) {
+            int originalW = logo.getWidth(null);
+            int originalH = logo.getHeight(null);
+
+            int maxW = (int)(w * 0.7);
+            int maxH = startY - 40;
+
+            double scale = Math.min((double) maxW / originalW, (double) maxH / originalH);
+
+            if (scale > 1.0) {
+                scale = 1.0;
+            }
+
+            int targetW = (int) (originalW * scale);
+            int targetH = (int) (originalH * scale);
+
+            int logoX = (w - targetW) / 2;
+            int logoY = startY - targetH - 30;
+
+            g2.drawImage(logo, logoX, logoY, targetW, targetH, null);
+        } else {
+            Font titleFont = new Font("Monospaced", Font.BOLD, Math.max(32, w / 15));
+            g2.setFont(titleFont);
+            g2.setColor(new Color(64, 224, 208));
+            String title = "SPACE JAVA";
+            int titleW = g2.getFontMetrics().stringWidth(title);
+            g2.drawString(title, (w - titleW) / 2, h / 4);
+        }
 
         Font menuFont = new Font("Monospaced", Font.BOLD, Math.max(24, w / 30));
         g2.setFont(menuFont);
         FontMetrics fm = g2.getFontMetrics();
 
-        int startY = h / 2;
         int gap = fm.getHeight() + 12;
 
         for (int i = 0; i < controller.getOptions().size(); i++) {
             String option = controller.getOptions().get(i);
             int optionW = fm.stringWidth(option);
             int x = (w - optionW) / 2;
-            int y = startY + i * gap;
+            int y = (startY + 40) + i * gap;
 
             boolean selected = controller.getSelectedIndex() == i;
             boolean blink = selected && controller.isBlinkOn();
@@ -78,12 +105,24 @@ public class StartMenuView extends JPanel {
             }
         }
 
+        String instruction = "Usa frecce su/giù e Invio";
         g2.setFont(new Font("Monospaced", Font.PLAIN, Math.max(12, w / 80)));
         g2.setColor(Color.LIGHT_GRAY);
-        g2.drawString("Usa frecce su/giù e Invio", w / 3, h - 40);
+        FontMetrics instructionFm = g2.getFontMetrics();
+        int instructionW = instructionFm.stringWidth(instruction);
+        g2.drawString(instruction, (w - instructionW) / 2, h - 40);
     }
 
     public void stop() {
         controller.stop();
+    }
+
+    private Image loadImage() {
+        try (InputStream in = getClass().getResourceAsStream("/logo.png")) {
+            return ImageIO.read(Objects.requireNonNull(in));
+        } catch (IOException ignored) {
+            System.out.println(ignored.getMessage());
+        }
+        return null;
     }
 }
