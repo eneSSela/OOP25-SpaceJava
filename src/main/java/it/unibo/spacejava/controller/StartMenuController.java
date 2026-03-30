@@ -22,8 +22,6 @@ public class StartMenuController implements KeyListener {
         this.onPlay = onPlay;
         this.onExit = onExit;
 
-        //model.addChangeListener(this::repaint);
-
         blinkTimer = new Timer(500, e -> model.setBlinkOn(!model.isBlinkOn()));
         blinkTimer.start();
     }

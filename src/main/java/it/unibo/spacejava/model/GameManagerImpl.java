@@ -90,6 +90,12 @@ public class GameManagerImpl implements GameManger, Runnable{
         throw new UnsupportedOperationException("Unimplemented method 'restartGame'");
     }
 
+    /**
+     * Game loop implementation based on https://www.youtube.com/watch?v=H2aW5V46bFE.
+     * The game loop runs in a separate thread and is responsible for updating the game state and rendering the game at a consistent frame rate (FPS). 
+     * It calculates the time taken for each frame and adjusts the timing to maintain a steady FPS, while also printing the actual FPS achieved every second.
+     * @return void.
+     */
     @Override
     public void run() {
         double drawInterval = 1000000000.0 / FPS;
@@ -104,23 +110,7 @@ public class GameManagerImpl implements GameManger, Runnable{
             lastTime = currentTime;
 
             if (delta >= 1) {
-                /*
-                if (keyHandler.upPressed) {
-                    startMenu.getSelected().set((startMenu.getSelected().get() - 1 + startMenu.getOptionMenu().size()) % startMenu.getOptionMenu().size());
-                    startMenu.repaint();
-                } else if (keyHandler.downPressed) {
-                    startMenu.getSelected().set((startMenu.getSelected().get() + 1) % startMenu.getOptionMenu().size());
-                    startMenu.repaint();
-                } else if (keyHandler.spacePressed) {
-                    if (startMenu.getSelected().get() == 0) {
-                        startMenu.getOnPlay().run();
-                    } else {
-                        startMenu.getOnExit().run();
-                }
-                }
-                */
                 startMenuView.repaint();
-                //gamePanel.repaint();
                 frames++;
                 delta--;
             }

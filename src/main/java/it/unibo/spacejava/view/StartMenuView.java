@@ -30,24 +30,26 @@ public class StartMenuView extends JPanel {
         this.background = loadImage("/background.png");
         this.logo = loadImage("/logo.png");
     }
-
+    
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
+        FontMetrics fm = g2.getFontMetrics();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
+        
         int w = getWidth();
         int h = getHeight();
+        int startY = h / 2;
+        int gap = fm.getHeight() + 12;
         
+
         if (background != null) {
             g2.drawImage(background, 0, 0, w, h, null);
         } else {
             g2.setColor(Color.BLACK);
             g2.fillRect(0, 0, w, h);
         }
-
-        int startY = h / 2;
 
         if (logo != null) {
             int originalW = logo.getWidth(null);
@@ -78,41 +80,32 @@ public class StartMenuView extends JPanel {
             g2.drawString(title, (w - titleW) / 2, h / 4);
         }
 
+        // write the menu options
         Font menuFont = new Font("SansSerif", Font.BOLD, Math.max(30, w / 20));
         g2.setFont(menuFont);
-        FontMetrics fm = g2.getFontMetrics();
-
-        int gap = fm.getHeight() + 12;
-
         for (int i = 0; i < controller.getOptions().size(); i++) {
             String option = controller.getOptions().get(i);
+            // calculate the position of the option
             int optionW = fm.stringWidth(option);
-            int x = (w - optionW) / 2;
-            int y = (startY + 40) + i * gap;
+            int x = (w - optionW) / 2; // center the option horizontally
+            int y = (startY + 40) + i * gap; // position the option vertically with a gap
 
             boolean selected = controller.getSelectedIndex() == i;
             boolean blink = selected && controller.isBlinkOn();
 
             if (selected) {
-                /*
-                g2.setColor(blink ? Color.YELLOW : Color.ORANGE);
-                g2.drawString(">", x - 40, y);
-                g2.setColor(blink ? Color.WHITE : Color.LIGHT_GRAY);
-                g2.drawString(option, x, y);
-            } else {
-                g2.setColor(Color.WHITE);
-                g2.drawString(option, x, y);
-                */
-               g2.setColor(Color.BLACK);
-               g2.drawString(">", x - 40 + 2, y + 2);
-               g2.drawString(option, x + 2, y + 2);
+                // questa è l'ombra della freccia e della scritta normale
+                g2.setColor(Color.BLACK);
+                g2.drawString(">", x - 40 + 2, y + 2);
+                g2.drawString(option, x + 2, y + 2);
 
-               g2.setColor(blink ? Color.WHITE : new Color(57, 255, 20));
-               g2.drawString(">", x - 40, y);
-               g2.setColor(blink ? new Color(57, 255, 20) : Color.WHITE);
-               g2.drawString(option, x, y);
-            
+                // questa è la freccia e la scritta normale
+                g2.setColor(blink ? Color.WHITE : new Color(57, 255, 20));
+                g2.drawString(">", x - 40, y);
+                g2.setColor(blink ? new Color(57, 255, 20) : Color.WHITE);
+                g2.drawString(option, x, y);
             } else {
+                // queta è l'ombra della scritta normale
                 g2.setColor(Color.BLACK);
                 g2.drawString(option, x + 2, y + 2);
 
@@ -121,11 +114,11 @@ public class StartMenuView extends JPanel {
             }
         }
 
+        // write the instuction at the bottom of the screen
         String instruction = "Usa frecce su/giù e Invio";
         g2.setFont(new Font("SansSerif", Font.BOLD, Math.max(12, w / 80)));
         g2.setColor(Color.LIGHT_GRAY);
-        FontMetrics instructionFm = g2.getFontMetrics();
-        int instructionW = instructionFm.stringWidth(instruction);
+        int instructionW = fm.stringWidth(instruction);
         g2.drawString(instruction, (w - instructionW) / 2, h - 40);
     }
 
