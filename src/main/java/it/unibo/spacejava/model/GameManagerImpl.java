@@ -8,8 +8,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import it.unibo.spacejava.api.GameManger;
-import it.unibo.spacejava.controller.StartMenuController;
-import it.unibo.spacejava.view.GamePanel;
+import it.unibo.spacejava.controller.menu.StartMenuController;
+import it.unibo.spacejava.model.menu.StartMenuModel;
+import it.unibo.spacejava.view.game.GamePanel;
 import it.unibo.spacejava.view.menu.StartMenuView;
 
 public class GameManagerImpl implements GameManger, Runnable{

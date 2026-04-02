@@ -1,4 +1,4 @@
-package it.unibo.spacejava.model;
+package it.unibo.spacejava;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;

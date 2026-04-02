@@ -14,7 +14,7 @@ import java.util.Objects;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
-import it.unibo.spacejava.controller.StartMenuController;
+import it.unibo.spacejava.controller.menu.StartMenuController;
 
 public class StartMenuView extends JPanel {
 

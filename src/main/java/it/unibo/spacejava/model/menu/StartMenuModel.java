@@ -1,4 +1,4 @@
-package it.unibo.spacejava.model;
+package it.unibo.spacejava.model.menu;
 
 import java.util.List;
 import java.util.Objects;

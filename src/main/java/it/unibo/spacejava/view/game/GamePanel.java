@@ -1,4 +1,4 @@
-package it.unibo.spacejava.view;
+package it.unibo.spacejava.view.game;
 
 import java.awt.Color;
 
