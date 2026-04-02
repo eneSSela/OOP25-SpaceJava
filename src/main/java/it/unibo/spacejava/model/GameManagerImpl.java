@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 import it.unibo.spacejava.api.GameManger;
 import it.unibo.spacejava.controller.StartMenuController;
 import it.unibo.spacejava.view.GamePanel;
-import it.unibo.spacejava.view.StartMenuView;
+import it.unibo.spacejava.view.menu.StartMenuView;
 
 public class GameManagerImpl implements GameManger, Runnable{
 
