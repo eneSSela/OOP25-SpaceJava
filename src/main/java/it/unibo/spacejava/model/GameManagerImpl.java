@@ -10,6 +10,8 @@ import javax.swing.JPanel;
 import it.unibo.spacejava.api.GameManger;
 import it.unibo.spacejava.controller.menu.StartMenuController;
 import it.unibo.spacejava.model.menu.StartMenuModel;
+import it.unibo.spacejava.model.sound.SoundManagerImpl;
+import it.unibo.spacejava.model.sound.api.SoundManager;
 import it.unibo.spacejava.view.game.GamePanel;
 import it.unibo.spacejava.view.menu.StartMenuView;
 
@@ -21,6 +23,7 @@ public class GameManagerImpl implements GameManger, Runnable{
     private int screenWidth = tileSize * 16;
     private int screenHeight = tileSize * 12;
     private  GamePanel gamePanel = new GamePanel(screenWidth, screenHeight);
+    private SoundManager soundManager = new SoundManagerImpl();
     private StartMenuModel startMenuModel = new StartMenuModel();
     private StartMenuController startMenuController;
     private StartMenuView startMenuView;
@@ -53,7 +56,7 @@ public class GameManagerImpl implements GameManger, Runnable{
         JPanel cards = new JPanel(cardLayout);
        
         gamePanel.setPreferredSize(new Dimension(screenWidth, screenHeight));
-        startMenuController = new StartMenuController(startMenuModel,  () -> cardLayout.show(cards, "GAME"), () -> System.exit(0));
+        startMenuController = new StartMenuController(startMenuModel, soundManager, () -> cardLayout.show(cards, "GAME"), () -> System.exit(0));
         startMenuView = new StartMenuView(startMenuController);
         startMenuView.addKeyListener(startMenuController);
         cards.add(startMenuView, "MENU");
