@@ -41,7 +41,7 @@ public class StartMenuView extends JPanel {
         int w = getWidth();
         int h = getHeight();
         int startY = h / 2;
-        int gap = fm.getHeight() + 12;
+        int gap = fm.getHeight() + 40;
         
 
         if (background != null) {

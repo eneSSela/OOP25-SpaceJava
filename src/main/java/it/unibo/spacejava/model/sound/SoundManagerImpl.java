@@ -33,14 +33,29 @@ public class SoundManagerImpl implements SoundManager{
 
     @Override
     public void playBackgroundMusic(String musicName) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'playBackgroundMusic'");
+       if (musicName == null  || musicName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Il precorso del file non può essere null o vuoto");
+        }
+        this.stopBackgroundMusic(); // Ferma la musica di sottofondo precedente, se presente
+
+        try {
+            AudioInputStream audioIn = AudioSystem.getAudioInputStream(getClass().getResourceAsStream(musicName));
+            backgroundMusicClip = AudioSystem.getClip();
+            backgroundMusicClip.open(audioIn);
+            backgroundMusicClip.loop(Clip.LOOP_CONTINUOUSLY);
+        } catch (Exception e) {
+            System.err.println("Errore durante la riproduzione del suono: " + musicName);
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void stopBackgroundMusic() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'stopBackgroundMusic'");
+        if (backgroundMusicClip != null && backgroundMusicClip.isRunning()) {
+            backgroundMusicClip.stop();
+            backgroundMusicClip.close();
+        }
     }
-    
 }
+    
+
