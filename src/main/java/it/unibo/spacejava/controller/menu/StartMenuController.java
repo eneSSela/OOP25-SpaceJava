@@ -5,10 +5,11 @@ import java.awt.event.KeyListener;
 import java.util.List;
 import javax.swing.Timer;
 
+import it.unibo.spacejava.KeyHandler;
 import it.unibo.spacejava.model.menu.StartMenuModel;
 import it.unibo.spacejava.model.sound.api.SoundManager;
 
-public class StartMenuController implements KeyListener {
+public class StartMenuController extends KeyHandler {
 
     private final String selectionSoundPath = "/audio/selection.wav";
     private final String enterSoundPath = "/audio/enter.wav";
@@ -19,8 +20,7 @@ public class StartMenuController implements KeyListener {
     private final Runnable onExit;
     private final Timer blinkTimer;
 
-    private boolean upDown = false;
-    private boolean downDown = false;
+    
 
     public StartMenuController(StartMenuModel model, SoundManager soundManager, Runnable onPlay, Runnable onExit) {
         this.model = model;
@@ -31,24 +31,20 @@ public class StartMenuController implements KeyListener {
         blinkTimer = new Timer(500, e -> model.setBlinkOn(!model.isBlinkOn()));
         blinkTimer.start();
     }
-
+    
     @Override
     public void keyPressed(KeyEvent e) {
-        int code = e.getKeyCode();
+        super.keyPressed(e);
 
-        if (code == KeyEvent.VK_UP) {
-            if (!upDown) {
-                model.selectPrevious();
-                soundManager.playSound(selectionSoundPath);
-                upDown = true;
-            }
-        } else if (code == KeyEvent.VK_DOWN) {
-            if (!downDown) {
-                model.selectNext();
-                soundManager.playSound(selectionSoundPath);
-                downDown = true;
-            }
-        } else if (code == KeyEvent.VK_ENTER) {
+        if (super.upPressed) {
+            model.selectPrevious();
+            soundManager.playSound(selectionSoundPath);
+        
+        } else if (super.downPressed) {
+            model.selectNext();
+            soundManager.playSound(selectionSoundPath);
+            
+        } else if (super.enterPressed) {
             soundManager.playSound(enterSoundPath);
             if (model.getSelectedIndex() == 0) {
                 onPlay.run();
@@ -56,25 +52,14 @@ public class StartMenuController implements KeyListener {
                 onExit.run();
             }
         }
-
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        int code = e.getKeyCode();
-
-        if (code == KeyEvent.VK_UP) {
-            upDown = false;
-        } else if (code == KeyEvent.VK_DOWN) {
-            downDown = false;
-        }
+        super.keyReleased(e);
+        
     }
-
-    @Override
-    public void keyTyped(KeyEvent e) {
-        // Not used
-    }
-
+    
     public List<String> getOptions() {
         return model.getOptions();
     }
