@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import it.unibo.spacejava.api.GameManger;
+import it.unibo.spacejava.controller.WaveManagerController;
 import it.unibo.spacejava.controller.menu.StartMenuController;
 import it.unibo.spacejava.model.menu.StartMenuModel;
 import it.unibo.spacejava.model.sound.SoundManagerImpl;
@@ -27,6 +28,8 @@ public class GameManagerImpl implements GameManger, Runnable{
     private StartMenuModel startMenuModel = new StartMenuModel();
     private StartMenuController startMenuController;
     private StartMenuView startMenuView;
+    private WaveManagerController waveManager = new WaveManagerController(screenWidth);
+    private boolean isGameActive = false;
 
     @Override
     public void startGame() {
@@ -56,7 +59,17 @@ public class GameManagerImpl implements GameManger, Runnable{
         JPanel cards = new JPanel(cardLayout);
        
         gamePanel.setPreferredSize(new Dimension(screenWidth, screenHeight));
-        startMenuController = new StartMenuController(startMenuModel, soundManager, () -> cardLayout.show(cards, "GAME"), () -> System.exit(0));
+
+        //startMenuController = new StartMenuController(startMenuModel, soundManager, () -> cardLayout.show(cards, "GAME"), () -> System.exit(0));
+        
+        startMenuController = new StartMenuController(startMenuModel, soundManager, () -> {
+            cardLayout.show(cards, "GAME"); 
+            isGameActive = true;
+
+            gamePanel.setFocusable(true);
+            gamePanel.requestFocusInWindow(); 
+        }, () -> System.exit(0));
+        
         startMenuView = new StartMenuView(startMenuController);
         startMenuView.addKeyListener(startMenuController);
         cards.add(startMenuView, "MENU");
@@ -66,6 +79,9 @@ public class GameManagerImpl implements GameManger, Runnable{
         window.pack();
         window.setLocationRelativeTo(null);
         window.setVisible(true);
+
+        startMenuView.setFocusable(true);
+        startMenuView.requestFocusInWindow();
         
         //startMenu.requestFocusInWindow();
         this.startThreadGame();
@@ -108,13 +124,22 @@ public class GameManagerImpl implements GameManger, Runnable{
         long timer = System.currentTimeMillis();
         int frames = 0;
 
+        double timePerFrame = 1.0 / FPS;
+
         while (gameThread != null) {
             long currentTime = System.nanoTime();
             delta += (currentTime - lastTime) / drawInterval;
             lastTime = currentTime;
 
             if (delta >= 1) {
-                startMenuView.repaint();
+
+                if (isGameActive) {
+                    waveManager.update(timePerFrame);
+                    gamePanel.render(waveManager.getEnemies());
+                } else {
+                    startMenuView.repaint();
+                }
+                
                 frames++;
                 delta--;
             }

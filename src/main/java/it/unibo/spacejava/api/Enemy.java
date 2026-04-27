@@ -1,10 +1,20 @@
 package it.unibo.spacejava.api;
 
+import it.unibo.spacejava.Position;
+
 /**
  * This is a intarface that describe the method of a enemy.
  */
 
 public interface Enemy {
+
+    Position getPosition();
+
+    double getWidth();
+
+    double getHeight();
+
+    int getHealth();
 
     /**
      * Erminio
@@ -12,11 +22,7 @@ public interface Enemy {
      */
     int getDamage();
 
-    /**
-     * Erminio
-     * @return int
-     */
-    int getHealth();
+    void takeDamage(int damage);
 
     /**
      * Erminio
@@ -28,4 +34,6 @@ public interface Enemy {
      * Erminio
      */
     void attack();
+
+    boolean isDead();
 }
