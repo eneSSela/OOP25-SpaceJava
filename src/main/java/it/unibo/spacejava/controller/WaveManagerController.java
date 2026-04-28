@@ -11,6 +11,10 @@ public class WaveManagerController {
     private double speedX = 75.0; // Movement pixels per second
     private double descent = 20.0; // Descent pixels
     private boolean movingRight = true;
+
+    private double cooldown = 1.0; 
+    private double timeSinceLastShot = 0.0;
+    private double shootProbability = 0.5;
     
     private double screenWidth;
 
@@ -63,9 +67,8 @@ public class WaveManagerController {
 
         // Checks if the edge is touched
         if (hitEdge) {
-            movingRight = !movingRight; // Inverti direzione
+            movingRight = !movingRight;
             for (Enemy e : enemies) {
-                // Sposta in basso tutti i nemici
                 e.getPosition().setY(e.getPosition().getY() + descent);
             }
         }
@@ -79,9 +82,25 @@ public class WaveManagerController {
         for (Enemy e : enemies) {
             e.getPosition().setX(e.getPosition().getX() + movement);
         }
+
+        // Calculates shot cooldown and randomly decides if an enemy gets to shoot
+        timeSinceLastShot += delta;
+        if (timeSinceLastShot >= cooldown) {
+            if (Math.random() < shootProbability) {
+                shoot();
+            }
+            timeSinceLastShot = 0.0; 
+        }
+    
     }
 
     public List<Enemy> getEnemies() {
         return enemies;
+    }
+
+    // Selects a random enemy and makes it attak
+    private void shoot() {
+        int randomIndex = (int) (Math.random() * enemies.size());
+        enemies.get(randomIndex).attack();
     }
 }

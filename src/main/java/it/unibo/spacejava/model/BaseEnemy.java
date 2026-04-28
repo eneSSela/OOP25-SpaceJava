@@ -3,6 +3,8 @@ package it.unibo.spacejava.model;
 import it.unibo.spacejava.Position;
 import it.unibo.spacejava.api.Enemy;
 
+import it.unibo.spacejava.controller.EnemyProjectileController;
+
 public class BaseEnemy implements Enemy {
     private Position position;
     private int health;
@@ -17,16 +19,24 @@ public class BaseEnemy implements Enemy {
     }
 
     @Override
-    public Position getPosition() { return this.position; }
+    public Position getPosition() {
+        return this.position;
+    }
 
     @Override
-    public double getWidth() { return this.width; }
+    public double getWidth() {
+        return this.width;
+    }
 
     @Override
-    public double getHeight() { return this.height; }
+    public double getHeight() {
+        return this.height;
+    }
 
     @Override
-    public int getHealth() { return this.health; }
+    public int getHealth() {
+        return this.health;
+    }
 
     @Override
     public void takeDamage(int damage) {
@@ -47,8 +57,13 @@ public class BaseEnemy implements Enemy {
 
     @Override
     public void attack() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'attack'");
+        double startX = this.position.getX() + (this.width / 2 - 10);
+        double startY = this.position.getY() + this.height;
+        
+        Position projectilePos = new Position(startX, startY);
+        
+        EnemyProjectileController.getProjectileList().add(new ProjectileImpl(projectilePos, 40));
+
     }
 
     @Override

@@ -3,11 +3,14 @@ package it.unibo.spacejava.model;
 
 import java.awt.CardLayout;
 import java.awt.Dimension;
+import java.awt.List;
+import java.util.LinkedList;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import it.unibo.spacejava.api.GameManger;
+import it.unibo.spacejava.controller.EnemyProjectileController;
 import it.unibo.spacejava.controller.WaveManagerController;
 import it.unibo.spacejava.controller.menu.StartMenuController;
 import it.unibo.spacejava.model.menu.StartMenuModel;
@@ -29,7 +32,9 @@ public class GameManagerImpl implements GameManger, Runnable{
     private StartMenuController startMenuController;
     private StartMenuView startMenuView;
     private WaveManagerController waveManager = new WaveManagerController(screenWidth);
+    private EnemyProjectileController projectileController = new EnemyProjectileController(screenHeight);
     private boolean isGameActive = false;
+    
 
     @Override
     public void startGame() {
@@ -135,6 +140,9 @@ public class GameManagerImpl implements GameManger, Runnable{
 
                 if (isGameActive) {
                     waveManager.update(timePerFrame);
+                    
+                    projectileController.update(timePerFrame);
+
                     gamePanel.render(waveManager.getEnemies());
                 } else {
                     startMenuView.repaint();
