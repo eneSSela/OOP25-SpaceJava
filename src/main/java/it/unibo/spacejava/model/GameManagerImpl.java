@@ -12,11 +12,14 @@ import javax.swing.JPanel;
 import it.unibo.spacejava.api.GameManger;
 import it.unibo.spacejava.controller.EnemyProjectileController;
 import it.unibo.spacejava.controller.WaveManagerController;
+import it.unibo.spacejava.controller.menu.SkinController;
 import it.unibo.spacejava.controller.menu.StartMenuController;
+import it.unibo.spacejava.model.menu.SkinModel;
 import it.unibo.spacejava.model.menu.StartMenuModel;
 import it.unibo.spacejava.model.sound.SoundManagerImpl;
 import it.unibo.spacejava.model.sound.api.SoundManager;
 import it.unibo.spacejava.view.game.GamePanel;
+import it.unibo.spacejava.view.menu.SkinSelectionView;
 import it.unibo.spacejava.view.menu.StartMenuView;
 
 public class GameManagerImpl implements GameManger, Runnable{
@@ -35,6 +38,10 @@ public class GameManagerImpl implements GameManger, Runnable{
     private EnemyProjectileController projectileController = new EnemyProjectileController(screenHeight);
     private boolean isGameActive = false;
     
+    private SkinModel skinModel;
+    private SkinController skinController;
+    private SkinSelectionView skinSelectionView;
+    private CardLayout cardLayout = new CardLayout();
 
     @Override
     public void startGame() {
@@ -60,26 +67,37 @@ public class GameManagerImpl implements GameManger, Runnable{
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
        
-        CardLayout cardLayout = new CardLayout();
         JPanel cards = new JPanel(cardLayout);
        
         gamePanel.setPreferredSize(new Dimension(screenWidth, screenHeight));
-
-        //startMenuController = new StartMenuController(startMenuModel, soundManager, () -> cardLayout.show(cards, "GAME"), () -> System.exit(0));
-        
-        startMenuController = new StartMenuController(startMenuModel, soundManager, () -> {
-            cardLayout.show(cards, "GAME"); 
-            isGameActive = true;
-
-            gamePanel.setFocusable(true);
-            gamePanel.requestFocusInWindow(); 
-        }, () -> System.exit(0));
-        
+        startMenuController = new StartMenuController(startMenuModel, soundManager, 
+            () -> {
+                cardLayout.show(cards, "GAME");
+                gamePanel.requestFocusInWindow();
+            },
+            () -> {
+                cardLayout.show(cards, "SKIN");
+                skinSelectionView.requestFocusInWindow();
+            },
+            () -> System.exit(0));
         startMenuView = new StartMenuView(startMenuController);
         startMenuView.addKeyListener(startMenuController);
+        
+        skinModel = new SkinModel();
+        skinController = new SkinController(skinModel,
+            () -> {
+                cardLayout.show(cards, "MENU");
+                startMenuView.requestFocusInWindow();
+            }
+        );
+        skinSelectionView = new SkinSelectionView(skinModel);
+        skinSelectionView.setFocusable(true);
+        skinSelectionView.addKeyListener(skinController);
+        
+        startMenuView.setFocusable(true);
         cards.add(startMenuView, "MENU");
         cards.add(gamePanel, "GAME");
-        
+        cards.add(skinSelectionView, "SKIN");
         window.setContentPane(cards);
         window.pack();
         window.setLocationRelativeTo(null);
@@ -137,17 +155,14 @@ public class GameManagerImpl implements GameManger, Runnable{
             lastTime = currentTime;
 
             if (delta >= 1) {
-
-                if (isGameActive) {
-                    waveManager.update(timePerFrame);
-                    
-                    projectileController.update(timePerFrame);
-
-                    gamePanel.render(waveManager.getEnemies());
-                } else {
+                if (startMenuView.isVisible()) {
                     startMenuView.repaint();
+                } else if (gamePanel.isVisible()) {
+                    waveManager.update(timePerFrame);
+                    gamePanel.render(waveManager.getEnemies());
+                } else if (skinSelectionView.isVisible()) {
+                    skinSelectionView.repaint();
                 }
-                
                 frames++;
                 delta--;
             }

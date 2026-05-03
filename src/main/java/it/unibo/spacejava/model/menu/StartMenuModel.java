@@ -6,7 +6,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class StartMenuModel {
 
-    private final List<String> options = List.of("Gioca", "Esci");
+    private final List<String> options = List.of("Gioca", "Seleziona Skin", "Esci");
     private int selectedIndex = 0;
     private boolean blinkOn = true;
 

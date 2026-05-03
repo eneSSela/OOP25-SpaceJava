@@ -39,7 +39,7 @@ public class SoundManagerImpl implements SoundManager{
         this.stopBackgroundMusic(); // Ferma la musica di sottofondo precedente, se presente
 
         try {
-            AudioInputStream audioIn = AudioSystem.getAudioInputStream(getClass().getResourceAsStream(musicName));
+            AudioInputStream audioIn = AudioSystem.getAudioInputStream(getClass().getResourceAsStream(musicName ));
             backgroundMusicClip = AudioSystem.getClip();
             backgroundMusicClip.open(audioIn);
             backgroundMusicClip.loop(Clip.LOOP_CONTINUOUSLY);
