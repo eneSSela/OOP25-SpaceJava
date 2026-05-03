@@ -159,6 +159,7 @@ public class GameManagerImpl implements GameManger, Runnable{
                     startMenuView.repaint();
                 } else if (gamePanel.isVisible()) {
                     waveManager.update(timePerFrame);
+                    projectileController.update(timePerFrame);
                     gamePanel.render(waveManager.getEnemies());
                 } else if (skinSelectionView.isVisible()) {
                     skinSelectionView.repaint();
