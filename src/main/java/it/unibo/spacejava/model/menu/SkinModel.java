@@ -15,6 +15,13 @@ public class SkinModel {
     public int getPlayerPoints() { return playerPoints; }
     public Skin getSelectedSkin() { return skins.get(selectedIndex); }
 
+    public void selectPrevious() {
+        selectedIndex = (selectedIndex - 1 + skins.size()) % skins.size();
+    }
+    public void selectNext() {
+        selectedIndex = (selectedIndex + 1) % skins.size();
+    }
+
     /**
      * Tenta di comprare la skin attualmente selezionata.
      * @return true se l'acquisto va a buon fine, false altrimenti.
