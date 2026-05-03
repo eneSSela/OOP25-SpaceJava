@@ -10,7 +10,11 @@ public class SkinModel {
     private int selectedIndex = 0;
 
     // lista dove aggiungere tutte le possibili skin
-    private final List<Skin> skins = List.of();
+    private final List<Skin> skins = List.of(
+        new Skin("Default","/skins/spaceShips_001.png", 0, true), // Skin di default, già sbloccata
+       new Skin("ship2","/skins/spaceShips_002.png", 100, false),
+       new Skin("ship3","/skins/spaceShips_003.png", 300, false)
+    );
 
     public int getPlayerPoints() { return playerPoints; }
     public Skin getSelectedSkin() { return skins.get(selectedIndex); }

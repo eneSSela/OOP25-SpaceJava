@@ -39,6 +39,7 @@ public class SkinSelectionView extends JPanel {
     public SkinSelectionView(SkinModel model) {
         this.model = model;
         setBackground(Color.BLACK);
+        setFocusable(true);
     }
 
     @Override

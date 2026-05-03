@@ -17,14 +17,16 @@ public class StartMenuController extends KeyHandler {
     private final StartMenuModel model;
     private final SoundManager soundManager;
     private final Runnable onPlay;
+    private final Runnable onSkinSelection;
     private final Runnable onExit;
     private final Timer blinkTimer;
 
     
 
-    public StartMenuController(StartMenuModel model, SoundManager soundManager, Runnable onPlay, Runnable onExit) {
+    public StartMenuController(StartMenuModel model, SoundManager soundManager, Runnable onPlay, Runnable onSkinSelection, Runnable onExit) {
         this.model = model;
         this.onPlay = onPlay;
+        this.onSkinSelection = onSkinSelection;
         this.onExit = onExit;
         this.soundManager = soundManager;
 
@@ -48,6 +50,8 @@ public class StartMenuController extends KeyHandler {
             soundManager.playSound(enterSoundPath);
             if (model.getSelectedIndex() == 0) {
                 onPlay.run();
+            } else if (model.getSelectedIndex() == 1) {
+                onSkinSelection.run();
             } else {
                 onExit.run();
             }
