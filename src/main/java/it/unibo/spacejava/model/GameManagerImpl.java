@@ -116,7 +116,7 @@ public class GameManagerImpl implements GameManger, Runnable{
         double startX = (screenWidth / 2.0) - 32;
         double startY = screenHeight - 100;
         PlayerShip playerModel = new PlayerShip(startX, startY);
-        playerController = new PlayerController(playerModel, gameKeyHandler, screenWidth);
+        playerController = new PlayerController(playerModel, gameKeyHandler, screenWidth, soundManager);
         //startMenu.requestFocusInWindow();
         this.startThreadGame();
     }
