@@ -15,6 +15,8 @@ public class GamePanel extends JPanel{
 package it.unibo.spacejava.view.game;
 
 import java.awt.Color;
+import java.awt.Font;
+
 import it.unibo.spacejava.api.Enemy;
 import it.unibo.spacejava.controller.EnemyProjectileController;
 import it.unibo.spacejava.model.PlayerShip;
@@ -93,6 +95,7 @@ public class GamePanel extends JPanel {
 
         drawPlayer(g);
         drawPlayerProjectiles(g);
+        drawHUD(g);
     }
     
     public void drawEnemies(Graphics g, List<Enemy> enemies) {
@@ -143,6 +146,24 @@ public class GamePanel extends JPanel {
                     p.getLenght()
                 );
             }
+        }
+    }
+
+    private void drawHUD(Graphics g) {
+        if (currentPlayer != null) { //Controlliamo che il player sia stato caricato
+            g.setFont(new Font("Monospaced", Font.BOLD, 20));
+
+            int health = currentPlayer.getHealth();
+
+            //Cambiamo colore in base alla vita rimanente
+            if (health > 1) {
+                g.setColor(Color.GREEN);
+            } else {
+                g.setColor(Color.RED);
+            }
+
+            //Disegnamo la scritta "Vite: X" in alto a destra
+            g.drawString("Vite: " + health, 20, 30);
         }
     }
 }
