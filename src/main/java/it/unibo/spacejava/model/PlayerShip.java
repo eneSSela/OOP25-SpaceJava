@@ -7,6 +7,7 @@ public class PlayerShip {
     private final double width = 50.0;
     private final double height = 55.0;
     private final double speed = 300.0;
+    private int health = 3;
 
     public PlayerShip(double startX, double startY) {
         this.position = new Position(startX, startY);
@@ -32,5 +33,17 @@ public class PlayerShip {
     public void moveRight(double delta, double limit) {
         double newX = position.getX() + (speed * delta);
         position.setX(Math.min(newX, limit - width)); //impedisce di uscire dallo schermo a destra
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void takeDamage(int damage) {
+        this.health -= damage;
+    }
+
+    public boolean isDead() {
+        return this.health <= 0;
     }
 }
