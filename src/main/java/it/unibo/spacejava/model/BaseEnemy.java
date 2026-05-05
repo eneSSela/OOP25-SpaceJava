@@ -62,7 +62,7 @@ public class BaseEnemy implements Enemy {
         
         Position projectilePos = new Position(startX, startY);
         
-        EnemyProjectileController.getProjectileList().add(new ProjectileImpl(projectilePos, 40));
+        EnemyProjectileController.getProjectileList().add(new ProjectileImpl(projectilePos, 40, 30));
 
     }
 

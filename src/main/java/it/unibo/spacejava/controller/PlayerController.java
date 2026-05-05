@@ -52,10 +52,11 @@ public class PlayerController {
     }
 
     private void shoot() {
+        int projWidth = 10;
         //Centra il proiettile rispetto alla navicella
         double startX = playerShip.getPosition().getX() + (playerShip.getWidth() / 2);
         double startY = playerShip.getPosition().getY();
-        projectiles.add(new ProjectileImpl(new Position(startX, startY), 40));
+        projectiles.add(new ProjectileImpl(new Position(startX, startY), 40, projWidth));
     }
 
     public PlayerShip getPlayerShip() {

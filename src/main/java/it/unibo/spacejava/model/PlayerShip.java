@@ -4,8 +4,8 @@ import it.unibo.spacejava.Position;
 
 public class PlayerShip {
     private final Position position;
-    private final double width = 64.0;
-    private final double height = 64.0;
+    private final double width = 50.0;
+    private final double height = 55.0;
     private final double speed = 300.0;
 
     public PlayerShip(double startX, double startY) {
