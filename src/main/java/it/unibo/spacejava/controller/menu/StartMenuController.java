@@ -9,6 +9,11 @@ import it.unibo.spacejava.KeyHandler;
 import it.unibo.spacejava.model.menu.StartMenuModel;
 import it.unibo.spacejava.model.sound.api.SoundManager;
 
+/**
+ * Controller per il menu di start. Gestisce l'input da tastiera e aggiorna il model di conseguenza.
+ * Inoltre, gestisce il timer per il lampeggiamento dell'opzione selezionata e riproduce i suoni associati alla selezione e alla conferma delle opzioni.
+ * Infine, fornisce dei callback per le azioni da eseguire quando l'utente seleziona "Gioca", "Seleziona Skin" o "Esci".
+ */
 public class StartMenuController extends KeyHandler {
 
     private final String selectionSoundPath = "/audio/selection.wav";
@@ -34,6 +39,10 @@ public class StartMenuController extends KeyHandler {
         blinkTimer.start();
     }
     
+    /**
+     * Gestisce la pressione di un tasto.
+     * @param e l'evento di pressione del tasto
+     */
     @Override
     public void keyPressed(KeyEvent e) {
         super.keyPressed(e);
@@ -58,23 +67,43 @@ public class StartMenuController extends KeyHandler {
         }
     }
 
+    /**
+     * Gestisce il rilascio di un tasto.
+     * @param e l'evento di rilascio del tasto
+     */
     @Override
     public void keyReleased(KeyEvent e) {
         super.keyReleased(e);
         
     }
     
+    /**
+     * Restituisce la lista delle opzioni del menu.
+     * @return la lista delle opzioni del menu sotto forma di stringhe per poterle visualizzare nella view
+     */
     public List<String> getOptions() {
         return model.getOptions();
     }
 
+    /**
+     * Restittuisce l'idice dell'opzione che l'utente ha selezionata.
+     * @return l'idice dell'opzione selzionata, per poterza evideziare nella view
+     */
     public int getSelectedIndex() {
         return model.getSelectedIndex();
     }
 
+    /**
+     * Metodo utile per notificare che il lampeggio dell'opzione selezionata è attivo o meno, per poterlo visualizzare nella view.
+     * @return true se il lampeggiamento è attivo, false altrimenti
+     */
     public boolean isBlinkOn() {
         return model.isBlinkOn();
     }
+
+    /**
+     * Ferma il timer del lampeggiamento.   
+     */
     public void stop() {
         blinkTimer.stop();
     }
