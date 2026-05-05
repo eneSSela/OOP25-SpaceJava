@@ -8,21 +8,26 @@ import it.unibo.spacejava.Position;
 import it.unibo.spacejava.model.PlayerShip;
 import it.unibo.spacejava.model.ProjectileImpl;
 
+import it.unibo.spacejava.model.sound.api.SoundManager;
+
 public class PlayerController {
     private final PlayerShip playerShip;
     private final KeyHandler keyHandler;
     private final double screenWidth;
-    
+
+    private final SoundManager soundManager;
+
     private final List<ProjectileImpl> projectiles = new ArrayList<>();
     private final double projectileSpeed = 400.0;
 
     private double shootCoolDown = 0.5; //Mezzo secondo tra uno sparo e l'altro
     private double timeSinceLastShot = shootCoolDown;
 
-    public PlayerController(PlayerShip playerShip, KeyHandler keyHandler, double screenWidth) {
+    public PlayerController(PlayerShip playerShip, KeyHandler keyHandler, double screenWidth, SoundManager soundManager) {
         this.playerShip = playerShip;
         this.keyHandler = keyHandler;
         this.screenWidth = screenWidth;
+        this.soundManager = soundManager; 
     }
 
     public void update(double delta) {
@@ -57,6 +62,8 @@ public class PlayerController {
         double startX = playerShip.getPosition().getX() + (playerShip.getWidth() / 2);
         double startY = playerShip.getPosition().getY();
         projectiles.add(new ProjectileImpl(new Position(startX, startY), 40, projWidth));
+
+        soundManager.playSound("/audio/shoot.wav");
     }
 
     public PlayerShip getPlayerShip() {
