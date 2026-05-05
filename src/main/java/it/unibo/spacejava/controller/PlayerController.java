@@ -66,6 +66,39 @@ public class PlayerController {
         soundManager.playSound("/audio/shoot.wav");
     }
 
+    /*Metodo helper per controllare se due rettangoli si sovrappongono (AABB).
+    Per implementare la collisione tra i proiettili dei nemici e il giocatore, 
+    useremo un algoritmo molto comune nello sviluppo di giochi in 
+    2D chiamato AABB (Axis-Aligned Bounding Box). In parole povere, immagina 
+    di disegnare un rettangolo invisibile attorno al giocatore e uno attorno 
+    al proiettile: se i due rettangoli si sovrappongono, c'è una collisione.*/
+    private boolean isColliding(Position pos1, double w1, double h1, Position pos2, double w2, double h2) {
+        return pos1.getX() < pos2.getX() + w2 &&
+               pos1.getX() + w1 > pos2.getX() &&
+               pos1.getY() < pos2.getY() + h2 &&
+               pos1.getY() + h1 > pos2.getY();
+    }
+
+    //Metodo che verifica le collisioni tra il giocatore e i proiettili nemici
+    public void checkEnemyCollision() {
+        //Recuperiamo la lista dei proiettili nemici
+        List<ProjectileImpl> enemyProjectiles = EnemyProjectileController.getProjectileList();
+        List<ProjectileImpl> projectilesToRemove = new ArrayList<>();
+
+        for (ProjectileImpl p : enemyProjectiles) {
+            //Controlla se il rettangolo del player si sovrappone a quello del proiettile
+            if (isColliding(playerShip.getPosition(), playerShip.getWidth(), playerShip.getHeight(), p.getPosition(), p.getWidth(), p.getLenght())) {
+                playerShip.takeDamage(1); //Rimuove un punto vita
+                projectilesToRemove.add(p); //Segna il proiettile per la rimozione
+
+                System.out.println("Sei stato colpito! Vita rimanente: " + playerShip.getHealth());
+            }
+        }
+
+        //Rimuove i proiettili che ci hanno colpito per non prendere danno doppio
+        enemyProjectiles.removeAll(projectilesToRemove);
+    }
+
     public PlayerShip getPlayerShip() {
         return playerShip;
     }
