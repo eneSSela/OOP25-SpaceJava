@@ -92,6 +92,8 @@ public class PlayerController {
                 projectilesToRemove.add(p); //Segna il proiettile per la rimozione
 
                 System.out.println("Sei stato colpito! Vita rimanente: " + playerShip.getHealth());
+
+                soundManager.playSound("/audio/hit.wav");
             }
         }
 
