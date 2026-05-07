@@ -126,24 +126,6 @@ public class GameManagerImpl implements GameManger, Runnable{
         gameThread.start();
     }
 
-    @Override
-    public void pauseGame() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'pauseGame'");
-    }
-
-    @Override
-    public void endGame() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'endGame'");
-    }
-
-    @Override
-    public void restartGame() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'restartGame'");
-    }
-
     /**
      * Game loop implementation based on https://www.youtube.com/watch?v=H2aW5V46bFE.
      * The game loop runs in a separate thread and is responsible for updating the game state and rendering the game at a consistent frame rate (FPS). 
