@@ -2,10 +2,13 @@ package it.unibo.spacejava.controller;
 
 import it.unibo.spacejava.api.Enemy;
 import it.unibo.spacejava.model.BaseEnemy;
+import it.unibo.spacejava.model.TankEnemy;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class WaveManagerController {
+    private int waveNum=0;
     private List<Enemy> enemies;
     
     private double speedX = 75.0; // Movement pixels per second
@@ -33,13 +36,35 @@ public class WaveManagerController {
         double spacingX = 60.0;
         double spacingY = 50.0;
 
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < cols; col++) {
-                double x = startX + (col * spacingX);
-                double y = startY + (row * spacingY);
-                enemies.add(new BaseEnemy(x, y));
-            }
+        waveNum++;
+
+        switch (waveNum) {
+            case 1:
+                for (int row = 0; row < rows; row++) {
+                    for (int col = 0; col < cols; col++) {
+                        double x = startX + (col * spacingX);
+                        double y = startY + (row * spacingY);
+                        enemies.add(new BaseEnemy(x, y));
+                    }
+                }
+                break;
+            case 2:
+                for (int row = 0; row < rows; row++) {
+                    for (int col = 0; col < cols; col++) {
+                        double x = startX + (col * spacingX);
+                        double y = startY + (row * spacingY);
+                        if (row == 1) {
+                            enemies.add(new BaseEnemy(x, y));
+                        } else {
+                            enemies.add(new TankEnemy(x, y));
+                        }
+                    }
+                }
+                break;
+            default:
+                break;
         }
+        
     }
 
     public void update(double delta) {

@@ -16,6 +16,8 @@ public interface Enemy {
 
     int getHealth();
 
+    int type();
+
     /**
      * Erminio
      * @return int

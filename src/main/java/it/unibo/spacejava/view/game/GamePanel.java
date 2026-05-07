@@ -29,9 +29,10 @@ import java.util.List;
 
 public class GamePanel extends JPanel {
 
-    private Image enemyImage;
+    private Image baseEnemyImage;
     private List<Enemy> currentEnemies;
     private Image projectileImage;
+    private Image tankEnemyImage;
 
     public GamePanel(int width, int height) {
         super.setSize(width, height);
@@ -43,9 +44,9 @@ public class GamePanel extends JPanel {
         try {
             URL imageUrl = getClass().getResource("/enemies/baseEnemy.png");
             if (imageUrl != null) {
-                enemyImage = ImageIO.read(imageUrl);
+                baseEnemyImage = ImageIO.read(imageUrl);
             } else {
-                System.err.println("Immagine del nemico non trovata!");
+                System.err.println("Immagine del nemico base non trovata!");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -57,6 +58,17 @@ public class GamePanel extends JPanel {
                 projectileImage = ImageIO.read(imageUrl);
             } else {
                 System.err.println("Immagine del proiettile non trovata!");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            URL imageUrl = getClass().getResource("/enemies/tankEnemy.png");
+            if (imageUrl != null) {
+                tankEnemyImage = ImageIO.read(imageUrl);
+            } else {
+                System.err.println("Immagine del nemico tank non trovata!");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -77,14 +89,34 @@ public class GamePanel extends JPanel {
     }
     
     public void drawEnemies(Graphics g, List<Enemy> enemies) {
-        if (enemyImage != null && enemies != null) {
+        if (baseEnemyImage != null && enemies != null) {
             for (Enemy e : enemies) {
-                g.drawImage(enemyImage, 
+                int type = e.type();
+                //metti switch
+                switch (type) {
+                    case 0:
+                        g.drawImage(baseEnemyImage, 
                             (int) e.getPosition().getX(), 
                             (int) e.getPosition().getY(), 
                             (int) e.getWidth(), 
                             (int) e.getHeight(), 
                             null);
+                        break;
+                    case 1:
+                        g.drawImage(tankEnemyImage, 
+                            (int) e.getPosition().getX(), 
+                            (int) e.getPosition().getY(), 
+                            (int) e.getWidth(), 
+                            (int) e.getHeight(), 
+                            null);
+                        break;
+                    case 3:
+                        
+                        break;
+                    default:
+                        break;
+                }
+                
             }
         }
     }

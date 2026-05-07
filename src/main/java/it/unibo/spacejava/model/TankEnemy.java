@@ -2,18 +2,17 @@ package it.unibo.spacejava.model;
 
 import it.unibo.spacejava.Position;
 import it.unibo.spacejava.api.Enemy;
-
 import it.unibo.spacejava.controller.EnemyProjectileController;
 
-public class BaseEnemy implements Enemy {
+public class TankEnemy implements Enemy{
     private Position position;
-    private int health = 1;
+    private int health = 3;
     private final double width = 40.0;
     private final double height = 40.0;
-    private final int type = 0;
     private final int damage = 1;
+    private final int type = 1;
 
-    public BaseEnemy(double startX, double startY) {
+    public TankEnemy(double startX, double startY) {
         this.position = new Position(startX, startY);
     }
 
@@ -49,7 +48,7 @@ public class BaseEnemy implements Enemy {
 
     @Override
     public int getDamage() {
-        return damage;
+        return this.damage;
     }
 
 
