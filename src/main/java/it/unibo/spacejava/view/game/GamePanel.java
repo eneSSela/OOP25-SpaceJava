@@ -15,8 +15,11 @@ public class GamePanel extends JPanel{
 package it.unibo.spacejava.view.game;
 
 import java.awt.Color;
+import java.awt.Font;
+
 import it.unibo.spacejava.api.Enemy;
 import it.unibo.spacejava.controller.EnemyProjectileController;
+import it.unibo.spacejava.model.PlayerShip;
 import it.unibo.spacejava.model.ProjectileImpl;
 
 import javax.swing.JPanel;
@@ -32,6 +35,10 @@ public class GamePanel extends JPanel {
     private Image enemyImage;
     private List<Enemy> currentEnemies;
     private Image projectileImage;
+
+    private Image playerImage;
+    private PlayerShip currentPlayer;
+    private List<ProjectileImpl> playerProjectiles;
 
     public GamePanel(int width, int height) {
         super.setSize(width, height);
@@ -61,10 +68,21 @@ public class GamePanel extends JPanel {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        try {
+            URL imageUrl = getClass().getResource("/skins/spaceShips_001.png");
+            if (imageUrl != null) {
+                playerImage = ImageIO.read(imageUrl);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void render(List<Enemy> enemies) {
+    public void render(List<Enemy> enemies, PlayerShip player, List<ProjectileImpl> playerProjectiles) {
         this.currentEnemies = enemies;
+        this.currentPlayer = player;
+        this.playerProjectiles = playerProjectiles;
         repaint(); 
     }
 
@@ -74,6 +92,10 @@ public class GamePanel extends JPanel {
         drawEnemies(g, currentEnemies);
         List<ProjectileImpl> projectiles = EnemyProjectileController.getProjectileList();
         drawEnemyProjectiles(g, projectiles);
+
+        drawPlayer(g);
+        drawPlayerProjectiles(g);
+        drawHUD(g);
     }
     
     public void drawEnemies(Graphics g, List<Enemy> enemies) {
@@ -99,6 +121,49 @@ public class GamePanel extends JPanel {
                     (int) projectileImpl.getLenght(),
                     null);
             }
+        }
+    }
+
+    private void drawPlayer(Graphics g) {
+        if (playerImage != null && currentPlayer != null) {
+            g.drawImage(playerImage,
+                        (int) currentPlayer.getPosition().getX(),
+                        (int) currentPlayer.getPosition().getY(),
+                        (int) currentPlayer.getWidth(),
+                        (int) currentPlayer.getHeight(),
+                        null);
+        }
+    }
+
+    private void drawPlayerProjectiles(Graphics g) {
+        if (playerProjectiles != null && !playerProjectiles.isEmpty()) {
+            g.setColor(Color.CYAN); // i proiettili del giocatore saranno azzurri
+            for (ProjectileImpl p : playerProjectiles) {
+                g.fillRect(
+                    (int) p.getPosition().getX(),
+                    (int) p.getPosition().getY(),
+                    p.getWidth(),
+                    p.getLenght()
+                );
+            }
+        }
+    }
+
+    private void drawHUD(Graphics g) {
+        if (currentPlayer != null) { //Controlliamo che il player sia stato caricato
+            g.setFont(new Font("Monospaced", Font.BOLD, 20));
+
+            int health = currentPlayer.getHealth();
+
+            //Cambiamo colore in base alla vita rimanente
+            if (health > 1) {
+                g.setColor(Color.GREEN);
+            } else {
+                g.setColor(Color.RED);
+            }
+
+            //Disegnamo la scritta "Vite: X" in alto a destra
+            g.drawString("Vite: " + health, 20, 30);
         }
     }
 }

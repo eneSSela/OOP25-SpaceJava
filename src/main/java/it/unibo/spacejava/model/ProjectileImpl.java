@@ -7,11 +7,12 @@ public class ProjectileImpl implements Projectile {
 
     private Position pos;
     private final int length;
-    private final int width = 30;
+    private final int width;
 
-    public ProjectileImpl(Position pos, int length) {
+    public ProjectileImpl(Position pos, int length, int width) {
         this.pos = pos;
         this.length = length;
+        this.width = width;
     }
 
     @Override

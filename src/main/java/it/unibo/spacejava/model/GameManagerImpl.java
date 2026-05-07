@@ -9,8 +9,10 @@ import java.util.LinkedList;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import it.unibo.spacejava.KeyHandler;
 import it.unibo.spacejava.api.GameManger;
 import it.unibo.spacejava.controller.EnemyProjectileController;
+import it.unibo.spacejava.controller.PlayerController;
 import it.unibo.spacejava.controller.WaveManagerController;
 import it.unibo.spacejava.controller.menu.SkinController;
 import it.unibo.spacejava.controller.menu.StartMenuController;
@@ -37,6 +39,8 @@ public class GameManagerImpl implements GameManger, Runnable{
     private WaveManagerController waveManager = new WaveManagerController(screenWidth);
     private EnemyProjectileController projectileController = new EnemyProjectileController(screenHeight);
     private boolean isGameActive = false;
+    private KeyHandler gameKeyHandler;
+    private PlayerController playerController;
     
     private SkinModel skinModel;
     private SkinController skinController;
@@ -106,6 +110,13 @@ public class GameManagerImpl implements GameManger, Runnable{
         startMenuView.setFocusable(true);
         startMenuView.requestFocusInWindow();
         
+        gameKeyHandler = new KeyHandler();
+        gamePanel.addKeyListener(gameKeyHandler);
+
+        double startX = (screenWidth / 2.0) - 32;
+        double startY = screenHeight - 100;
+        PlayerShip playerModel = new PlayerShip(startX, startY);
+        playerController = new PlayerController(playerModel, gameKeyHandler, screenWidth, soundManager);
         //startMenu.requestFocusInWindow();
         this.startThreadGame();
     }
@@ -142,7 +153,9 @@ public class GameManagerImpl implements GameManger, Runnable{
                 } else if (gamePanel.isVisible()) {
                     waveManager.update(timePerFrame);
                     projectileController.update(timePerFrame);
-                    gamePanel.render(waveManager.getEnemies());
+                    playerController.update(timePerFrame);
+                    playerController.checkEnemyCollision();
+                    gamePanel.render(waveManager.getEnemies(), playerController.getPlayerShip(), playerController.getProjectiles());
                 } else if (skinSelectionView.isVisible()) {
                     skinSelectionView.repaint();
                 }
