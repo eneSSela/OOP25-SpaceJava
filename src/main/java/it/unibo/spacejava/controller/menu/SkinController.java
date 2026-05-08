@@ -19,17 +19,17 @@ public class SkinController extends KeyHandler {
         super.keyPressed(e);
         Skin  currentSkin = model.getSelectedSkin();
 
-        if (super.leftPressed) {
+        if (super.isUpPressed()) {
             model.selectPrevious();
-        } else if (super.rightPressed) {
+        } else if (super.isRightPressed()) {
             model.selectNext();
-        } else if (super.spacePressed) {
+        } else if (super.isSpacePressed()) {
             if(model.buyCurrentSkin()) {
                 System.out.println("Hai comprato la skin: " + currentSkin.getName());
             }else if (!currentSkin.isUnlock()) {
                 System.out.println("Non hai abbastanza punti per comprare questa skin!");
             }
-        } else if (super.enterPressed) {
+        } else if (super.isEnterPressed()) {
             if (currentSkin.isUnlock()) {
                 onBack.run();
             }

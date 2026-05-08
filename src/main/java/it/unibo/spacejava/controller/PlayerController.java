@@ -32,16 +32,16 @@ public class PlayerController {
 
     public void update(double delta) {
         //Gestione movimento
-        if (keyHandler.leftPressed) {
+        if (keyHandler.isLeftPressed()) {
             playerShip.moveLeft(delta, 0);
         }
-        if (keyHandler.rightPressed) {
+        if (keyHandler.isRightPressed()) {
             playerShip.moveRight(delta, screenWidth);
         }
 
         //Gestione sparo
         timeSinceLastShot += delta;
-        if (keyHandler.spacePressed && timeSinceLastShot >= shootCoolDown) {
+        if (keyHandler.isSpacePressed() && timeSinceLastShot >= shootCoolDown) {
             shoot();
             timeSinceLastShot = 0;
         }
