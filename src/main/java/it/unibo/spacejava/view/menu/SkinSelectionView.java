@@ -4,8 +4,8 @@ import java.awt.*;
 import javax.swing.JPanel;
 
 import it.unibo.spacejava.Skin;
+import it.unibo.spacejava.Utils;
 import it.unibo.spacejava.controller.menu.SkinController;
-import it.unibo.spacejava.model.menu.SkinModel;
 
 public class SkinSelectionView extends JPanel {
 
@@ -52,10 +52,10 @@ public class SkinSelectionView extends JPanel {
         int height = getHeight();
         FontMetrics fm = g2.getFontMetrics(); // Strumento vitale per centrare il testo!
 
-        Skin currentSkin = model.getPlayerSelectedSkin();
+        Skin currentSkin = controller.getPlayerSelectedSkin();
 
         // 1. PUNTI DEL GIOCATORE (in alto a destra)
-        String pointsText = TEXT_POINTS + model.getPoints();
+        String pointsText = TEXT_POINTS + controller.getPlayerPoints();
         int pointsWidth = fm.stringWidth(pointsText); // Calcola la larghezza esatta della scritta
         g2.setColor(COLOR_POINTS);
         g2.drawString(pointsText, width - pointsWidth - POINTS_PADDING_RIGHT, POINTS_MARGIN_TOP);
@@ -69,8 +69,7 @@ public class SkinSelectionView extends JPanel {
         // 3. ASTRONAVE (al centro esatto)
         int shipX = (width / 2) - SHIP_OFFSET;
         int shipY = (height / 2) - SHIP_OFFSET;
-        Image shipImg = Toolkit.getDefaultToolkit().getImage(getClass().getResource(currentSkin.getImagePath()));
-        g2.drawImage(shipImg, shipX, shipY, SHIP_SIZE, SHIP_SIZE, this);
+        g2.drawImage(Utils.loadImage(currentSkin.getImagePath()), shipX, shipY, SHIP_SIZE, SHIP_SIZE, this);
 
         // 4. STATO DELLA SKIN (in basso)
         int bottomY = height - MARGIN_BOTTOM;
@@ -88,7 +87,7 @@ public class SkinSelectionView extends JPanel {
             g2.drawString(lockedText, (width - lockedWidth) / 2, bottomY - LINE_SPACING);
             
             // Suggerimento di acquisto dinamico
-            if (model.getPoints() >= currentSkin.getPrice()) {
+            if (controller.getPlayerPoints() >= currentSkin.getPrice()) {
                 int buyWidth = fm.stringWidth(TEXT_CAN_BUY);
                 g2.setColor(COLOR_CAN_BUY);
                 g2.drawString(TEXT_CAN_BUY, (width - buyWidth) / 2, bottomY);

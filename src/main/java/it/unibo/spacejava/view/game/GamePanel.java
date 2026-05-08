@@ -17,8 +17,10 @@ package it.unibo.spacejava.view.game;
 import java.awt.Color;
 import java.awt.Font;
 
+import it.unibo.spacejava.Utils;
 import it.unibo.spacejava.api.Enemy;
 import it.unibo.spacejava.controller.EnemyProjectileController;
+import it.unibo.spacejava.controller.PlayerController;
 import it.unibo.spacejava.model.PlayerShip;
 import it.unibo.spacejava.model.ProjectileImpl;
 
@@ -29,6 +31,7 @@ import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Objects;
 
 public class GamePanel extends JPanel {
 
@@ -37,7 +40,7 @@ public class GamePanel extends JPanel {
     private Image projectileImage;
 
     private Image playerImage;
-    private PlayerShip currentPlayer;
+    private PlayerController crtlPlayer;
     private List<ProjectileImpl> playerProjectiles;
 
     public GamePanel(int width, int height) {
@@ -68,7 +71,7 @@ public class GamePanel extends JPanel {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        /*
         try {
             URL imageUrl = getClass().getResource("/skins/spaceShips_001.png");
             if (imageUrl != null) {
@@ -77,11 +80,12 @@ public class GamePanel extends JPanel {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        */
     }
 
-    public void render(List<Enemy> enemies, PlayerShip player, List<ProjectileImpl> playerProjectiles) {
+    public void render(List<Enemy> enemies, PlayerController player, List<ProjectileImpl> playerProjectiles) {
         this.currentEnemies = enemies;
-        this.currentPlayer = player;
+        this.crtlPlayer = player;
         this.playerProjectiles = playerProjectiles;
         repaint(); 
     }
@@ -125,12 +129,12 @@ public class GamePanel extends JPanel {
     }
 
     private void drawPlayer(Graphics g) {
-        if (playerImage != null && currentPlayer != null) {
-            g.drawImage(playerImage,
-                        (int) currentPlayer.getPosition().getX(),
-                        (int) currentPlayer.getPosition().getY(),
-                        (int) currentPlayer.getWidth(),
-                        (int) currentPlayer.getHeight(),
+        if (Objects.nonNull(crtlPlayer)) {
+            g.drawImage(Utils.loadImage(crtlPlayer.getPlayerSkin().getImagePath()),
+                        (int) crtlPlayer.getPlayerShip().getPosition().getX(),
+                        (int) crtlPlayer.getPlayerShip().getPosition().getY(),
+                        (int) crtlPlayer.getPlayerShip().getWidth(),
+                        (int) crtlPlayer.getPlayerShip().getHeight(),
                         null);
         }
     }
@@ -150,10 +154,10 @@ public class GamePanel extends JPanel {
     }
 
     private void drawHUD(Graphics g) {
-        if (currentPlayer != null) { //Controlliamo che il player sia stato caricato
+        if (crtlPlayer != null) { //Controlliamo che il player sia stato caricato
             g.setFont(new Font("Monospaced", Font.BOLD, 20));
 
-            int health = currentPlayer.getHealth();
+            int health = crtlPlayer.getPlayerShip().getHealth();
 
             //Cambiamo colore in base alla vita rimanente
             if (health > 1) {

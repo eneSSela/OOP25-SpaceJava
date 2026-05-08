@@ -96,7 +96,7 @@ public class GameManagerImpl implements GameManger, Runnable{
         
         double startX = (screenWidth / 2.0) - 32;
         double startY = screenHeight - 100;
-        PlayerShip playerModel = new PlayerShip(startX, startY);
+        PlayerShip playerModel = new PlayerShip(startX, startY, skinController.getPlayerSelectedSkin());
         playerController = new PlayerController(playerModel, gameKeyHandler, screenWidth, soundManager);
         //startMenu.requestFocusInWindow();
         
@@ -137,11 +137,14 @@ public class GameManagerImpl implements GameManger, Runnable{
                 if (startMenuView.isVisible()) {
                     startMenuView.repaint();
                 } else if (gamePanel.isVisible()) {
+                    if (skinController.getPlayerSelectedSkin() != playerController.getPlayerSkin()) {
+                        playerController.setPlayerSkin(skinController.getPlayerSelectedSkin());
+                    }
                     waveManager.update(timePerFrame);
                     projectileController.update(timePerFrame);
                     playerController.update(timePerFrame);
                     playerController.checkEnemyCollision();
-                    gamePanel.render(waveManager.getEnemies(), playerController.getPlayerShip(), playerController.getProjectiles());
+                    gamePanel.render(waveManager.getEnemies(), playerController, playerController.getProjectiles());
                 } else if (skinSelectionView.isVisible()) {
                     skinSelectionView.repaint();
                 }

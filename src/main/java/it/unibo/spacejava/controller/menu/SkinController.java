@@ -27,7 +27,7 @@ public class SkinController extends KeyHandler {
         super.keyPressed(e);
         Skin  currentSkin = model.getSelectedSkin();
 
-        if (super.isUpPressed()) {
+        if (super.isLeftPressed()) {
             model.selectPrevious();
         } else if (super.isRightPressed()) {
             model.selectNext();
