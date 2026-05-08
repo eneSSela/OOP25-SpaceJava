@@ -66,6 +66,7 @@ public class PlayerController {
         soundManager.playSound("/audio/shoot.wav");
     }
 
+    // X QUESTI METODI VANNO DENTRO A PLAYERSHIP DATO CHE CHE LUI FUNGE DA MODELL DEL PLAYER, MA ORA LI LASCIO QUI
     /*Metodo helper per controllare se due rettangoli si sovrappongono (AABB).
     Per implementare la collisione tra i proiettili dei nemici e il giocatore, 
     useremo un algoritmo molto comune nello sviluppo di giochi in 

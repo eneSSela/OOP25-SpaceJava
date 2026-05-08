@@ -4,6 +4,7 @@ import java.awt.*;
 import javax.swing.JPanel;
 
 import it.unibo.spacejava.Skin;
+import it.unibo.spacejava.controller.menu.SkinController;
 import it.unibo.spacejava.model.menu.SkinModel;
 
 public class SkinSelectionView extends JPanel {
@@ -34,10 +35,10 @@ public class SkinSelectionView extends JPanel {
     private static final String TEXT_CAN_BUY = "Premi SPAZIO per comprare!";
     private static final String TEXT_CANNOT_BUY = "Punti insufficienti";
 
-    private final SkinModel model;
+    private final SkinController controller;
 
-    public SkinSelectionView(SkinModel model) {
-        this.model = model;
+    public SkinSelectionView(SkinController controller) {
+        this.controller = controller;
         setBackground(Color.BLACK);
         setFocusable(true);
     }
@@ -51,10 +52,10 @@ public class SkinSelectionView extends JPanel {
         int height = getHeight();
         FontMetrics fm = g2.getFontMetrics(); // Strumento vitale per centrare il testo!
 
-        Skin currentSkin = model.getSelectedSkin();
+        Skin currentSkin = model.getPlayerSelectedSkin();
 
         // 1. PUNTI DEL GIOCATORE (in alto a destra)
-        String pointsText = TEXT_POINTS + model.getPlayerPoints();
+        String pointsText = TEXT_POINTS + model.getPoints();
         int pointsWidth = fm.stringWidth(pointsText); // Calcola la larghezza esatta della scritta
         g2.setColor(COLOR_POINTS);
         g2.drawString(pointsText, width - pointsWidth - POINTS_PADDING_RIGHT, POINTS_MARGIN_TOP);
@@ -87,7 +88,7 @@ public class SkinSelectionView extends JPanel {
             g2.drawString(lockedText, (width - lockedWidth) / 2, bottomY - LINE_SPACING);
             
             // Suggerimento di acquisto dinamico
-            if (model.getPlayerPoints() >= currentSkin.getPrice()) {
+            if (model.getPoints() >= currentSkin.getPrice()) {
                 int buyWidth = fm.stringWidth(TEXT_CAN_BUY);
                 g2.setColor(COLOR_CAN_BUY);
                 g2.drawString(TEXT_CAN_BUY, (width - buyWidth) / 2, bottomY);

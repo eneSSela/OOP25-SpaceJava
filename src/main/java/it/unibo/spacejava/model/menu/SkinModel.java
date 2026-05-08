@@ -16,7 +16,7 @@ public class SkinModel {
         new Skin("ship3","/skins/spaceShips_003.png", 300, false)
     );
 
-    public int getPlayerPoints() { return playerPoints; }
+    public int getPoints() { return playerPoints; }
     public Skin getSelectedSkin() { return skins.get(selectedIndex); }
 
     public void selectPrevious() {

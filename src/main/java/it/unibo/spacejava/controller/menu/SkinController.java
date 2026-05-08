@@ -14,6 +14,14 @@ public class SkinController extends KeyHandler {
         this.onBack = onBack;
     }
 
+    public Skin getPlayerSelectedSkin() {
+        return model.getSelectedSkin();
+    }
+
+    public int getPlayerPoints() {
+        return model.getPoints();
+    }
+
     @Override
     public void keyPressed(java.awt.event.KeyEvent e) {
         super.keyPressed(e);

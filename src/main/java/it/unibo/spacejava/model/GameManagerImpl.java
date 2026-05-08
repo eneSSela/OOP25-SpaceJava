@@ -49,24 +49,7 @@ public class GameManagerImpl implements GameManger, Runnable{
 
     @Override
     public void startGame() {
-        /*
-        JFrame window = new JFrame();
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setResizable(false);
-        
-        panel.addKeyListener(keyHandler);
-        panel.setFocusable(true);
-        
-        window.add(panel);
-        window.pack();
-        window.setLocationRelativeTo(null);
-        window.setVisible(true);
-        
-        // Ensure the game panel has keyboard focus so key events are received
-        panel.requestFocusInWindow();
-        
-        this.startThreadGame();
-        */
+
         JFrame window = new JFrame("SpaceJava");
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
@@ -74,6 +57,8 @@ public class GameManagerImpl implements GameManger, Runnable{
         JPanel cards = new JPanel(cardLayout);
        
         gamePanel.setPreferredSize(new Dimension(screenWidth, screenHeight));
+        
+        //Iniziallizazione delle componenti del menu
         startMenuController = new StartMenuController(startMenuModel, soundManager, 
             () -> {
                 cardLayout.show(cards, "GAME");
@@ -94,7 +79,7 @@ public class GameManagerImpl implements GameManger, Runnable{
                 startMenuView.requestFocusInWindow();
             }
         );
-        skinSelectionView = new SkinSelectionView(skinModel);
+        skinSelectionView = new SkinSelectionView(skinController);
         skinSelectionView.setFocusable(true);
         skinSelectionView.addKeyListener(skinController);
         
@@ -102,22 +87,23 @@ public class GameManagerImpl implements GameManger, Runnable{
         cards.add(startMenuView, "MENU");
         cards.add(gamePanel, "GAME");
         cards.add(skinSelectionView, "SKIN");
-        window.setContentPane(cards);
-        window.pack();
-        window.setLocationRelativeTo(null);
-        window.setVisible(true);
-
+        
         startMenuView.setFocusable(true);
         startMenuView.requestFocusInWindow();
         
         gameKeyHandler = new KeyHandler();
         gamePanel.addKeyListener(gameKeyHandler);
-
+        
         double startX = (screenWidth / 2.0) - 32;
         double startY = screenHeight - 100;
         PlayerShip playerModel = new PlayerShip(startX, startY);
         playerController = new PlayerController(playerModel, gameKeyHandler, screenWidth, soundManager);
         //startMenu.requestFocusInWindow();
+        
+        window.setContentPane(cards);
+        window.pack();
+        window.setLocationRelativeTo(null);
+        window.setVisible(true);
         this.startThreadGame();
     }
     
