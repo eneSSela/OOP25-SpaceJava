@@ -1,6 +1,7 @@
 package it.unibo.spacejava.model;
 
 import it.unibo.spacejava.Position;
+import it.unibo.spacejava.Skin;
 
 public class PlayerShip {
     private final Position position;
@@ -8,9 +9,11 @@ public class PlayerShip {
     private final double height = 55.0;
     private final double speed = 300.0;
     private int health = 3;
+    private Skin currentSkin;
 
-    public PlayerShip(double startX, double startY) {
+    public PlayerShip(double startX, double startY, Skin defaultSkin) {
         this.position = new Position(startX, startY);
+        this.currentSkin = defaultSkin;
     }
 
     public Position getPosition() {
@@ -23,6 +26,14 @@ public class PlayerShip {
 
     public double getHeight() {
         return height;
+    }
+
+    public Skin getSkin() {
+        return currentSkin;
+    }
+
+    public void setSkin(Skin newSkin) {
+        this.currentSkin = newSkin;
     }
 
     public void moveLeft(double delta, double limit) {
