@@ -1,18 +1,26 @@
 package it.unibo.spacejava.view.menu;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import javax.swing.JPanel;
 
 import it.unibo.spacejava.Skin;
 import it.unibo.spacejava.Utils;
 import it.unibo.spacejava.controller.menu.SkinController;
 
-public class SkinSelectionView extends JPanel {
+/**
+ * View dedicata alla rappresetazione della schermata per poter comprare o selezionare le skin disponibili per il giocatore.
+ */
+public final class SkinSelectionView extends JPanel {
 
-   // --- COSTANTI DI DIMENSIONAMENTO ---
+    private static final long serialVersionUID = 1L;
+
+    // --- COSTANTI DI DIMENSIONAMENTO ---
     private static final int SHIP_SIZE = 64;
     private static final int SHIP_OFFSET = SHIP_SIZE / 2;
-    
+
     // --- COSTANTI DI MARGINE E SPAZIATURA ---
     private static final int MARGIN_TOP = 50;
     private static final int MARGIN_BOTTOM = 50;
@@ -37,62 +45,66 @@ public class SkinSelectionView extends JPanel {
 
     private final SkinController controller;
 
-    public SkinSelectionView(SkinController controller) {
+    /**
+     * Costruisce la view per la selezione delle skin.
+     * 
+     * @param controller del menu di selezione skin
+     */
+    public SkinSelectionView(final SkinController controller) {
         this.controller = controller;
         setBackground(Color.BLACK);
         setFocusable(true);
     }
 
     @Override
-    protected void paintComponent(Graphics g) {
+    protected void paintComponent(final Graphics g) {
         super.paintComponent(g);
-        Graphics2D g2 = (Graphics2D) g;
-        
-        int width = getWidth();
-        int height = getHeight();
-        FontMetrics fm = g2.getFontMetrics(); // Strumento vitale per centrare il testo!
+        final Graphics2D g2 = (Graphics2D) g;
 
-        Skin currentSkin = controller.getPlayerSelectedSkin();
+        final int width = getWidth();
+        final int height = getHeight();
+        final FontMetrics fm = g2.getFontMetrics(); // Strumento vitale per centrare il testo!
 
-        // 1. PUNTI DEL GIOCATORE (in alto a destra)
-        String pointsText = TEXT_POINTS + controller.getPlayerPoints();
-        int pointsWidth = fm.stringWidth(pointsText); // Calcola la larghezza esatta della scritta
+        final Skin currentSkin = controller.getPlayerSelectedSkin();
+
+        // PUNTI DEL GIOCATORE (in alto a destra)
+        final String pointsText = TEXT_POINTS + controller.getPlayerPoints();
+        final int pointsWidth = fm.stringWidth(pointsText); // Calcola la larghezza esatta della scritta
         g2.setColor(COLOR_POINTS);
         g2.drawString(pointsText, width - pointsWidth - POINTS_PADDING_RIGHT, POINTS_MARGIN_TOP);
 
-        // 2. NOME DELLA SKIN (in alto al centro)
-        String skinName = currentSkin.getName();
-        int nameWidth = fm.stringWidth(skinName);
+        // NOME DELLA SKIN (in alto al centro)
+        final String skinName = currentSkin.getName();
+        final int nameWidth = fm.stringWidth(skinName);
         g2.setColor(COLOR_TITLE);
         g2.drawString(skinName, (width - nameWidth) / 2, MARGIN_TOP);
 
-        // 3. ASTRONAVE (al centro esatto)
-        int shipX = (width / 2) - SHIP_OFFSET;
-        int shipY = (height / 2) - SHIP_OFFSET;
+        // ASTRONAVE (al centro esatto)
+        final int shipX = (width / 2) - SHIP_OFFSET;
+        final int shipY = (height / 2) - SHIP_OFFSET;
         g2.drawImage(Utils.loadImage(currentSkin.getImagePath()), shipX, shipY, SHIP_SIZE, SHIP_SIZE, this);
 
-        // 4. STATO DELLA SKIN (in basso)
-        int bottomY = height - MARGIN_BOTTOM;
-        
+        // STATO DELLA SKIN (in basso)
+        final int bottomY = height - MARGIN_BOTTOM;
+
         if (currentSkin.isUnlock()) {
-            int unlockedWidth = fm.stringWidth(TEXT_UNLOCKED);
+            final int unlockedWidth = fm.stringWidth(TEXT_UNLOCKED);
             g2.setColor(COLOR_UNLOCKED);
             g2.drawString(TEXT_UNLOCKED, (width - unlockedWidth) / 2, bottomY);
-            
         } else {
             // Testo con il costo
-            String lockedText = TEXT_LOCKED_PREFIX + currentSkin.getPrice();
-            int lockedWidth = fm.stringWidth(lockedText);
+            final String lockedText = TEXT_LOCKED_PREFIX + currentSkin.getPrice();
+            final int lockedWidth = fm.stringWidth(lockedText);
             g2.setColor(COLOR_LOCKED);
             g2.drawString(lockedText, (width - lockedWidth) / 2, bottomY - LINE_SPACING);
-            
+
             // Suggerimento di acquisto dinamico
             if (controller.getPlayerPoints() >= currentSkin.getPrice()) {
-                int buyWidth = fm.stringWidth(TEXT_CAN_BUY);
+                final int buyWidth = fm.stringWidth(TEXT_CAN_BUY);
                 g2.setColor(COLOR_CAN_BUY);
                 g2.drawString(TEXT_CAN_BUY, (width - buyWidth) / 2, bottomY);
             } else {
-                int cannotBuyWidth = fm.stringWidth(TEXT_CANNOT_BUY);
+                final int cannotBuyWidth = fm.stringWidth(TEXT_CANNOT_BUY);
                 g2.setColor(COLOR_CANNOT_BUY);
                 g2.drawString(TEXT_CANNOT_BUY, (width - cannotBuyWidth) / 2, bottomY);
             }
