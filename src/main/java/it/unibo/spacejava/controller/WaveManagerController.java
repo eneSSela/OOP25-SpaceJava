@@ -1,8 +1,11 @@
 package it.unibo.spacejava.controller;
 
+import it.unibo.spacejava.Position;
 import it.unibo.spacejava.api.Enemy;
 import it.unibo.spacejava.model.BaseEnemy;
+import it.unibo.spacejava.model.ProjectileImpl;
 import it.unibo.spacejava.model.TankEnemy;
+import it.unibo.spacejava.controller.PlayerController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,4 +131,19 @@ public class WaveManagerController {
         int randomIndex = (int) (Math.random() * enemies.size());
         enemies.get(randomIndex).attack();
     }
+
+    private boolean isColliding(Position pos1, double w1, double h1, Position pos2, double w2, double h2) {
+        return pos1.getX() < pos2.getX() + w2 &&
+               pos1.getX() + w1 > pos2.getX() &&
+               pos1.getY() < pos2.getY() + h2 &&
+               pos1.getY() + h1 > pos2.getY();
+    }
+
+    /*private void hitEnemies(){
+        List<ProjectileImpl> playerProjectiles = PlayerController.getProjectiles();
+        for (Enemy e : enemies) {
+            if (isColliding(e.getPosition(), e.getWidth(), e.getHeight(), null, descent, cooldown))
+        }
+    }
+            */
 }
