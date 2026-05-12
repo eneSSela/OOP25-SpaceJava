@@ -5,6 +5,7 @@ import java.util.List;
 
 import it.unibo.spacejava.KeyHandler;
 import it.unibo.spacejava.Position;
+import it.unibo.spacejava.Skin;
 import it.unibo.spacejava.model.PlayerShip;
 import it.unibo.spacejava.model.ProjectileImpl;
 
@@ -32,16 +33,16 @@ public class PlayerController {
 
     public void update(double delta) {
         //Gestione movimento
-        if (keyHandler.leftPressed) {
+        if (keyHandler.isLeftPressed()) {
             playerShip.moveLeft(delta, 0);
         }
-        if (keyHandler.rightPressed) {
+        if (keyHandler.isRightPressed()) {
             playerShip.moveRight(delta, screenWidth);
         }
 
         //Gestione sparo
         timeSinceLastShot += delta;
-        if (keyHandler.spacePressed && timeSinceLastShot >= shootCoolDown) {
+        if (keyHandler.isSpacePressed() && timeSinceLastShot >= shootCoolDown) {
             shoot();
             timeSinceLastShot = 0;
         }
@@ -56,6 +57,7 @@ public class PlayerController {
         projectiles.removeIf(p -> p.getPosition().getY() < 0);
     }
 
+    // X QUESTI METODI VANNO DENTRO A PLAYERSHIP DATO CHE CHE LUI FUNGE DA MODELL DEL PLAYER, MA ORA LI LASCIO QUI
     private void shoot() {
         int projWidth = 10;
         //Centra il proiettile rispetto alla navicella
@@ -99,6 +101,14 @@ public class PlayerController {
 
         //Rimuove i proiettili che ci hanno colpito per non prendere danno doppio
         enemyProjectiles.removeAll(projectilesToRemove);
+    }
+
+    public Skin getPlayerSkin() {
+        return playerShip.getSkin();
+    }
+
+    public void setPlayerSkin(Skin newSkin) {
+        this.playerShip.setSkin(newSkin);
     }
 
     public PlayerShip getPlayerShip() {

@@ -140,10 +140,11 @@ public final class StartMenuView extends JPanel {
 
         for (final String option : controller.getOptions()) {
             final int optionW = fm.stringWidth(option);
+            final int i = controller.getOptions().indexOf(option);
             final int x = (w - optionW) / 2;
-            final int y = startY + gap;
+            final int y = startY + gap * i;
 
-            final boolean selected = controller.getSelectedIndex() == controller.getOptions().indexOf(option);
+            final boolean selected = controller.getSelectedIndex() == i;
             final boolean blink = selected && controller.isBlinkOn();
 
             if (selected) {

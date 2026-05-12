@@ -1,7 +1,6 @@
 package it.unibo.spacejava.controller.menu;
 
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.List;
 import javax.swing.Timer;
 
@@ -11,13 +10,15 @@ import it.unibo.spacejava.model.sound.api.SoundManager;
 
 /**
  * Controller per il menu di start. Gestisce l'input da tastiera e aggiorna il model di conseguenza.
- * Inoltre, gestisce il timer per il lampeggiamento dell'opzione selezionata e riproduce i suoni associati alla selezione e alla conferma delle opzioni.
+ * Inoltre, gestisce il timer per il lampeggiamento dell'opzione selezionata ,
+ * riproduce i suoni quando l'utente seleziona un'opzione.
  * Infine, fornisce dei callback per le azioni da eseguire quando l'utente seleziona "Gioca", "Seleziona Skin" o "Esci".
  */
 public class StartMenuController extends KeyHandler {
 
-    private final String selectionSoundPath = "/audio/selection.wav";
-    private final String enterSoundPath = "/audio/enter.wav";
+    private static final String SELECTION_SOUND_PATH = "/audio/selection.wav";
+    private static final String ENTER_SOUND_PATH = "/audio/enter.wav";
+    private static final int BLINK_INTERVAL = 500; // Intervallo di lampeggiamento in millisecondi
 
     private final StartMenuModel model;
     private final SoundManager soundManager;
@@ -26,37 +27,50 @@ public class StartMenuController extends KeyHandler {
     private final Runnable onExit;
     private final Timer blinkTimer;
 
-    
+    /**
+     * Costrusice il controller del memu di start, inzializadno model soundmanger, 
+     * e i coallback per le varie ozpioni che vengono scelte dall'utente.
+     * 
+     * @param model il model del menu di start, che contiene le opzioni e lo stato del lampeggiamento
+     * @param soundManager il gestore dei suoni, per poter riprodurre i suoni quando l'utente seleziona un'opzione
+     * @param onPlay il callback da eseguire quando l'utente seleziona "Gioca"
+     * @param onSkinSelection il callback da eseguire quando l'utente seleziona "Seleziona Skin"
+     * @param onExit il callback da eseguire quando l'utente seleziona "Esci"
+     */
+    public StartMenuController(
 
-    public StartMenuController(StartMenuModel model, SoundManager soundManager, Runnable onPlay, Runnable onSkinSelection, Runnable onExit) {
+        final StartMenuModel model, 
+        final SoundManager soundManager, 
+        final Runnable onPlay, 
+        final Runnable onSkinSelection, 
+        final Runnable onExit) {
         this.model = model;
         this.onPlay = onPlay;
         this.onSkinSelection = onSkinSelection;
         this.onExit = onExit;
         this.soundManager = soundManager;
 
-        blinkTimer = new Timer(500, e -> model.setBlinkOn(!model.isBlinkOn()));
+        blinkTimer = new Timer(BLINK_INTERVAL, e -> model.setBlinkOn(!model.isBlinkOn()));
         blinkTimer.start();
     }
-    
+
     /**
      * Gestisce la pressione di un tasto.
+     * 
      * @param e l'evento di pressione del tasto
      */
     @Override
-    public void keyPressed(KeyEvent e) {
+    public void keyPressed(final KeyEvent e) {
         super.keyPressed(e);
 
-        if (super.upPressed) {
+        if (super.isUpPressed()) {
             model.selectPrevious();
-            soundManager.playSound(selectionSoundPath);
-        
-        } else if (super.downPressed) {
+            soundManager.playSound(SELECTION_SOUND_PATH);
+        } else if (super.isDownPressed()) {
             model.selectNext();
-            soundManager.playSound(selectionSoundPath);
-            
-        } else if (super.enterPressed) {
-            soundManager.playSound(enterSoundPath);
+            soundManager.playSound(SELECTION_SOUND_PATH);
+        } else if (super.isEnterPressed()) {
+            soundManager.playSound(ENTER_SOUND_PATH);
             if (model.getSelectedIndex() == 0) {
                 onPlay.run();
             } else if (model.getSelectedIndex() == 1) {
@@ -68,17 +82,8 @@ public class StartMenuController extends KeyHandler {
     }
 
     /**
-     * Gestisce il rilascio di un tasto.
-     * @param e l'evento di rilascio del tasto
-     */
-    @Override
-    public void keyReleased(KeyEvent e) {
-        super.keyReleased(e);
-        
-    }
-    
-    /**
      * Restituisce la lista delle opzioni del menu.
+     * 
      * @return la lista delle opzioni del menu sotto forma di stringhe per poterle visualizzare nella view
      */
     public List<String> getOptions() {
@@ -87,6 +92,7 @@ public class StartMenuController extends KeyHandler {
 
     /**
      * Restittuisce l'idice dell'opzione che l'utente ha selezionata.
+     * 
      * @return l'idice dell'opzione selzionata, per poterza evideziare nella view
      */
     public int getSelectedIndex() {
@@ -95,6 +101,7 @@ public class StartMenuController extends KeyHandler {
 
     /**
      * Metodo utile per notificare che il lampeggio dell'opzione selezionata è attivo o meno, per poterlo visualizzare nella view.
+     * 
      * @return true se il lampeggiamento è attivo, false altrimenti
      */
     public boolean isBlinkOn() {
@@ -102,7 +109,7 @@ public class StartMenuController extends KeyHandler {
     }
 
     /**
-     * Ferma il timer del lampeggiamento.   
+     * Ferma il timer del lampeggiamento.
      */
     public void stop() {
         blinkTimer.stop();
