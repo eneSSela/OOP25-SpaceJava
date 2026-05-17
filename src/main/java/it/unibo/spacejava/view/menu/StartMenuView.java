@@ -7,13 +7,11 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Objects;
 
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import it.unibo.spacejava.Utils;
 import it.unibo.spacejava.controller.menu.StartMenuController;
 
 /**
@@ -56,8 +54,8 @@ public final class StartMenuView extends JPanel {
         setBackground(Color.BLACK);
         setFocusable(true);
 
-        this.background = loadImage("/menu/background.png");
-        this.logo = loadImage("/menu/logo.png");
+        this.background = Utils.loadImage("/menu/background.png");
+        this.logo = Utils.loadImage("/menu/logo.png");
     }
 
     @Override
@@ -179,22 +177,5 @@ public final class StartMenuView extends JPanel {
      */
     public void stop() {
         controller.stop();
-    }
-
-    //per il futuro, possiamo aggiungere questo metodo nella calsse utility
-    //dato che è usato in piu punti nel programma, per caricare le immagini in modo più semplice e pulito
-    /**
-     * Carica un'immagine dal percorso specificato.
-     * 
-     * @param path il percorso dell'immagine
-     * @return l'immagine caricata, oppure null in caso di errore
-     */
-    private Image loadImage(final String path) {
-        try (InputStream in = getClass().getResourceAsStream(path)) {
-            return ImageIO.read(Objects.requireNonNull(in));
-        } catch (final IOException ignored) {
-            System.err.println(ignored.getMessage()); //NOPMD
-        }
-        return null;
     }
 }

@@ -1,14 +1,23 @@
 package it.unibo.spacejava;
 
-
 import it.unibo.spacejava.model.GameManagerImpl;
 
 /**
  * Use it for lauch the game.
  */
-public class App {
+public final class App {
+
+    private App() {
+
+    }
+
+    /**
+     * Main method, uset to lunch the game.
+     * 
+     * @param args arguments from command line, not used
+     */
     public static void main(final String... args) {
-        GameManagerImpl gameManager = new GameManagerImpl();
+        final GameManagerImpl gameManager = new GameManagerImpl();
         gameManager.startGame();
     }
 }

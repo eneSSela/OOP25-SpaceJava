@@ -49,13 +49,6 @@ public class BaseEnemy implements Enemy {
     }
 
     @Override
-    public int getDamage() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getDamage'");
-    }
-
-
-    @Override
     public void attack() {
         double startX = this.position.getX() + (this.width / 2 - 10);
         double startY = this.position.getY() + this.height;
@@ -64,11 +57,5 @@ public class BaseEnemy implements Enemy {
         
         EnemyProjectileController.getProjectileList().add(new ProjectileImpl(projectilePos, 40, 30));
 
-    }
-
-    @Override
-    public int getSize() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSize'");
     }
 }
