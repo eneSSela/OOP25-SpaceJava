@@ -1,6 +1,6 @@
 package it.unibo.spacejava;
 
-import it.unibo.spacejava.model.GameManagerImpl;
+import it.unibo.spacejava.controller.GameManagerImpl;
 
 /**
  * Use it for lauch the game.

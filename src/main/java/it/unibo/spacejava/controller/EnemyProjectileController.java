@@ -31,7 +31,7 @@ public final class EnemyProjectileController {
      */
     public void update(final double delta) {
         for (final ProjectileImpl p : projectiles) {
-            p.setPosition(new Position(p.getPosition().getX(), p.getPosition().getY() + SPEED * delta));
+            p.setPosition(new Position(p.getPosition().getX(), p.getPosition().getY() + (int) (SPEED * delta)));
         }
 
         //removes out of bounds projectiles

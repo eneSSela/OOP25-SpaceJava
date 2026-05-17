@@ -1,4 +1,4 @@
-package it.unibo.spacejava.model;
+package it.unibo.spacejava.controller;
 
 import java.awt.CardLayout;
 import java.awt.Dimension;
@@ -8,12 +8,9 @@ import javax.swing.JPanel;
 
 import it.unibo.spacejava.KeyHandler;
 import it.unibo.spacejava.api.GameManger;
-import it.unibo.spacejava.controller.EnemyProjectileController;
-import it.unibo.spacejava.controller.PlayerController;
-import it.unibo.spacejava.controller.PlayerProjectileController;
-import it.unibo.spacejava.controller.WaveManagerController;
 import it.unibo.spacejava.controller.menu.SkinController;
 import it.unibo.spacejava.controller.menu.StartMenuController;
+import it.unibo.spacejava.model.PlayerShip;
 import it.unibo.spacejava.model.menu.SkinModel;
 import it.unibo.spacejava.model.menu.StartMenuModel;
 import it.unibo.spacejava.model.sound.SoundManagerImpl;
@@ -103,8 +100,8 @@ public final class GameManagerImpl implements GameManger, Runnable {
         cards.add(gamePanel, "GAME");
         cards.add(skinSelectionView, "SKIN");
 
-        final double startX = (SCREEN_WIDTH / 2.0) - 32;
-        final double startY = SCREEN_HEIGTH - 100;
+        final int startX = (int) (SCREEN_WIDTH / 2.0) - 32;
+        final int startY = SCREEN_HEIGTH - 100;
         final PlayerShip playerModel = new PlayerShip(startX, startY, skinController.getPlayerSelectedSkin());
         playerController = new PlayerController(playerModel, gameKeyHandler, SCREEN_WIDTH, soundManager);
 
@@ -147,7 +144,7 @@ public final class GameManagerImpl implements GameManger, Runnable {
                 if (startMenuView.isVisible()) {
                     startMenuView.repaint();
                 } else if (gamePanel.isVisible()) {
-                    if (skinController.getPlayerSelectedSkin() != playerController.getPlayerSkin()) {
+                    if (!skinController.getPlayerSelectedSkin().equals(playerController.getPlayerSkin())) {
                         playerController.setPlayerSkin(skinController.getPlayerSelectedSkin());
                     }
                     waveManager.update(timePerFrame);
@@ -165,7 +162,7 @@ public final class GameManagerImpl implements GameManger, Runnable {
             }
 
             if (System.currentTimeMillis() - timer >= 1000) {
-                System.out.println("FPS: " + frames);
+                System.out.println("FPS: " + frames); //NOPMD
                 frames = 0;
                 timer += 1000;
             }

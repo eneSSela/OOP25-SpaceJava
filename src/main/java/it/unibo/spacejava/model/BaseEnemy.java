@@ -2,20 +2,36 @@ package it.unibo.spacejava.model;
 
 import it.unibo.spacejava.Position;
 import it.unibo.spacejava.api.Enemy;
-
 import it.unibo.spacejava.controller.EnemyProjectileController;
 
-public class BaseEnemy implements Enemy {
-    private Position position;
+/**
+ * BaseEnemy is an implementation of the Enemy interface.
+ * It represents a basic enemy entity in the game with position, health, and attack capabilities.
+ */
+public final class BaseEnemy implements Enemy {
+    private static final double DEFAULT_WIDTH = 40.0;
+    private static final double DEFAULT_HEIGHT = 40.0;
+    private static final int DEFAULT_HEALTH = 1;
+    private static final double ATTACK_OFFSET = 10.0;
+    private static final int PROJECTILE_WIDTH = 40;
+    private static final int PROJECTILE_HEIGHT = 30;
+
+    private final Position position;
     private int health;
     private final double width;
     private final double height;
 
-    public BaseEnemy(double startX, double startY) {
+    /**
+     * Constructs a BaseEnemy with initial position.
+     *
+     * @param startX the initial X coordinate
+     * @param startY the initial Y coordinate
+     */
+    public BaseEnemy(final int startX, final int startY) {
         this.position = new Position(startX, startY);
-        this.health = 1;
-        this.width = 40.0;
-        this.height = 40.0;
+        this.health = DEFAULT_HEALTH;
+        this.width = DEFAULT_WIDTH;
+        this.height = DEFAULT_HEIGHT;
     }
 
     @Override
@@ -38,8 +54,13 @@ public class BaseEnemy implements Enemy {
         return this.health;
     }
 
+    /**
+     * Reduces the health of this enemy by the given damage amount.
+     *
+     * @param damage the amount of damage to take
+     */
     @Override
-    public void takeDamage(int damage) {
+    public void takeDamage(final int damage) {
         this.health -= damage;
     }
 
@@ -48,14 +69,17 @@ public class BaseEnemy implements Enemy {
         return this.health <= 0;
     }
 
+    /**
+     * Performs an attack by creating a projectile below the enemy.
+     */
     @Override
     public void attack() {
-        double startX = this.position.getX() + (this.width / 2 - 10);
-        double startY = this.position.getY() + this.height;
-        
-        Position projectilePos = new Position(startX, startY);
-        
-        EnemyProjectileController.getProjectileList().add(new ProjectileImpl(projectilePos, 40, 30));
+        final int startX = this.position.getX() + (int) (this.width / 2 - ATTACK_OFFSET);
+        final int startY = this.position.getY() + (int) this.height;
 
+        final Position projectilePos = new Position(startX, startY);
+
+        EnemyProjectileController.getProjectileList()
+            .add(new ProjectileImpl(projectilePos, PROJECTILE_WIDTH, PROJECTILE_HEIGHT));
     }
 }

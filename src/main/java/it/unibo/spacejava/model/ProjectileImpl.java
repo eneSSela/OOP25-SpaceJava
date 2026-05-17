@@ -3,38 +3,66 @@ package it.unibo.spacejava.model;
 import it.unibo.spacejava.Position;
 import it.unibo.spacejava.api.Projectile;
 
-public class ProjectileImpl implements Projectile {
+/**
+ * Implementazione del model per i proiettili del gioco. Usati sia dai nemici che dal utente,
+ * e contiene iformazioni necceserie per la gestione dei poiettili, coma la posizone e le dimensioni.
+ */
+public final class ProjectileImpl implements Projectile {
 
     private Position pos;
     private final int length;
     private final int width;
 
-    public ProjectileImpl(Position pos, int length, int width) {
+    /**
+     * Costruzione di un proiettile.
+     * 
+     * @param pos instazza del record Position che rappresenta le cordinate x ed y
+     * @param length lunghezza del proiettile per la gestioen delle collisioni
+     * @param width larghezza del proiettile per la gestioen delle collisioni
+     */
+    public ProjectileImpl(final Position pos, final int length, final int width) {
         this.pos = pos;
         this.length = length;
         this.width = width;
     }
 
+    /**
+     * Setter per impostare la poszioen al proiettile.
+     * 
+     * @param newPos nuova posizione da assegnare al proiettile
+     */
     @Override
-    public void setPosition(Position pos) {
-        this.pos = pos;
+    public void setPosition(final Position newPos) {
+        this.pos = newPos;
     }
 
+    /**
+     * Getter erp la posiozne.
+     * 
+     * @return la posizioen attual del proiettile
+     */
     @Override
     public Position getPosition() {
         return pos;
     }
 
+    /**
+     * Getter per restituire la lunghezza del proiettile.
+     * 
+     * @return la lunghezza del proiettile, usata per la gestione delle collisioni
+     */
     @Override
     public int getLenght() {
         return length;
     }
 
+    /**
+     * Getter per resituire la larghezza del proiettile.
+     * 
+     * @return la larghezza del proiettile, usata per la gestione delle collisioni
+     */
     @Override
     public int getWidth() {
         return width;
     }
-
-    
-    
 }

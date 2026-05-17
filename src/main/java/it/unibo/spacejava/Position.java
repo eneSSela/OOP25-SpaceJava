@@ -4,8 +4,8 @@ package it.unibo.spacejava;
  * Rappresenta la posizine di un oggetto, definito da due cordinate x e y.
  */
 public final class Position {
-    private double x;
-    private double y;
+    private int x;
+    private int y;
 
     /**
      * Costruisce una posizioen dell'oggeto, date due cordinate x e y.
@@ -13,7 +13,7 @@ public final class Position {
      * @param x cordinata che rappresenta la posizione orizontale dell'oggeto
      * @param y cordinata che rappresenta la posizione verticale dell'oggeto
      */
-    public Position(final double x, final double y) {
+    public Position(final int x, final int y) {
         this.x = x;
         this.y = y;
     }
@@ -23,7 +23,7 @@ public final class Position {
      * 
      * @return codinata x dell'oggetto
      */
-    public double getX() {
+    public int getX() {
         return x;
     }
 
@@ -32,7 +32,7 @@ public final class Position {
      * 
      * @return codinata y dell'oggetto
      */
-    public double getY() {
+    public int getY() {
         return y;
     }
 
@@ -41,7 +41,7 @@ public final class Position {
      * 
      * @param x cordinata x dell'oggetto
      */
-    public void setX(final double x) {
+    public void setX(final int x) {
         this.x = x;
     }
 
@@ -50,7 +50,7 @@ public final class Position {
      * 
      * @param y cordinata y dell'oggetto
      */
-    public void setY(final double y) {
+    public void setY(final int y) {
         this.y = y;
     }
 }

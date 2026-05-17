@@ -5,28 +5,39 @@ import it.unibo.spacejava.model.ProjectileImpl;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayerProjectileController {
-    private static final List<ProjectileImpl> projectileList = new ArrayList<>();
-    private static final double projectileSpeed = 400.0;
+/**
+ * Classe che finge da controller per i proiettili del giocatore,
+ * gesttisce la lista goblale dei proiettili attivi, aggiornando la loro poszione , rimuovendo queelli che escono dallo schermo.
+ */
+public final class PlayerProjectileController {
+    private static final List<ProjectileImpl> PROJECTILE_LIST = new ArrayList<>();
+    private static final double PROJECTILE_SPEED = 400.0;
 
-    /**
-     * Restituisce la lista globale dei proiettili del giocatore
-     */
-    public static List<ProjectileImpl> getProjectileList() {
-        return projectileList;
+    private PlayerProjectileController() {
     }
 
     /**
-     * Aggiorna la posizione dei proiettili attivi e rimuove quelli fuori dallo schermo
+     * Restituisce la lista globale dei proiettili del giocatore.
+     * 
+     * @return la lista dei proiettili attivi del giocatore
      */
-    public static void update(double delta) {
+    public static List<ProjectileImpl> getProjectileList() {
+        return PROJECTILE_LIST;
+    }
+
+    /**
+     * Aggiorna la posizione dei proiettili attivi e rimuove quelli fuori dallo schermo.
+     * 
+     * @param delta il tempo trascorso dall'ultimo aggiornamento, usato per calcolare il movimento dei proiettili
+     */
+    public static void update(final double delta) {
         // I proiettili del player si muovono verso l'alto (Y diminuisce)
-        for(ProjectileImpl p : projectileList) {
-            double newY = p.getPosition().getY() - (projectileSpeed * delta);
+        for (final ProjectileImpl p : PROJECTILE_LIST) {
+            final int newY = p.getPosition().getY() - (int) (PROJECTILE_SPEED * delta);
             p.setPosition(new Position(p.getPosition().getX(), newY));
         }
 
         // Rimuove automaticamente i proiettili quando superano il bordo superiore (Y < 0)
-        projectileList.removeIf(p -> p.getPosition().getY() < 0);
+        PROJECTILE_LIST.removeIf(p -> p.getPosition().getY() < 0);
     }
 }
