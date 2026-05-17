@@ -15,11 +15,7 @@ public class PlayerController {
     private final PlayerShip playerShip;
     private final KeyHandler keyHandler;
     private final double screenWidth;
-
     private final SoundManager soundManager;
-
-    private final List<ProjectileImpl> projectiles = new ArrayList<>();
-    private final double projectileSpeed = 400.0;
 
     private double shootCoolDown = 0.5; //Mezzo secondo tra uno sparo e l'altro
     private double timeSinceLastShot = shootCoolDown;
@@ -43,29 +39,10 @@ public class PlayerController {
         //Gestione sparo
         timeSinceLastShot += delta;
         if (keyHandler.isSpacePressed() && timeSinceLastShot >= shootCoolDown) {
-            shoot();
+            playerShip.shoot();
             timeSinceLastShot = 0;
+            soundManager.playSound("/audio/shoot.wav");
         }
-
-        //Aggiornamento posizione proiettile (Y diminuisce perchè si muovono verso l'alto)
-        for (ProjectileImpl p : projectiles) {
-            double newY = p.getPosition().getY() - (projectileSpeed * delta);
-            p.setPosition(new Position(p.getPosition().getX(), newY));
-        }
-
-        //Rimuove i proiettili usciti dallo schermo
-        projectiles.removeIf(p -> p.getPosition().getY() < 0);
-    }
-
-    // X QUESTI METODI VANNO DENTRO A PLAYERSHIP DATO CHE CHE LUI FUNGE DA MODELL DEL PLAYER, MA ORA LI LASCIO QUI
-    private void shoot() {
-        int projWidth = 10;
-        //Centra il proiettile rispetto alla navicella
-        double startX = playerShip.getPosition().getX() + (playerShip.getWidth() / 2);
-        double startY = playerShip.getPosition().getY();
-        projectiles.add(new ProjectileImpl(new Position(startX, startY), 40, projWidth));
-
-        soundManager.playSound("/audio/shoot.wav");
     }
 
     /*Metodo helper per controllare se due rettangoli si sovrappongono (AABB).
@@ -113,9 +90,5 @@ public class PlayerController {
 
     public PlayerShip getPlayerShip() {
         return playerShip;
-    }
-
-    public List<ProjectileImpl> getProjectiles() {
-        return projectiles;
     }
 }

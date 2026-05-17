@@ -13,6 +13,7 @@ import it.unibo.spacejava.KeyHandler;
 import it.unibo.spacejava.api.GameManger;
 import it.unibo.spacejava.controller.EnemyProjectileController;
 import it.unibo.spacejava.controller.PlayerController;
+import it.unibo.spacejava.controller.PlayerProjectileController;
 import it.unibo.spacejava.controller.WaveManagerController;
 import it.unibo.spacejava.controller.menu.SkinController;
 import it.unibo.spacejava.controller.menu.StartMenuController;
@@ -143,16 +144,16 @@ public class GameManagerImpl implements GameManger, Runnable{
                     waveManager.update(timePerFrame);
                     projectileController.update(timePerFrame);
                     playerController.update(timePerFrame);
+                    PlayerProjectileController.update(timePerFrame);
                     playerController.checkEnemyCollision();
-                    gamePanel.render(waveManager.getEnemies(), playerController, playerController.getProjectiles());
+
+                    gamePanel.render(waveManager.getEnemies(), playerController, PlayerProjectileController.getProjectileList());
                 } else if (skinSelectionView.isVisible()) {
                     skinSelectionView.repaint();
                 }
                 frames++;
                 delta--;
             }
-
-            
 
             if (System.currentTimeMillis() - timer >= 1000) {
                 System.out.println("FPS: " + frames);

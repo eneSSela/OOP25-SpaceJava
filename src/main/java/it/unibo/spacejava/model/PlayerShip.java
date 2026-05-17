@@ -2,6 +2,7 @@ package it.unibo.spacejava.model;
 
 import it.unibo.spacejava.Position;
 import it.unibo.spacejava.Skin;
+import it.unibo.spacejava.controller.PlayerProjectileController;
 
 public class PlayerShip {
     private final Position position;
@@ -56,5 +57,13 @@ public class PlayerShip {
 
     public boolean isDead() {
         return this.health <= 0;
+    }
+
+    public void shoot() {
+        int projWidth = 10;
+        //Centra il proiettile rispetto alla navicella
+        double startX = position.getX() + (getWidth() / 2) - (projWidth / 2.0);
+        double startY = position.getY();
+        PlayerProjectileController.getProjectileList().add(new ProjectileImpl(new Position(startX, startY), 40, projWidth));
     }
 }
