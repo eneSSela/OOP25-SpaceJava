@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.spacejava.KeyHandler;
 import it.unibo.spacejava.api.GameManger;
 import it.unibo.spacejava.controller.menu.SkinController;
@@ -24,6 +25,10 @@ import it.unibo.spacejava.view.menu.StartMenuView;
  * al game loop che associato ad un thread, che si occupoa di aggiornare lo stato del gioco e renderizzare a schermo l'ui,
  * ad un costante di frequnza(FPS) pari a 60.
  */
+@SuppressFBWarnings(
+    value = "UwF", 
+    justification = "I campi dell'interfaccia grafica vengono inizializzati in modo sicuro nel metodo startGame()"
+)
 public final class GameManagerImpl implements GameManger, Runnable {
 
     //Costanti per il game loop e le dimensioni dello schermo 
@@ -48,8 +53,8 @@ public final class GameManagerImpl implements GameManger, Runnable {
     //Componenti della schermata di selezione skin
     private final SkinModel skinModel = new SkinModel();
     private SkinController skinController;
+    private SkinSelectionView skinSelectionView;
 
-    private final SkinSelectionView skinSelectionView = new SkinSelectionView(skinController);
     //Compononenti dei nemici e del player
     private final WaveManagerController waveManager = new WaveManagerController(SCREEN_WIDTH);
     private final EnemyProjectileController projectileController = new EnemyProjectileController(SCREEN_HEIGTH);
@@ -81,7 +86,8 @@ public final class GameManagerImpl implements GameManger, Runnable {
                 cardLayout.show(cards, "SKIN");
                 skinSelectionView.requestFocusInWindow();
             },
-            () -> System.exit(0));
+            this::stopGame
+        );
         startMenuView = new StartMenuView(startMenuController);
         startMenuView.addKeyListener(startMenuController);
 
@@ -92,6 +98,7 @@ public final class GameManagerImpl implements GameManger, Runnable {
                 startMenuView.requestFocusInWindow();
             }
         );
+        skinSelectionView = new SkinSelectionView(skinController);
         skinSelectionView.setFocusable(true);
         skinSelectionView.addKeyListener(skinController);
 
@@ -167,5 +174,16 @@ public final class GameManagerImpl implements GameManger, Runnable {
                 timer += 1000;
             }
         }
+    }
+
+    /**
+     * Chiude forzatamente il gioco e la Java Virtual Machine.
+     */
+    @SuppressFBWarnings(
+        value = "DM_EXIT", 
+        justification = "È l'azione voluta per il pulsante Esci del menu principale"
+    )
+    private void stopGame() {
+        System.exit(0);
     }
 }

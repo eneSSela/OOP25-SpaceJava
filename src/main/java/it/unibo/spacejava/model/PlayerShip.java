@@ -37,7 +37,7 @@ public final class PlayerShip {
      * @return la posizione corrente
      */
     public Position getPosition() {
-        return position;
+        return new Position(this.position.getX(), this.position.getY());
     }
 
     /**
@@ -132,7 +132,7 @@ public final class PlayerShip {
         final int startX = position.getX() + (int) (getWidth() / 2) - (int) (PROJECTILE_WIDTH / 2.0);
         final int startY = position.getY();
 
-        PlayerProjectileController.getProjectileList().add(
+        PlayerProjectileController.addProjectile(
                 new ProjectileImpl(new Position(startX, startY), PROJECTILE_LENGTH, PROJECTILE_WIDTH));
     }
 }

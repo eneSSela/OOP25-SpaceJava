@@ -3,6 +3,7 @@ package it.unibo.spacejava.controller;
 import it.unibo.spacejava.Position;
 import it.unibo.spacejava.model.ProjectileImpl;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -22,7 +23,7 @@ public final class PlayerProjectileController {
      * @return la lista dei proiettili attivi del giocatore
      */
     public static List<ProjectileImpl> getProjectileList() {
-        return PROJECTILE_LIST;
+        return Collections.unmodifiableList(PROJECTILE_LIST);
     }
 
     /**
@@ -39,5 +40,15 @@ public final class PlayerProjectileController {
 
         // Rimuove automaticamente i proiettili quando superano il bordo superiore (Y < 0)
         PROJECTILE_LIST.removeIf(p -> p.getPosition().getY() < 0);
+    }
+
+    /**
+     * Aggiunge un nuovo proiettile alla lista dei proiettili attivi del giocatore.
+     * 
+     * @param projectileImpl il proiettile da aggiungere alla lista dei proiettili attivi del giocatore
+     */
+    public static void addProjectile(final ProjectileImpl projectileImpl) {
+        // TODO Auto-generated method stub
+        PROJECTILE_LIST.add(projectileImpl);
     }
 }

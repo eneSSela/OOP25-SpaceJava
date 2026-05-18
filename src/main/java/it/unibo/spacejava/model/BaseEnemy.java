@@ -1,5 +1,6 @@
 package it.unibo.spacejava.model;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.spacejava.Position;
 import it.unibo.spacejava.api.Enemy;
 import it.unibo.spacejava.controller.EnemyProjectileController;
@@ -8,6 +9,10 @@ import it.unibo.spacejava.controller.EnemyProjectileController;
  * BaseEnemy is an implementation of the Enemy interface.
  * It represents a basic enemy entity in the game with position, health, and attack capabilities.
  */
+@SuppressFBWarnings(
+    value = "EI_EXPOSE_REP", 
+    justification = "Nel game loop è necessario condividere i riferimenti originali per le performance"
+)
 public final class BaseEnemy implements Enemy {
     private static final double DEFAULT_WIDTH = 40.0;
     private static final double DEFAULT_HEIGHT = 40.0;
@@ -79,7 +84,6 @@ public final class BaseEnemy implements Enemy {
 
         final Position projectilePos = new Position(startX, startY);
 
-        EnemyProjectileController.getProjectileList()
-            .add(new ProjectileImpl(projectilePos, PROJECTILE_WIDTH, PROJECTILE_HEIGHT));
+        EnemyProjectileController.addProjectile(new ProjectileImpl(projectilePos, PROJECTILE_WIDTH, PROJECTILE_HEIGHT));
     }
 }

@@ -12,6 +12,9 @@ import it.unibo.spacejava.controller.PlayerController;
 import it.unibo.spacejava.model.ProjectileImpl;
 
 import javax.swing.JPanel;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import java.awt.Graphics;
 import java.awt.Image;
 import java.util.List;
@@ -20,6 +23,10 @@ import java.util.Objects;
 /**
  * Panel responsabile del rendering della UI di gioco (nemici, proiettili, giocatore e HUD).
  */
+@SuppressFBWarnings(
+    value = "EI_EXPOSE_REP", 
+    justification = "Nel game loop è necessario condividere i riferimenti originali per le performance"
+)
 public final class GamePanel extends JPanel {
 
     private static final long serialVersionUID = 1L;
@@ -28,12 +35,11 @@ public final class GamePanel extends JPanel {
     private static final int HEALTH_X_POSITION = 20;
     private static final int HEALTH_Y_POSITION = 30;
 
-    private Image enemyImage;
-    private List<Enemy> currentEnemies;
-    private Image projectileImage;
-
-    private PlayerController crtlPlayer;
-    private List<ProjectileImpl> playerProjectiles;
+    private transient Image enemyImage;
+    private transient List<Enemy> currentEnemies;
+    private transient Image projectileImage;
+    private transient PlayerController crtlPlayer;
+    private transient List<ProjectileImpl> playerProjectiles;
 
     /**
      * Costruisce un GamePanel con dimensioni specificate.
@@ -65,9 +71,9 @@ public final class GamePanel extends JPanel {
      */
     public void render(final List<Enemy> enemies, final PlayerController player,
             final List<ProjectileImpl> playerProjectile) {
-        this.currentEnemies = enemies;
+        this.currentEnemies = List.copyOf(enemies);
         this.crtlPlayer = player;
-        this.playerProjectiles = playerProjectile;
+        this.playerProjectiles = List.copyOf(playerProjectile);
         repaint();
     }
 

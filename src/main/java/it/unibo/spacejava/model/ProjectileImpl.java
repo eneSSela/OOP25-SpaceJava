@@ -21,7 +21,7 @@ public final class ProjectileImpl implements Projectile {
      * @param width larghezza del proiettile per la gestioen delle collisioni
      */
     public ProjectileImpl(final Position pos, final int length, final int width) {
-        this.pos = pos;
+        this.pos = new Position(pos.getX(), pos.getY());
         this.length = length;
         this.width = width;
     }
@@ -33,7 +33,7 @@ public final class ProjectileImpl implements Projectile {
      */
     @Override
     public void setPosition(final Position newPos) {
-        this.pos = newPos;
+        this.pos = new Position(newPos.getX(), newPos.getY());
     }
 
     /**
@@ -43,7 +43,7 @@ public final class ProjectileImpl implements Projectile {
      */
     @Override
     public Position getPosition() {
-        return pos;
+        return new Position(this.pos.getX(), this.pos.getY());
     }
 
     /**

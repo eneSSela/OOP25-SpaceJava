@@ -3,6 +3,7 @@ package it.unibo.spacejava.controller;
 import it.unibo.spacejava.api.Enemy;
 import it.unibo.spacejava.model.BaseEnemy;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -110,7 +111,7 @@ public final class WaveManagerController {
      * @return lista dei nemici attivi
      */
     public List<Enemy> getEnemies() {
-        return enemies;
+        return Collections.unmodifiableList(enemies);
     }
 
     // Selects a random enemy and makes it attak

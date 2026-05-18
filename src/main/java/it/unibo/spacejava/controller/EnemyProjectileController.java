@@ -1,6 +1,7 @@
 package it.unibo.spacejava.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import it.unibo.spacejava.Position;
@@ -12,7 +13,7 @@ import it.unibo.spacejava.model.ProjectileImpl;
 public final class EnemyProjectileController {
 
     private static List<ProjectileImpl> projectiles = new ArrayList<>();
-    private static final int SPEED = 5;
+    private static final double SPEED = 150.0;
     private final int screenHeight;
 
     /**
@@ -30,8 +31,9 @@ public final class EnemyProjectileController {
      * @param delta il tempo trascorso dall'ultimo aggiornamento 
      */
     public void update(final double delta) {
+        final int movement = Math.max(1, (int) Math.round(SPEED * delta));
         for (final ProjectileImpl p : projectiles) {
-            p.setPosition(new Position(p.getPosition().getX(), p.getPosition().getY() + (int) (SPEED * delta)));
+            p.setPosition(new Position(p.getPosition().getX(), p.getPosition().getY() + movement));
         }
 
         //removes out of bounds projectiles
@@ -44,6 +46,24 @@ public final class EnemyProjectileController {
      * @return la lista dei proiettili
      */
     public static List<ProjectileImpl> getProjectileList() {
-        return projectiles;
+        return Collections.unmodifiableList(projectiles);
+    }
+
+    /**
+     * Aggiunge un nuovo proiettile alla lista.
+     * 
+     * @param projectileImpl il proiettile da aggiungere
+     */
+    public static void addProjectile(final ProjectileImpl projectileImpl) {
+        projectiles.add(projectileImpl);
+    }
+
+    /**
+     * Rimuove un proiettile dalla lista.
+     * 
+     * @param projectileToRemove il proiettile da rimuovere
+     */
+    static void removeProjectile(final ProjectileImpl projectileToRemove) {
+        projectiles.remove(projectileToRemove);
     }
 }

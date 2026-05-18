@@ -3,6 +3,7 @@ package it.unibo.spacejava.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.spacejava.KeyHandler;
 import it.unibo.spacejava.Position;
 import it.unibo.spacejava.Skin;
@@ -16,6 +17,10 @@ import it.unibo.spacejava.model.sound.api.SoundManager;
  * altre verfiche come la collisione con i proiettili dei nemici,
  * e la gestione della skin del giocatore.
  */
+@SuppressFBWarnings(
+    value = "EI_EXPOSE_REP", 
+    justification = "Nel game loop è necessario condividere i riferimenti originali per le performance"
+)
 public class PlayerController {
 
     private static final double SHOOT_COOL_DOWN = 0.5; //Mezzo secondo tra uno sparo e l'altro
@@ -105,24 +110,19 @@ public class PlayerController {
      */
     public void checkEnemyCollision() {
         //Recuperiamo la lista dei proiettili nemici
-        final List<ProjectileImpl> enemyProjectiles = EnemyProjectileController.getProjectileList();
-        final List<ProjectileImpl> projectilesToRemove = new ArrayList<>();
+        final List<ProjectileImpl> enemyProjectiles = new ArrayList<>(EnemyProjectileController.getProjectileList());
 
         for (final ProjectileImpl p : enemyProjectiles) {
             //Controlla se il rettangolo del player si sovrappone a quello del proiettile
             if (isColliding(playerShip.getPosition(), playerShip.getWidth(), playerShip.getHeight(), 
                             p.getPosition(), p.getWidth(), p.getLenght())) {
                 playerShip.takeDamage(1); //Rimuove un punto vita
-                projectilesToRemove.add(p); //Segna il proiettile per la rimozione
-
+                EnemyProjectileController.removeProjectile(p); //Rimuove il proiettile che ha colpito il giocatore
                 System.out.println("Sei stato colpito! Vita rimanente: " + playerShip.getHealt()); //NOPMD
 
                 soundManager.playSound(HIT_SOUND_PATH);
             }
         }
-
-        //Rimuove i proiettili che ci hanno colpito per non prendere danno doppio
-        enemyProjectiles.removeAll(projectilesToRemove);
     }
 
     /**
@@ -149,6 +149,6 @@ public class PlayerController {
      * @return il model del giocatore
      */
     public PlayerShip getPlayerShip() {
-        return playerShip;
+        return this.playerShip;
     }
 }
