@@ -18,8 +18,22 @@ import it.unibo.spacejava.model.sound.api.SoundManager;
  */
 public final class SoundManagerImpl implements SoundManager {
 
+    //Unica istanza del SoundManger, per avere un unico gesore dei seuoni in tutto il gioco
+    private static final SoundManagerImpl INSTANCE = new SoundManagerImpl();
+
     //variabile per tenere in memoria la traccia audio che viene riprodotta in sottofondo
     private Clip backgroundMusicClip;
+
+    /**
+     * Restistuisce l'unica instanza disponibile del SoundManager,
+     * questa scleta implementa il patter singleton, per garantire che ci sia un unico gestore dei suoni in tutto il gioco,
+     * evitando cosi problemi di sincronizzazione o conflitti nella riproduzione dei suoni.
+     * 
+     * @return l'implementazione globale del SoundManager
+     */
+    public static SoundManagerImpl getInstance() {
+        return INSTANCE;
+    }
 
     @Override
     public void playSound(final String soundName) {
