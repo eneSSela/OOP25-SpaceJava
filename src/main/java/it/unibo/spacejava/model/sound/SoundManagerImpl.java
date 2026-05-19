@@ -6,6 +6,7 @@ import java.util.Objects;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -45,6 +46,12 @@ public final class SoundManagerImpl implements SoundManager {
         try {
             final AudioInputStream audioIn = AudioSystem.getAudioInputStream(getClass().getResourceAsStream(soundName));
             final Clip clip = AudioSystem.getClip();
+            //Qusto listener serve per risolvere il memory leak
+            clip.addLineListener(e -> {
+                if (e.getType() == LineEvent.Type.STOP) {
+                    clip.close();
+                }
+            });
             clip.open(audioIn);
             clip.start();
         } catch (final UnsupportedAudioFileException | IOException | LineUnavailableException e) {
