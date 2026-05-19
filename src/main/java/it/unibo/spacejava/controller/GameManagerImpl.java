@@ -77,7 +77,7 @@ public final class GameManagerImpl implements GameManger, Runnable {
         gamePanel.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGTH));
 
         //Iniziallizazione Controller e view del menu
-        final StartMenuController startMenuController = new StartMenuController(startMenuModel, soundManager,
+        final StartMenuController startMenuController = new StartMenuController(startMenuModel,
             () -> {
                 cardLayout.show(cards, "GAME");
                 gamePanel.requestFocusInWindow();

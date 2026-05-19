@@ -6,7 +6,7 @@ import javax.swing.Timer;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.spacejava.KeyHandler;
 import it.unibo.spacejava.model.menu.StartMenuModel;
-import it.unibo.spacejava.model.sound.api.SoundManager;
+import it.unibo.spacejava.model.sound.SoundManagerImpl;
 
 /**
  * Controller per il menu di start. Gestisce l'input da tastiera e aggiorna il model di conseguenza.
@@ -25,7 +25,6 @@ public class StartMenuController extends KeyHandler {
     private static final int BLINK_INTERVAL = 500; // Intervallo di lampeggiamento in millisecondi
 
     private final StartMenuModel model;
-    private final SoundManager soundManager;
     private final Runnable onPlay;
     private final Runnable onSkinSelection;
     private final Runnable onExit;
@@ -36,15 +35,12 @@ public class StartMenuController extends KeyHandler {
      * e i coallback per le varie ozpioni che vengono scelte dall'utente.
      * 
      * @param model il model del menu di start, che contiene le opzioni e lo stato del lampeggiamento
-     * @param soundManager il gestore dei suoni, per poter riprodurre i suoni quando l'utente seleziona un'opzione
      * @param onPlay il callback da eseguire quando l'utente seleziona "Gioca"
      * @param onSkinSelection il callback da eseguire quando l'utente seleziona "Seleziona Skin"
      * @param onExit il callback da eseguire quando l'utente seleziona "Esci"
      */
     public StartMenuController(
-
         final StartMenuModel model, 
-        final SoundManager soundManager, 
         final Runnable onPlay, 
         final Runnable onSkinSelection, 
         final Runnable onExit) {
@@ -52,7 +48,6 @@ public class StartMenuController extends KeyHandler {
         this.onPlay = onPlay;
         this.onSkinSelection = onSkinSelection;
         this.onExit = onExit;
-        this.soundManager = soundManager;
 
         blinkTimer = new Timer(BLINK_INTERVAL, e -> model.setBlinkOn(!model.isBlinkOn()));
         blinkTimer.start();
@@ -69,12 +64,12 @@ public class StartMenuController extends KeyHandler {
 
         if (super.isUpPressed()) {
             model.selectPrevious();
-            soundManager.playSound(SELECTION_SOUND_PATH);
+            SoundManagerImpl.getInstance().playSound(SELECTION_SOUND_PATH);
         } else if (super.isDownPressed()) {
             model.selectNext();
-            soundManager.playSound(SELECTION_SOUND_PATH);
+            SoundManagerImpl.getInstance().playSound(SELECTION_SOUND_PATH);
         } else if (super.isEnterPressed()) {
-            soundManager.playSound(ENTER_SOUND_PATH);
+            SoundManagerImpl.getInstance().playSound(ENTER_SOUND_PATH);
             this.stop();
             if (model.getSelectedIndex() == 0) {
                 onPlay.run();
