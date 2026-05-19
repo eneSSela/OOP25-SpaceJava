@@ -43,7 +43,7 @@ public final class SkinSelectionView extends JPanel {
     private static final String TEXT_CAN_BUY = "Premi SPAZIO per comprare!";
     private static final String TEXT_CANNOT_BUY = "Punti insufficienti";
 
-    private final SkinController controller;
+    private final transient SkinController controller;
 
     /**
      * Costruisce la view per la selezione delle skin.

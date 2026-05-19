@@ -3,6 +3,7 @@ package it.unibo.spacejava.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.spacejava.KeyHandler;
 import it.unibo.spacejava.Position;
 import it.unibo.spacejava.Skin;
@@ -11,27 +12,53 @@ import it.unibo.spacejava.model.ProjectileImpl;
 
 import it.unibo.spacejava.model.sound.api.SoundManager;
 
+/**
+ * La calsse che funge da controller del giocatore, gestice il movimento e lo sparo, 
+ * altre verfiche come la collisione con i proiettili dei nemici,
+ * e la gestione della skin del giocatore.
+ */
+@SuppressFBWarnings(
+    value = "EI_EXPOSE_REP", 
+    justification = "Nel game loop è necessario condividere i riferimenti originali per le performance"
+)
 public class PlayerController {
+
+    private static final double SHOOT_COOL_DOWN = 0.5; //Mezzo secondo tra uno sparo e l'altro
+    private static final String SHOOT_SOUND_PATH = "/audio/shoot.wav";
+    private static final String HIT_SOUND_PATH = "/audio/hit.wav";
+
     private final PlayerShip playerShip;
     private final KeyHandler keyHandler;
     private final double screenWidth;
-
     private final SoundManager soundManager;
 
-    private final List<ProjectileImpl> projectiles = new ArrayList<>();
-    private final double projectileSpeed = 400.0;
+    private double timeSinceLastShot = SHOOT_COOL_DOWN;
 
-    private double shootCoolDown = 0.5; //Mezzo secondo tra uno sparo e l'altro
-    private double timeSinceLastShot = shootCoolDown;
-
-    public PlayerController(PlayerShip playerShip, KeyHandler keyHandler, double screenWidth, SoundManager soundManager) {
+    /**
+     * Castruttore del PlayerController.
+     * 
+     * @param playerShip model del giocatore
+     * @param keyHandler gestore degli input da tastiera
+     * @param screenWidth larghezza delllo shermo per limitare il movimento delgiocaore
+     * @param soundManager gestore dei suoni per riprodurre effeti sonori come lo sparo e l'imaptto dei proitettili
+     */
+    public PlayerController(
+        final PlayerShip playerShip,
+        final KeyHandler keyHandler,
+        final double screenWidth,
+        final SoundManager soundManager) {
         this.playerShip = playerShip;
         this.keyHandler = keyHandler;
         this.screenWidth = screenWidth;
         this.soundManager = soundManager; 
     }
 
-    public void update(double delta) {
+    /**
+     * Aggiorna lo stato del giocatore in base agli input ricevuti.
+     * 
+     * @param delta il tempo trascorso dall'ultimo aggioranmento, usato per calcolare il movimento e il tempo di sparo
+     */
+    public void update(final double delta) {
         //Gestione movimento
         if (keyHandler.isLeftPressed()) {
             playerShip.moveLeft(delta, 0);
@@ -42,80 +69,86 @@ public class PlayerController {
 
         //Gestione sparo
         timeSinceLastShot += delta;
-        if (keyHandler.isSpacePressed() && timeSinceLastShot >= shootCoolDown) {
-            shoot();
+        if (keyHandler.isSpacePressed() && timeSinceLastShot >= SHOOT_COOL_DOWN) {
+            playerShip.shoot();
             timeSinceLastShot = 0;
+            soundManager.playSound(SHOOT_SOUND_PATH);
         }
-
-        //Aggiornamento posizione proiettile (Y diminuisce perchè si muovono verso l'alto)
-        for (ProjectileImpl p : projectiles) {
-            double newY = p.getPosition().getY() - (projectileSpeed * delta);
-            p.setPosition(new Position(p.getPosition().getX(), newY));
-        }
-
-        //Rimuove i proiettili usciti dallo schermo
-        projectiles.removeIf(p -> p.getPosition().getY() < 0);
     }
 
-    // X QUESTI METODI VANNO DENTRO A PLAYERSHIP DATO CHE CHE LUI FUNGE DA MODELL DEL PLAYER, MA ORA LI LASCIO QUI
-    private void shoot() {
-        int projWidth = 10;
-        //Centra il proiettile rispetto alla navicella
-        double startX = playerShip.getPosition().getX() + (playerShip.getWidth() / 2);
-        double startY = playerShip.getPosition().getY();
-        projectiles.add(new ProjectileImpl(new Position(startX, startY), 40, projWidth));
-
-        soundManager.playSound("/audio/shoot.wav");
+    /**
+     * Metodo helper per controllare se due rettangoli si sovrappongono (AABB).
+     * Per implementare la collisione tra i proiettili dei nemici e il giocatore, 
+     * useremo un algoritmo molto comune nello sviluppo di giochi in 
+     * 2D chiamato AABB (Axis-Aligned Bounding Box). In parole povere, immagina 
+     * di disegnare un rettangolo invisibile attorno al giocatore e uno attorno 
+     * al proiettile: se i due rettangoli si sovrappongono, c'è una collisione.
+     * 
+     * @param pos1 posizione del primo rettangolo (giocatore)
+     * @param w1 larghezza del primo rettangolo
+     * @param h1 altezza del primo rettangolo
+     * @param pos2 posizione del secondo rettangolo (proiettile)
+     * @param w2 larghezza del secondo rettangolo
+     * @param h2 altezza del secondo rettangolo
+     * @return true se i rettangoli si sovrappongono, false altrimenti
+     */
+    private boolean isColliding(
+        final Position pos1,
+        final double w1,
+        final double h1,
+        final Position pos2,
+        final double w2,
+        final double h2) { 
+        return pos1.getX() < pos2.getX() + w2
+            && pos1.getX() + w1 > pos2.getX()
+            && pos1.getY() < pos2.getY() + h2
+            && pos1.getY() + h1 > pos2.getY();
     }
 
-    /*Metodo helper per controllare se due rettangoli si sovrappongono (AABB).
-    Per implementare la collisione tra i proiettili dei nemici e il giocatore, 
-    useremo un algoritmo molto comune nello sviluppo di giochi in 
-    2D chiamato AABB (Axis-Aligned Bounding Box). In parole povere, immagina 
-    di disegnare un rettangolo invisibile attorno al giocatore e uno attorno 
-    al proiettile: se i due rettangoli si sovrappongono, c'è una collisione.*/
-    private boolean isColliding(Position pos1, double w1, double h1, Position pos2, double w2, double h2) {
-        return pos1.getX() < pos2.getX() + w2 &&
-               pos1.getX() + w1 > pos2.getX() &&
-               pos1.getY() < pos2.getY() + h2 &&
-               pos1.getY() + h1 > pos2.getY();
-    }
-
-    //Metodo che verifica le collisioni tra il giocatore e i proiettili nemici
+    /**
+     * Metodo che verifica le collisioni tra il giocatore e i proiettili nemici.
+     */
     public void checkEnemyCollision() {
         //Recuperiamo la lista dei proiettili nemici
-        List<ProjectileImpl> enemyProjectiles = EnemyProjectileController.getProjectileList();
-        List<ProjectileImpl> projectilesToRemove = new ArrayList<>();
+        final List<ProjectileImpl> enemyProjectiles = new ArrayList<>(EnemyProjectileController.getProjectileList());
 
-        for (ProjectileImpl p : enemyProjectiles) {
+        for (final ProjectileImpl p : enemyProjectiles) {
             //Controlla se il rettangolo del player si sovrappone a quello del proiettile
-            if (isColliding(playerShip.getPosition(), playerShip.getWidth(), playerShip.getHeight(), p.getPosition(), p.getWidth(), p.getLenght())) {
+            if (isColliding(playerShip.getPosition(), playerShip.getWidth(), playerShip.getHeight(), 
+                            p.getPosition(), p.getWidth(), p.getLenght())) {
                 playerShip.takeDamage(1); //Rimuove un punto vita
-                projectilesToRemove.add(p); //Segna il proiettile per la rimozione
+                EnemyProjectileController.removeProjectile(p); //Rimuove il proiettile che ha colpito il giocatore
+                System.out.println("Sei stato colpito! Vita rimanente: " + playerShip.getHealt()); //NOPMD
 
-                System.out.println("Sei stato colpito! Vita rimanente: " + playerShip.getHealth());
-
-                soundManager.playSound("/audio/hit.wav");
+                soundManager.playSound(HIT_SOUND_PATH);
             }
         }
-
-        //Rimuove i proiettili che ci hanno colpito per non prendere danno doppio
-        enemyProjectiles.removeAll(projectilesToRemove);
     }
 
+    /**
+     * Getter per la skin del giocatore.
+     *
+     * @return la skin che l'utente ha selezionata
+     */
     public Skin getPlayerSkin() {
         return playerShip.getSkin();
     }
 
-    public void setPlayerSkin(Skin newSkin) {
+    /**
+     * Metodo per impostare la nuova skin, il giocatoer ha selezionato.
+     * 
+     * @param newSkin la nuova skin sekezioanta da poter impstarla 
+     */
+    public void setPlayerSkin(final Skin newSkin) {
         this.playerShip.setSkin(newSkin);
     }
 
+    /**
+     * Getter per il model del gicoatore, utile per accedere a informazioni come la posizone, lav vita, ecc.
+     * 
+     * @return il model del giocatore
+     */
     public PlayerShip getPlayerShip() {
-        return playerShip;
-    }
-
-    public List<ProjectileImpl> getProjectiles() {
-        return projectiles;
+        return this.playerShip;
     }
 }

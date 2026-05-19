@@ -1,194 +1,171 @@
-/* package it.unibo.spacejava.view.game;
-
-import java.awt.Color;
-
-import javax.swing.JPanel;
-
-public class GamePanel extends JPanel{
-    
-    public GamePanel(int width, int height) {
-        super.setSize(width, height);
-        super.setBackground(Color.BLACK);
-    }
-} */
- 
 package it.unibo.spacejava.view.game;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import it.unibo.spacejava.Utils;
 import it.unibo.spacejava.api.Enemy;
 import it.unibo.spacejava.controller.EnemyProjectileController;
 import it.unibo.spacejava.controller.PlayerController;
-import it.unibo.spacejava.model.PlayerShip;
 import it.unibo.spacejava.model.ProjectileImpl;
 
 import javax.swing.JPanel;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import java.awt.Graphics;
 import java.awt.Image;
-import javax.imageio.ImageIO;
-import java.io.IOException;
-import java.net.URL;
 import java.util.List;
 import java.util.Objects;
 
-public class GamePanel extends JPanel {
+/**
+ * Panel responsabile del rendering della UI di gioco (nemici, proiettili, giocatore e HUD).
+ */
+@SuppressFBWarnings(
+    value = "EI_EXPOSE_REP", 
+    justification = "Nel game loop è necessario condividere i riferimenti originali per le performance"
+)
+public final class GamePanel extends JPanel {
 
-    private Image baseEnemyImage;
-    private List<Enemy> currentEnemies;
-    private Image projectileImage;
-    private Image tankEnemyImage;
+    private static final long serialVersionUID = 1L;
+    private static final Logger LOGGER = Logger.getLogger(GamePanel.class.getName());
+    private static final int HEALTH_FONT_SIZE = 20;
+    private static final int HEALTH_X_POSITION = 20;
+    private static final int HEALTH_Y_POSITION = 30;
 
-    private Image playerImage;
-    private PlayerController crtlPlayer;
-    private List<ProjectileImpl> playerProjectiles;
+    private transient Image enemyImage;
+    private transient List<Enemy> currentEnemies;
+    private transient Image projectileImage;
+    private transient PlayerController crtlPlayer;
+    private transient List<ProjectileImpl> playerProjectiles;
 
-    public GamePanel(int width, int height) {
+    /**
+     * Costruisce un GamePanel con dimensioni specificate.
+     *
+     * @param width la larghezza del pannello
+     * @param height l'altezza del pannello
+     */
+    public GamePanel(final int width, final int height) {
         super.setSize(width, height);
         super.setBackground(Color.BLACK);
         loadImages();
     }
 
     private void loadImages() {
-        try {
-            URL imageUrl = getClass().getResource("/enemies/baseEnemy.png");
-            if (imageUrl != null) {
-                baseEnemyImage = ImageIO.read(imageUrl);
-            } else {
-                System.err.println("Immagine del nemico base non trovata!");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        enemyImage = Utils.loadImage("/enemies/baseEnemy.png");
+        projectileImage = Utils.loadImage("/enemies/projectile.png");
 
-        try {
-            URL imageUrl = getClass().getResource("/enemies/projectile.png");
-            if (imageUrl != null) {
-                projectileImage = ImageIO.read(imageUrl);
-            } else {
-                System.err.println("Immagine del proiettile non trovata!");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (Objects.isNull(enemyImage) || Objects.isNull(projectileImage)) {
+            LOGGER.log(Level.WARNING, "Immagini non caricate correttamente");
         }
-        /*
-        try {
-            URL imageUrl = getClass().getResource("/skins/spaceShips_001.png");
-            if (imageUrl != null) {
-                playerImage = ImageIO.read(imageUrl);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        */
     }
 
-    public void render(List<Enemy> enemies, PlayerController player, List<ProjectileImpl> playerProjectiles) {
-        this.currentEnemies = enemies;
+    /**
+     * Aggiorna lo stato da renderizzare e richiede repaint.
+     *
+     * @param enemies lista dei nemici
+     * @param player controller del giocatore
+     * @param playerProjectile lista dei proiettili del giocatore
+     */
+    public void render(final List<Enemy> enemies, final PlayerController player,
+            final List<ProjectileImpl> playerProjectile) {
+        this.currentEnemies = List.copyOf(enemies);
         this.crtlPlayer = player;
-        this.playerProjectiles = playerProjectiles;
-        repaint(); 
+        this.playerProjectiles = List.copyOf(playerProjectile);
+        repaint();
     }
 
     @Override
-    protected void paintComponent(Graphics g) {
+    protected void paintComponent(final Graphics g) {
         super.paintComponent(g);
         drawEnemies(g, currentEnemies);
-        List<ProjectileImpl> projectiles = EnemyProjectileController.getProjectileList();
+        final List<ProjectileImpl> projectiles = EnemyProjectileController.getProjectileList();
         drawEnemyProjectiles(g, projectiles);
 
         drawPlayer(g);
         drawPlayerProjectiles(g);
         drawHUD(g);
     }
-    
-    public void drawEnemies(Graphics g, List<Enemy> enemies) {
-        if (baseEnemyImage != null && enemies != null) {
-            for (Enemy e : enemies) {
-                int type = e.type();
-                //metti switch
-                switch (type) {
-                    case 0:
-                        g.drawImage(baseEnemyImage, 
-                            (int) e.getPosition().getX(), 
-                            (int) e.getPosition().getY(), 
-                            (int) e.getWidth(), 
-                            (int) e.getHeight(), 
-                            null);
-                        break;
-                    case 1:
-                        g.drawImage(tankEnemyImage, 
-                            (int) e.getPosition().getX(), 
-                            (int) e.getPosition().getY(), 
-                            (int) e.getWidth(), 
-                            (int) e.getHeight(), 
-                            null);
-                        break;
-                    case 3:
-                        
-                        break;
-                    default:
-                        break;
-                }
-                
+
+    /**
+     * Disegna i nemici.
+     *
+     * @param g il contesto grafico
+     * @param enemies la lista dei nemici
+     */
+    public void drawEnemies(final Graphics g, final List<Enemy> enemies) {
+        if (enemyImage != null && enemies != null) {
+            for (final Enemy e : enemies) {
+                g.drawImage(enemyImage,
+                        e.getPosition().getX(),
+                        e.getPosition().getY(),
+                        (int) e.getWidth(),
+                        (int) e.getHeight(),
+                        null);
             }
         }
     }
 
-    public void drawEnemyProjectiles(Graphics g, List<ProjectileImpl> projectiles) {
-        if (projectiles.isEmpty() == false) {
-            for (ProjectileImpl projectileImpl : projectiles) {
+    /**
+     * Disegna i proiettili nemici.
+     *
+     * @param g il contesto grafico
+     * @param projectiles la lista dei proiettili nemici
+     */
+    public void drawEnemyProjectiles(final Graphics g, final List<ProjectileImpl> projectiles) {
+        if (projectiles != null && !projectiles.isEmpty()) {
+            for (final ProjectileImpl projectileImpl : projectiles) {
                 g.drawImage(projectileImage,
-                    (int) projectileImpl.getPosition().getX(),
-                    (int) projectileImpl.getPosition().getY(),
-                    (int) projectileImpl.getWidth(),
-                    (int) projectileImpl.getLenght(),
-                    null);
+                            projectileImpl.getPosition().getX(),
+                            projectileImpl.getPosition().getY(),
+                            projectileImpl.getWidth(),
+                            projectileImpl.getLenght(),
+                        null);
             }
         }
     }
 
-    private void drawPlayer(Graphics g) {
+    private void drawPlayer(final Graphics g) {
         if (Objects.nonNull(crtlPlayer)) {
             g.drawImage(Utils.loadImage(crtlPlayer.getPlayerSkin().getImagePath()),
-                        (int) crtlPlayer.getPlayerShip().getPosition().getX(),
-                        (int) crtlPlayer.getPlayerShip().getPosition().getY(),
-                        (int) crtlPlayer.getPlayerShip().getWidth(),
-                        (int) crtlPlayer.getPlayerShip().getHeight(),
-                        null);
+                    crtlPlayer.getPlayerShip().getPosition().getX(),
+                    crtlPlayer.getPlayerShip().getPosition().getY(),
+                    (int) crtlPlayer.getPlayerShip().getWidth(),
+                    (int) crtlPlayer.getPlayerShip().getHeight(),
+                    null);
         }
     }
 
-    private void drawPlayerProjectiles(Graphics g) {
+    private void drawPlayerProjectiles(final Graphics g) {
         if (playerProjectiles != null && !playerProjectiles.isEmpty()) {
             g.setColor(Color.CYAN); // i proiettili del giocatore saranno azzurri
-            for (ProjectileImpl p : playerProjectiles) {
+            for (final ProjectileImpl p : playerProjectiles) {
                 g.fillRect(
-                    (int) p.getPosition().getX(),
-                    (int) p.getPosition().getY(),
-                    p.getWidth(),
-                    p.getLenght()
-                );
+                        p.getPosition().getX(),
+                        p.getPosition().getY(),
+                        p.getWidth(),
+                        p.getLenght());
             }
         }
     }
 
-    private void drawHUD(Graphics g) {
-        if (crtlPlayer != null) { //Controlliamo che il player sia stato caricato
-            g.setFont(new Font("Monospaced", Font.BOLD, 20));
+    private void drawHUD(final Graphics g) {
+        if (crtlPlayer != null) { // Controlliamo che il player sia stato caricato
+            g.setFont(new Font("Monospaced", Font.BOLD, HEALTH_FONT_SIZE));
 
-            int health = crtlPlayer.getPlayerShip().getHealth();
+            final int health = crtlPlayer.getPlayerShip().getHealt();
 
-            //Cambiamo colore in base alla vita rimanente
+            // Cambiamo colore in base alla vita rimanente
             if (health > 1) {
                 g.setColor(Color.GREEN);
             } else {
                 g.setColor(Color.RED);
             }
 
-            //Disegnamo la scritta "Vite: X" in alto a destra
-            g.drawString("Vite: " + health, 20, 30);
+            // Disegniamo la scritta "Vite: X" in alto a destra
+            g.drawString("Vite: " + health, HEALTH_X_POSITION, HEALTH_Y_POSITION);
         }
     }
 }

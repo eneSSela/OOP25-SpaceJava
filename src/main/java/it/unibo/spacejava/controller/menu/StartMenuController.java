@@ -4,6 +4,7 @@ import java.awt.event.KeyEvent;
 import java.util.List;
 import javax.swing.Timer;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.spacejava.KeyHandler;
 import it.unibo.spacejava.model.menu.StartMenuModel;
 import it.unibo.spacejava.model.sound.api.SoundManager;
@@ -14,6 +15,10 @@ import it.unibo.spacejava.model.sound.api.SoundManager;
  * riproduce i suoni quando l'utente seleziona un'opzione.
  * Infine, fornisce dei callback per le azioni da eseguire quando l'utente seleziona "Gioca", "Seleziona Skin" o "Esci".
  */
+@SuppressFBWarnings(
+    value = "EI_EXPOSE_REP", 
+    justification = "Nel game loop è necessario condividere i riferimenti originali per le performance"
+)
 public class StartMenuController extends KeyHandler {
 
     private static final String SELECTION_SOUND_PATH = "/audio/selection.wav";
