@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import it.unibo.spacejava.api.StartMenuObserver;
+
 /**
  * Classe che rappresenta  il model per la shcermata del menu iniziale,
  * contiene la logica per la gestione delle ozpioni del menu,e per il lampeggio dell'ozpione slezionata, 
@@ -14,7 +16,7 @@ public class StartMenuModel {
     private final List<String> options = List.of("Gioca", "Seleziona Skin", "Esci");
     private int selectedIndex;
     private boolean blinkOn;
-    private final List<Runnable> listeners = new CopyOnWriteArrayList<>();
+    private final List<StartMenuObserver> listeners = new CopyOnWriteArrayList<>();
 
     /**
      * Costruttore della classe StartMenuModel,
@@ -81,30 +83,30 @@ public class StartMenuModel {
     }
 
     /**
-     * Aggiunge un listener che verra invaita una notifica ogni volta che il model subisce una modifica.
+     * Aggiunge un observer che invia una notifica ogni volta che il model subisce una modifica.
      * 
-     * @param listener il listener da aggiungere alla lista
+     * @param observer il listener da aggiungere alla lista
      */
-    public void addChangeListener(final Runnable listener) {
-        listeners.add(Objects.requireNonNull(listener));
+    public void addObserver(final StartMenuObserver observer) {
+        listeners.add(Objects.requireNonNull(observer));
     }
 
     /**
-     * Il contrario del precedente, rimuove un listenre dalla lista dei listener,
-     * che vongono notificati ad ogni modifica del model.
+     * Il contrario del precedente, rimuove un observer dalla lista degli observer,
+     * che vengono notificati ad ogni modifica del model.
      * 
-     * @param listener listenre da rimuovere dalla lista
+     * @param observer observer da rimuovere dalla lista
      */
-    public void removeChangeListener(final Runnable listener) {
-        listeners.remove(listener);
+    public void removeObserver(final StartMenuObserver observer) {
+        listeners.remove(observer);
     }
 
     /**
      * Metodo che cilca tutti i listener presenti nella lista, per poterli notificare che il model a subito un cambiamento.
      */
     private void notifyListeners() {
-        for (final Runnable listener : listeners) {
-            listener.run();
+        for (final StartMenuObserver observer : listeners) {
+            observer.updateMenuState();
         }
     }
 

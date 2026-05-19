@@ -88,7 +88,7 @@ public final class GameManagerImpl implements GameManger, Runnable {
             },
             this::stopGame
         );
-        startMenuView = new StartMenuView(startMenuController);
+        startMenuView = new StartMenuView(startMenuModel);
         startMenuView.addKeyListener(startMenuController);
 
         //Inizializzazione controller e view della schermata di selezione skin

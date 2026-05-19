@@ -1,7 +1,6 @@
 package it.unibo.spacejava.controller.menu;
 
 import java.awt.event.KeyEvent;
-import java.util.List;
 import javax.swing.Timer;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -17,7 +16,7 @@ import it.unibo.spacejava.model.sound.api.SoundManager;
  */
 @SuppressFBWarnings(
     value = "EI_EXPOSE_REP", 
-    justification = "Nel game loop è necessario condividere i riferimenti originali per le performance"
+    justification = "Nel game loop è necessario condividere i riferimenti originali per le performance" 
 )
 public class StartMenuController extends KeyHandler {
 
@@ -76,6 +75,7 @@ public class StartMenuController extends KeyHandler {
             soundManager.playSound(SELECTION_SOUND_PATH);
         } else if (super.isEnterPressed()) {
             soundManager.playSound(ENTER_SOUND_PATH);
+            this.stop();
             if (model.getSelectedIndex() == 0) {
                 onPlay.run();
             } else if (model.getSelectedIndex() == 1) {
@@ -84,33 +84,6 @@ public class StartMenuController extends KeyHandler {
                 onExit.run();
             }
         }
-    }
-
-    /**
-     * Restituisce la lista delle opzioni del menu.
-     * 
-     * @return la lista delle opzioni del menu sotto forma di stringhe per poterle visualizzare nella view
-     */
-    public List<String> getOptions() {
-        return model.getOptions();
-    }
-
-    /**
-     * Restittuisce l'idice dell'opzione che l'utente ha selezionata.
-     * 
-     * @return l'idice dell'opzione selzionata, per poterza evideziare nella view
-     */
-    public int getSelectedIndex() {
-        return model.getSelectedIndex();
-    }
-
-    /**
-     * Metodo utile per notificare che il lampeggio dell'opzione selezionata è attivo o meno, per poterlo visualizzare nella view.
-     * 
-     * @return true se il lampeggiamento è attivo, false altrimenti
-     */
-    public boolean isBlinkOn() {
-        return model.isBlinkOn();
     }
 
     /**
