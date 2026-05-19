@@ -25,6 +25,9 @@ public final class SoundManagerImpl implements SoundManager {
     //variabile per tenere in memoria la traccia audio che viene riprodotta in sottofondo
     private Clip backgroundMusicClip;
 
+    private SoundManagerImpl() {
+    }
+
     /**
      * Restistuisce l'unica instanza disponibile del SoundManager,
      * questa scleta implementa il patter singleton, per garantire che ci sia un unico gestore dei suoni in tutto il gioco,

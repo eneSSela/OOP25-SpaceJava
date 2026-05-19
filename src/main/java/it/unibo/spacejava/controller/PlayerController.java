@@ -9,8 +9,7 @@ import it.unibo.spacejava.Position;
 import it.unibo.spacejava.Skin;
 import it.unibo.spacejava.model.PlayerShip;
 import it.unibo.spacejava.model.ProjectileImpl;
-
-import it.unibo.spacejava.model.sound.api.SoundManager;
+import it.unibo.spacejava.model.sound.SoundManagerImpl;
 
 /**
  * La calsse che funge da controller del giocatore, gestice il movimento e lo sparo, 
@@ -30,7 +29,6 @@ public class PlayerController {
     private final PlayerShip playerShip;
     private final KeyHandler keyHandler;
     private final double screenWidth;
-    private final SoundManager soundManager;
 
     private double timeSinceLastShot = SHOOT_COOL_DOWN;
 
@@ -40,17 +38,14 @@ public class PlayerController {
      * @param playerShip model del giocatore
      * @param keyHandler gestore degli input da tastiera
      * @param screenWidth larghezza delllo shermo per limitare il movimento delgiocaore
-     * @param soundManager gestore dei suoni per riprodurre effeti sonori come lo sparo e l'imaptto dei proitettili
      */
     public PlayerController(
         final PlayerShip playerShip,
         final KeyHandler keyHandler,
-        final double screenWidth,
-        final SoundManager soundManager) {
+        final double screenWidth) {
         this.playerShip = playerShip;
         this.keyHandler = keyHandler;
         this.screenWidth = screenWidth;
-        this.soundManager = soundManager; 
     }
 
     /**
@@ -72,7 +67,7 @@ public class PlayerController {
         if (keyHandler.isSpacePressed() && timeSinceLastShot >= SHOOT_COOL_DOWN) {
             playerShip.shoot();
             timeSinceLastShot = 0;
-            soundManager.playSound(SHOOT_SOUND_PATH);
+            SoundManagerImpl.getInstance().playSound(SHOOT_SOUND_PATH);
         }
     }
 
@@ -120,7 +115,7 @@ public class PlayerController {
                 EnemyProjectileController.removeProjectile(p); //Rimuove il proiettile che ha colpito il giocatore
                 System.out.println("Sei stato colpito! Vita rimanente: " + playerShip.getHealt()); //NOPMD
 
-                soundManager.playSound(HIT_SOUND_PATH);
+                SoundManagerImpl.getInstance().playSound(HIT_SOUND_PATH);
             }
         }
     }

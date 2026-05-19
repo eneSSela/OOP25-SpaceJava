@@ -14,8 +14,6 @@ import it.unibo.spacejava.controller.menu.StartMenuController;
 import it.unibo.spacejava.model.PlayerShip;
 import it.unibo.spacejava.model.menu.SkinModel;
 import it.unibo.spacejava.model.menu.StartMenuModel;
-import it.unibo.spacejava.model.sound.SoundManagerImpl;
-import it.unibo.spacejava.model.sound.api.SoundManager;
 import it.unibo.spacejava.view.game.GamePanel;
 import it.unibo.spacejava.view.menu.SkinSelectionView;
 import it.unibo.spacejava.view.menu.StartMenuView;
@@ -42,7 +40,6 @@ public final class GameManagerImpl implements GameManger, Runnable {
     // il gestore degli input da tastiera e il layout a schede per gestire le diverse schermate (menu, gioco, selezione skin)
     private Thread gameThread;
     private final GamePanel gamePanel = new GamePanel(SCREEN_WIDTH, SCREEN_HEIGTH);
-    private final SoundManager soundManager = new SoundManagerImpl();
     private final KeyHandler gameKeyHandler = new KeyHandler();
     private final CardLayout cardLayout = new CardLayout();
 
@@ -110,7 +107,7 @@ public final class GameManagerImpl implements GameManger, Runnable {
         final int startX = (int) (SCREEN_WIDTH / 2.0) - 32;
         final int startY = SCREEN_HEIGTH - 100;
         final PlayerShip playerModel = new PlayerShip(startX, startY, skinController.getPlayerSelectedSkin());
-        playerController = new PlayerController(playerModel, gameKeyHandler, SCREEN_WIDTH, soundManager);
+        playerController = new PlayerController(playerModel, gameKeyHandler, SCREEN_WIDTH);
 
         gamePanel.addKeyListener(gameKeyHandler);
         startMenuView.setFocusable(true);
