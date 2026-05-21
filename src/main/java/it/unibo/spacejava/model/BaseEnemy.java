@@ -5,15 +5,6 @@ import it.unibo.spacejava.Position;
 import it.unibo.spacejava.api.Enemy;
 import it.unibo.spacejava.controller.EnemyProjectileController;
 
-<<<<<<< HEAD
-public class BaseEnemy implements Enemy {
-    private Position position;
-    private int health = 1;
-    private final double width = 40.0;
-    private final double height = 40.0;
-    private final int type = 0;
-    private final int damage = 1;
-=======
 /**
  * BaseEnemy is an implementation of the Enemy interface.
  * It represents a basic enemy entity in the game with position, health, and attack capabilities.
@@ -34,7 +25,7 @@ public final class BaseEnemy implements Enemy {
     private int health;
     private final double width;
     private final double height;
->>>>>>> 75e7d5e76bc054d24745ce7720965cd5a99822f5
+    private final int type = 0;
 
     /**
      * Constructs a BaseEnemy with initial position.
@@ -44,12 +35,9 @@ public final class BaseEnemy implements Enemy {
      */
     public BaseEnemy(final int startX, final int startY) {
         this.position = new Position(startX, startY);
-<<<<<<< HEAD
-=======
         this.health = DEFAULT_HEALTH;
         this.width = DEFAULT_WIDTH;
         this.height = DEFAULT_HEIGHT;
->>>>>>> 75e7d5e76bc054d24745ce7720965cd5a99822f5
     }
 
     @Override
@@ -87,18 +75,9 @@ public final class BaseEnemy implements Enemy {
         return this.health <= 0;
     }
 
-<<<<<<< HEAD
-    @Override
-    public int getDamage() {
-        return damage;
-    }
-
-
-=======
     /**
      * Performs an attack by creating a projectile below the enemy.
      */
->>>>>>> 75e7d5e76bc054d24745ce7720965cd5a99822f5
     @Override
     public void attack() {
         final int startX = this.position.getX() + (int) (this.width / 2 - ATTACK_OFFSET);
@@ -108,13 +87,9 @@ public final class BaseEnemy implements Enemy {
 
         EnemyProjectileController.addProjectile(new ProjectileImpl(projectilePos, PROJECTILE_WIDTH, PROJECTILE_HEIGHT));
     }
-<<<<<<< HEAD
 
     @Override
     public int type() {
-        return this.type;
+        return type;
     }
 }
-=======
-}
->>>>>>> 75e7d5e76bc054d24745ce7720965cd5a99822f5

@@ -35,7 +35,8 @@ public final class GamePanel extends JPanel {
     private static final int HEALTH_X_POSITION = 20;
     private static final int HEALTH_Y_POSITION = 30;
 
-    private transient Image enemyImage;
+    private transient Image baseEnemyImage;
+    private transient Image tankEnemyImage;
     private transient List<Enemy> currentEnemies;
     private transient Image projectileImage;
     private transient PlayerController crtlPlayer;
@@ -54,10 +55,11 @@ public final class GamePanel extends JPanel {
     }
 
     private void loadImages() {
-        enemyImage = Utils.loadImage("/enemies/baseEnemy.png");
+        baseEnemyImage = Utils.loadImage("/enemies/baseEnemy.png");
         projectileImage = Utils.loadImage("/enemies/projectile.png");
+        tankEnemyImage = Utils.loadImage("/enemies/tankEnemy.png");
 
-        if (Objects.isNull(enemyImage) || Objects.isNull(projectileImage)) {
+        if (Objects.isNull(baseEnemyImage) || Objects.isNull(projectileImage)) {
             LOGGER.log(Level.WARNING, "Immagini non caricate correttamente");
         }
     }
@@ -96,14 +98,29 @@ public final class GamePanel extends JPanel {
      * @param enemies la lista dei nemici
      */
     public void drawEnemies(final Graphics g, final List<Enemy> enemies) {
-        if (enemyImage != null && enemies != null) {
+        if (baseEnemyImage != null && enemies != null) {
             for (final Enemy e : enemies) {
-                g.drawImage(enemyImage,
-                        e.getPosition().getX(),
-                        e.getPosition().getY(),
-                        (int) e.getWidth(),
-                        (int) e.getHeight(),
-                        null);
+                switch (e.type()) {
+                    case 0:
+                        g.drawImage(baseEnemyImage,
+                            e.getPosition().getX(),
+                            e.getPosition().getY(),
+                            (int) e.getWidth(),
+                            (int) e.getHeight(),
+                            null);
+                        break;
+                    case 1:
+                            g.drawImage(tankEnemyImage,
+                                e.getPosition().getX(),
+                                e.getPosition().getY(),
+                                (int) e.getWidth(),
+                                (int) e.getHeight(),
+                                null);
+                        break;
+                    default:
+                        break;
+                }
+                
             }
         }
     }

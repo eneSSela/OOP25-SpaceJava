@@ -36,6 +36,11 @@ public interface Enemy {
      */
     int getHealth();
 
+    /**
+     * Method used to decide the appearence for the enemy.
+     * 
+     * @return type of the enemy
+     */
     int type();
 
     /**

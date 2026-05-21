@@ -1,32 +1,22 @@
 package it.unibo.spacejava.controller;
 
 import it.unibo.spacejava.Position;
+import it.unibo.spacejava.Utils;
 import it.unibo.spacejava.api.Enemy;
 import it.unibo.spacejava.model.BaseEnemy;
 import it.unibo.spacejava.model.ProjectileImpl;
 import it.unibo.spacejava.model.TankEnemy;
-import it.unibo.spacejava.controller.PlayerController;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-<<<<<<< HEAD
-public class WaveManagerController {
-    private int waveNum=0;
-    private List<Enemy> enemies;
-    
-    private double speedX = 75.0; // Movement pixels per second
-    private double descent = 20.0; // Descent pixels
-    private boolean movingRight = true;
-=======
 /**
  * Classe che gestisce la ondata di nemici, il loro movimento e i loro attachi.
  */
 public final class WaveManagerController {
->>>>>>> 75e7d5e76bc054d24745ce7720965cd5a99822f5
 
-    private static final double SPEED_X = 75.0; // Movement pixels per second
+    private static final double SPEED_X = 60.0; // Movement pixels per second
     private static final double DESCENT = 20.0; // Descent pixels
     private static final double COOLDOWN = 1.0; 
     private static final double SHOOT_PROBABILITY = 0.5;
@@ -35,6 +25,7 @@ public final class WaveManagerController {
     private double timeSinceLastShot;
     private final List<Enemy> enemies;
     private final double screenWidth;
+    private int waveNum = 1;
 
     /**
      * Costruisce una nuova oindata di nemici, in base alla larghezza dello schermo.
@@ -56,15 +47,14 @@ public final class WaveManagerController {
         final int spacingX = 60;
         final int spacingY = 50;
 
-<<<<<<< HEAD
-        waveNum++;
-
+        
+        
         switch (waveNum) {
             case 1:
                 for (int row = 0; row < rows; row++) {
                     for (int col = 0; col < cols; col++) {
-                        double x = startX + (col * spacingX);
-                        double y = startY + (row * spacingY);
+                        final int x = startX + (col * spacingX);
+                        final int y = startY + (row * spacingY);
                         enemies.add(new BaseEnemy(x, y));
                     }
                 }
@@ -72,26 +62,17 @@ public final class WaveManagerController {
             case 2:
                 for (int row = 0; row < rows; row++) {
                     for (int col = 0; col < cols; col++) {
-                        double x = startX + (col * spacingX);
-                        double y = startY + (row * spacingY);
-                        if (row == 1) {
+                        final int x = startX + (col * spacingX);
+                        final int y = startY + (row * spacingY);
+                        if (row == 0){
                             enemies.add(new BaseEnemy(x, y));
                         } else {
                             enemies.add(new TankEnemy(x, y));
                         }
                     }
                 }
-                break;
             default:
                 break;
-=======
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < cols; col++) {
-                final int x = startX + (col * spacingX);
-                final int y = startY + (row * spacingY);
-                enemies.add(new BaseEnemy(x, y));
-            }
->>>>>>> 75e7d5e76bc054d24745ce7720965cd5a99822f5
         }
         
     }
@@ -105,8 +86,11 @@ public final class WaveManagerController {
 
         // Checks if the wave is defeated
         if (enemies.isEmpty()) {
-            return;
+            ++waveNum;
+            spawnWave();
         }
+
+        checkhitEnemies();
 
         boolean hitEdge = false;
         // Checks if an enemy touches the edge
@@ -166,18 +150,36 @@ public final class WaveManagerController {
         enemies.get(randomIndex).attack();
     }
 
-    private boolean isColliding(Position pos1, double w1, double h1, Position pos2, double w2, double h2) {
-        return pos1.getX() < pos2.getX() + w2 &&
-               pos1.getX() + w1 > pos2.getX() &&
-               pos1.getY() < pos2.getY() + h2 &&
-               pos1.getY() + h1 > pos2.getY();
-    }
 
-    /*private void hitEnemies(){
-        List<ProjectileImpl> playerProjectiles = PlayerController.getProjectiles();
+    private void checkhitEnemies(){
+        List<ProjectileImpl> playerProjectiles = PlayerProjectileController.getProjectileList();
+        Enemy rmEnemy = new BaseEnemy(0, 0);
+        ProjectileImpl rmProjectile = new ProjectileImpl(new Position(0, 0), 0, 0);
+        Boolean kill = false;
+        Boolean hit = false;
         for (Enemy e : enemies) {
-            if (isColliding(e.getPosition(), e.getWidth(), e.getHeight(), null, descent, cooldown))
+            for (ProjectileImpl p : playerProjectiles) {
+                if (Utils.isColliding(e.getPosition(), e.getWidth(), e.getHeight(), p.getPosition(), p.getWidth(), p.getLenght())){
+                    e.takeDamage(1); //Chiedi ad Ale di aggiungere damage ai proiettili.
+                    rmProjectile = p;
+                    hit = true;
+                    if(e.isDead()){
+                        rmEnemy = e;
+                        kill = true;
+                    }
+                }
+            }
+        }
+
+        if(hit) {
+            playerProjectiles.remove(rmProjectile);
+            hit = false;
+        }
+
+        if (kill) {
+            kill = false;
+            enemies.remove(rmEnemy);
         }
     }
-            */
+            
 }

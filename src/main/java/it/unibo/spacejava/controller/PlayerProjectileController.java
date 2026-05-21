@@ -23,7 +23,8 @@ public final class PlayerProjectileController {
      * @return la lista dei proiettili attivi del giocatore
      */
     public static List<ProjectileImpl> getProjectileList() {
-        return Collections.unmodifiableList(PROJECTILE_LIST);
+        //return Collections.unmodifiableList(PROJECTILE_LIST);
+        return PROJECTILE_LIST;
     }
 
     /**
