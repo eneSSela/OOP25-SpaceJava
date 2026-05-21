@@ -140,7 +140,6 @@ public final class GamePanel extends JPanel {
                     default:
                         break;
                 }
-                
             }
         }
     }

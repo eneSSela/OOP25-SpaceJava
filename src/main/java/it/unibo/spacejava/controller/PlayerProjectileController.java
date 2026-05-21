@@ -3,7 +3,6 @@ package it.unibo.spacejava.controller;
 import it.unibo.spacejava.Position;
 import it.unibo.spacejava.model.ProjectileImpl;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -22,6 +21,10 @@ public final class PlayerProjectileController {
      * 
      * @return la lista dei proiettili attivi del giocatore
      */
+    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(
+        value = "MS_EXPOSE_REP", 
+        justification = "La lista viene modificata direttamente da altri controller per gestire le collisioni"
+    )
     public static List<ProjectileImpl> getProjectileList() {
         //return Collections.unmodifiableList(PROJECTILE_LIST);
         return PROJECTILE_LIST;

@@ -6,20 +6,20 @@ import it.unibo.spacejava.api.Enemy;
 import it.unibo.spacejava.controller.EnemyProjectileController;
 
 /**
- * Nemico boss.
+ * Nemico rosso (aumento di danno).
  */
 @SuppressFBWarnings(
     value = "EI_EXPOSE_REP", 
     justification = "Nel game loop è necessario condividere i riferimenti originali per le performance"
 )
-public final class BossEnemy implements Enemy {
-    private static final double DEFAULT_WIDTH = 200.0;
-    private static final double DEFAULT_HEIGHT = 120.0;
-    private static final int DEFAULT_HEALTH = 20;
+public final class RedEnemy implements Enemy {
+    private static final double DEFAULT_WIDTH = 40.0;
+    private static final double DEFAULT_HEIGHT = 40.0;
+    private static final int DEFAULT_HEALTH = 2;
     private static final double ATTACK_OFFSET = 10.0;
-    private static final int PROJECTILE_WIDTH = 80;
-    private static final int PROJECTILE_HEIGHT = 60;
-    private static final int TYPE = 3;
+    private static final int PROJECTILE_WIDTH = 40;
+    private static final int PROJECTILE_HEIGHT = 30;
+    private static final int TYPE = 2;
 
     private final Position position;
     private int health;
@@ -32,7 +32,7 @@ public final class BossEnemy implements Enemy {
      * @param startX the initial X coordinate
      * @param startY the initial Y coordinate
      */
-    public BossEnemy(final int startX, final int startY) {
+    public RedEnemy(final int startX, final int startY) {
         this.position = new Position(startX, startY);
         this.health = DEFAULT_HEALTH;
         this.width = DEFAULT_WIDTH;

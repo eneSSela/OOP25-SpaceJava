@@ -6,11 +6,13 @@ import it.unibo.spacejava.api.Enemy;
 import it.unibo.spacejava.model.BaseEnemy;
 import it.unibo.spacejava.model.BossEnemy;
 import it.unibo.spacejava.model.ProjectileImpl;
+import it.unibo.spacejava.model.RedEnemy;
 import it.unibo.spacejava.model.TankEnemy;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Classe che gestisce la ondata di nemici, il loro movimento e i loro attachi.
@@ -21,6 +23,8 @@ public final class WaveManagerController {
     private static final double DESCENT = 20.0; // Descent pixels
     private static final double COOLDOWN = 1.0; 
     private static final double SHOOT_PROBABILITY = 0.5;
+    private static final int BOSS_WAVE_NUM = 3;
+    private static final Random RANDOM_ENEMY = new Random();
 
     private boolean isMovingRight = true;
     private double timeSinceLastShot;
@@ -48,8 +52,6 @@ public final class WaveManagerController {
         final int spacingX = 60;
         final int spacingY = 50;
 
-        
-        
         switch (waveNum) {
             case 1:
                 for (int row = 0; row < rows; row++) {
@@ -65,7 +67,7 @@ public final class WaveManagerController {
                     for (int col = 0; col < cols; col++) {
                         final int x = startX + (col * spacingX);
                         final int y = startY + (row * spacingY);
-                        if (row == 0){
+                        if (row == 0) {
                             enemies.add(new BaseEnemy(x, y));
                         } else {
                             enemies.add(new TankEnemy(x, y));
@@ -73,13 +75,36 @@ public final class WaveManagerController {
                     }
                 }
                 break;
-            case 3:
+            case BOSS_WAVE_NUM:
                 enemies.add(new BossEnemy(startX, startY));
+                break;
             default:
-            System.out.println("No more waves :'( ");
+                if (waveNum % BOSS_WAVE_NUM == 0) {
+                    enemies.add(new BossEnemy(startX, startY));
+                } else {
+                    for (int row = 0; row < rows; row++) {
+                        for (int col = 0; col < cols; col++) {
+                            final int x = startX + (col * spacingX);
+                            final int y = startY + (row * spacingY);
+                            final int randEnemy = RANDOM_ENEMY.nextInt(3);
+                            switch (randEnemy) {
+                                case 0:
+                                    enemies.add(new BaseEnemy(x, y));
+                                    break;
+                                case 1:
+                                    enemies.add(new TankEnemy(x, y));
+                                    break;
+                                case 2:
+                                    enemies.add(new RedEnemy(x, y));
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                }
                 break;
         }
-        
     }
 
     /**
@@ -132,7 +157,7 @@ public final class WaveManagerController {
 
         // Calculates shot cooldown and randomly decides if an enemy gets to shoot
         timeSinceLastShot += delta;
-        if (timeSinceLastShot >= COOLDOWN) {
+        if (!enemies.isEmpty() && timeSinceLastShot >= COOLDOWN) {
             if (Math.random() < SHOOT_PROBABILITY) {
                 shoot();
             }
@@ -155,20 +180,20 @@ public final class WaveManagerController {
         enemies.get(randomIndex).attack();
     }
 
-
-    private void checkhitEnemies(){
-        List<ProjectileImpl> playerProjectiles = PlayerProjectileController.getProjectileList();
+    private void checkhitEnemies() {
+        final List<ProjectileImpl> playerProjectiles = PlayerProjectileController.getProjectileList();
         Enemy rmEnemy = new BaseEnemy(0, 0);
         ProjectileImpl rmProjectile = new ProjectileImpl(new Position(0, 0), 0, 0);
         Boolean kill = false;
         Boolean hit = false;
-        for (Enemy e : enemies) {
-            for (ProjectileImpl p : playerProjectiles) {
-                if (Utils.isColliding(e.getPosition(), e.getWidth(), e.getHeight(), p.getPosition(), p.getWidth(), p.getLenght())){
+        for (final Enemy e : enemies) {
+            for (final ProjectileImpl p : playerProjectiles) {
+                if (Utils
+                    .isColliding(e.getPosition(), e.getWidth(), e.getHeight(), p.getPosition(), p.getWidth(), p.getLenght())) {
                     e.takeDamage(1); //Chiedi ad Ale di aggiungere damage ai proiettili.
                     rmProjectile = p;
                     hit = true;
-                    if(e.isDead()){
+                    if (e.isDead()) {
                         rmEnemy = e;
                         kill = true;
                     }
@@ -176,15 +201,12 @@ public final class WaveManagerController {
             }
         }
 
-        if(hit) {
+        if (hit) {
             playerProjectiles.remove(rmProjectile);
-            hit = false;
-        }
-
-        if (kill) {
-            kill = false;
-            enemies.remove(rmEnemy);
+            if (kill) {
+                enemies.remove(rmEnemy);
+            }
         }
     }
-            
+
 }

@@ -1,21 +1,29 @@
 package it.unibo.spacejava.model;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.spacejava.Position;
 import it.unibo.spacejava.api.Enemy;
 import it.unibo.spacejava.controller.EnemyProjectileController;
 
-public class TankEnemy implements Enemy{
+/**
+ * Nemico tank.
+ */
+@SuppressFBWarnings(
+    value = "EI_EXPOSE_REP", 
+    justification = "Nel game loop è necessario condividere i riferimenti originali per le performance"
+)
+public final class TankEnemy implements Enemy {
         private static final double DEFAULT_WIDTH = 40.0;
     private static final double DEFAULT_HEIGHT = 40.0;
     private static final double ATTACK_OFFSET = 10.0;
     private static final int PROJECTILE_WIDTH = 40;
     private static final int PROJECTILE_HEIGHT = 30;
+    private static final int TYPE = 1;
 
     private final Position position;
     private int health = 3;
     private final double width;
     private final double height;
-    private final int type = 1;
 
     /**
      * Constructs a TankEnemy with initial position.
@@ -79,6 +87,6 @@ public class TankEnemy implements Enemy{
 
     @Override
     public int type() {
-        return type;
+        return TYPE;
     }
 }

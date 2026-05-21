@@ -20,12 +20,12 @@ public final class BaseEnemy implements Enemy {
     private static final double ATTACK_OFFSET = 10.0;
     private static final int PROJECTILE_WIDTH = 40;
     private static final int PROJECTILE_HEIGHT = 30;
+    private static final int TYPE = 0;
 
     private final Position position;
     private int health;
     private final double width;
     private final double height;
-    private final int type = 0;
 
     /**
      * Constructs a BaseEnemy with initial position.
@@ -90,6 +90,6 @@ public final class BaseEnemy implements Enemy {
 
     @Override
     public int type() {
-        return type;
+        return TYPE;
     }
 }
