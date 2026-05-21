@@ -14,6 +14,7 @@ import it.unibo.spacejava.controller.menu.StartMenuController;
 import it.unibo.spacejava.model.PlayerShip;
 import it.unibo.spacejava.model.menu.SkinModel;
 import it.unibo.spacejava.model.menu.StartMenuModel;
+import it.unibo.spacejava.model.sound.SoundManagerImpl;
 import it.unibo.spacejava.view.game.GamePanel;
 import it.unibo.spacejava.view.menu.SkinSelectionView;
 import it.unibo.spacejava.view.menu.StartMenuView;
@@ -35,6 +36,7 @@ public final class GameManagerImpl implements GameManger, Runnable {
     private static final int TILESIZE = 48; 
     private static final int SCREEN_WIDTH = TILESIZE * 16;
     private static final int SCREEN_HEIGTH = TILESIZE * 12;
+    private static final String BACKGROUND_MUSIC_PATH = "/audio/background_music.wav";
 
     //Comonenti del gioco, tra cui il thread del gioco, il pannello di gioco, il gestore dei suoni, 
     // il gestore degli input da tastiera e il layout a schede per gestire le diverse schermate (menu, gioco, selezione skin)
@@ -121,6 +123,7 @@ public final class GameManagerImpl implements GameManger, Runnable {
 
     private void startThreadGame() {
         gameThread = new Thread(this);
+        SoundManagerImpl.getInstance().playBackgroundMusic(BACKGROUND_MUSIC_PATH);
         gameThread.start();
     }
 
