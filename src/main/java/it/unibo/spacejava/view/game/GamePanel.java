@@ -37,6 +37,8 @@ public final class GamePanel extends JPanel {
 
     private transient Image baseEnemyImage;
     private transient Image tankEnemyImage;
+    private transient Image bossEnemyImage;
+    private transient Image redEnemyImage;
     private transient List<Enemy> currentEnemies;
     private transient Image projectileImage;
     private transient PlayerController crtlPlayer;
@@ -58,6 +60,8 @@ public final class GamePanel extends JPanel {
         baseEnemyImage = Utils.loadImage("/enemies/baseEnemy.png");
         projectileImage = Utils.loadImage("/enemies/projectile.png");
         tankEnemyImage = Utils.loadImage("/enemies/tankEnemy.png");
+        bossEnemyImage = Utils.loadImage("/enemies/bossEnemy.png");
+        redEnemyImage = Utils.loadImage("/enemies/redEnemy.png");
 
         if (Objects.isNull(baseEnemyImage) || Objects.isNull(projectileImage)) {
             LOGGER.log(Level.WARNING, "Immagini non caricate correttamente");
@@ -111,6 +115,22 @@ public final class GamePanel extends JPanel {
                         break;
                     case 1:
                             g.drawImage(tankEnemyImage,
+                                e.getPosition().getX(),
+                                e.getPosition().getY(),
+                                (int) e.getWidth(),
+                                (int) e.getHeight(),
+                                null);
+                        break;
+                    case 2:
+                            g.drawImage(redEnemyImage,
+                                e.getPosition().getX(),
+                                e.getPosition().getY(),
+                                (int) e.getWidth(),
+                                (int) e.getHeight(),
+                                null);
+                        break;
+                    case 3:
+                            g.drawImage(bossEnemyImage,
                                 e.getPosition().getX(),
                                 e.getPosition().getY(),
                                 (int) e.getWidth(),

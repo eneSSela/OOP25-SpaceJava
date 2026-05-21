@@ -4,6 +4,7 @@ import it.unibo.spacejava.Position;
 import it.unibo.spacejava.Utils;
 import it.unibo.spacejava.api.Enemy;
 import it.unibo.spacejava.model.BaseEnemy;
+import it.unibo.spacejava.model.BossEnemy;
 import it.unibo.spacejava.model.ProjectileImpl;
 import it.unibo.spacejava.model.TankEnemy;
 
@@ -71,7 +72,11 @@ public final class WaveManagerController {
                         }
                     }
                 }
+                break;
+            case 3:
+                enemies.add(new BossEnemy(startX, startY));
             default:
+            System.out.println("No more waves :'( ");
                 break;
         }
         
