@@ -20,6 +20,7 @@ public final class RedEnemy implements Enemy {
     private static final int PROJECTILE_WIDTH = 40;
     private static final int PROJECTILE_HEIGHT = 30;
     private static final int TYPE = 2;
+    private static final int DAMAGE = 2;
 
     private final Position position;
     private int health;
@@ -84,7 +85,7 @@ public final class RedEnemy implements Enemy {
 
         final Position projectilePos = new Position(startX, startY);
 
-        EnemyProjectileController.addProjectile(new ProjectileImpl(projectilePos, PROJECTILE_WIDTH, PROJECTILE_HEIGHT));
+        EnemyProjectileController.addProjectile(new ProjectileImpl(projectilePos, PROJECTILE_WIDTH, PROJECTILE_HEIGHT, DAMAGE));
     }
 
     @Override

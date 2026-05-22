@@ -14,6 +14,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import it.unibo.spacejava.model.sound.api.SoundManager;
+
 /**
  * Classe che gestisce la ondata di nemici, il loro movimento e i loro attachi.
  */
@@ -25,7 +27,10 @@ public final class WaveManagerController {
     private static final double SHOOT_PROBABILITY = 0.5;
     private static final int BOSS_WAVE_NUM = 3;
     private static final Random RANDOM_ENEMY = new Random();
+    private static final String SHOOT_SOUND_PATH = "/audio/shoot.wav";
+    private static final String HIT_SOUND_PATH = "/audio/hit.wav";
 
+    private final SoundManager soundManager;
     private boolean isMovingRight = true;
     private double timeSinceLastShot;
     private final List<Enemy> enemies;
@@ -36,11 +41,13 @@ public final class WaveManagerController {
      * Costruisce una nuova oindata di nemici, in base alla larghezza dello schermo.
      * 
      * @param screenWidth larghezza dello schermo
+     * @param soundManager gestore dei suoni per riprodurre effeti sonori come lo sparo e l'impatto dei proitettili
      */
-    public WaveManagerController(final double screenWidth) {
+    public WaveManagerController(final double screenWidth, final SoundManager soundManager) {
         this.screenWidth = screenWidth;
         this.enemies = new ArrayList<>();
         this.spawnWave();
+        this.soundManager = soundManager;
     }
 
     // Spawns a grill of enemies
@@ -176,6 +183,7 @@ public final class WaveManagerController {
 
     // Selects a random enemy and makes it attak
     private void shoot() {
+        soundManager.playSound(SHOOT_SOUND_PATH);
         final int randomIndex = (int) (Math.random() * enemies.size());
         enemies.get(randomIndex).attack();
     }
@@ -183,14 +191,14 @@ public final class WaveManagerController {
     private void checkhitEnemies() {
         final List<ProjectileImpl> playerProjectiles = PlayerProjectileController.getProjectileList();
         Enemy rmEnemy = new BaseEnemy(0, 0);
-        ProjectileImpl rmProjectile = new ProjectileImpl(new Position(0, 0), 0, 0);
+        ProjectileImpl rmProjectile = new ProjectileImpl(new Position(0, 0), 0, 0, 0);
         Boolean kill = false;
         Boolean hit = false;
         for (final Enemy e : enemies) {
             for (final ProjectileImpl p : playerProjectiles) {
                 if (Utils
                     .isColliding(e.getPosition(), e.getWidth(), e.getHeight(), p.getPosition(), p.getWidth(), p.getLenght())) {
-                    e.takeDamage(1); //Chiedi ad Ale di aggiungere damage ai proiettili.
+                    e.takeDamage(p.getDamage()); //Chiedi ad Ale di aggiungere damage ai proiettili.
                     rmProjectile = p;
                     hit = true;
                     if (e.isDead()) {
@@ -202,6 +210,7 @@ public final class WaveManagerController {
         }
 
         if (hit) {
+            soundManager.playSound(HIT_SOUND_PATH);
             playerProjectiles.remove(rmProjectile);
             if (kill) {
                 enemies.remove(rmEnemy);

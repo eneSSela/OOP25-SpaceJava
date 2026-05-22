@@ -14,6 +14,7 @@ public final class PlayerShip {
     private static final double SPEED = 300.0;
     private static final int PROJECTILE_WIDTH = 10;
     private static final int PROJECTILE_LENGTH = 40;
+    private static final int DAMAGE = 1;
 
     private int healt = 3;
     private final Position position;
@@ -133,6 +134,6 @@ public final class PlayerShip {
         final int startY = position.getY();
 
         PlayerProjectileController.addProjectile(
-                new ProjectileImpl(new Position(startX, startY), PROJECTILE_LENGTH, PROJECTILE_WIDTH));
+                new ProjectileImpl(new Position(startX, startY), PROJECTILE_LENGTH, PROJECTILE_WIDTH, DAMAGE));
     }
 }

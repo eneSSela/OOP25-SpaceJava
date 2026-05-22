@@ -20,6 +20,7 @@ public final class BossEnemy implements Enemy {
     private static final int PROJECTILE_WIDTH = 80;
     private static final int PROJECTILE_HEIGHT = 60;
     private static final int TYPE = 3;
+    private static final int DAMAGE = 2;
 
     private final Position position;
     private int health;
@@ -84,7 +85,7 @@ public final class BossEnemy implements Enemy {
 
         final Position projectilePos = new Position(startX, startY);
 
-        EnemyProjectileController.addProjectile(new ProjectileImpl(projectilePos, PROJECTILE_WIDTH, PROJECTILE_HEIGHT));
+        EnemyProjectileController.addProjectile(new ProjectileImpl(projectilePos, PROJECTILE_WIDTH, PROJECTILE_HEIGHT, DAMAGE));
     }
 
     @Override

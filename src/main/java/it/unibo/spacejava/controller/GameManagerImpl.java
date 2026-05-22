@@ -56,7 +56,7 @@ public final class GameManagerImpl implements GameManger, Runnable {
     private SkinSelectionView skinSelectionView;
 
     //Compononenti dei nemici e del player
-    private final WaveManagerController waveManager = new WaveManagerController(SCREEN_WIDTH);
+    private final WaveManagerController waveManager = new WaveManagerController(SCREEN_WIDTH, soundManager);
     private final EnemyProjectileController projectileController = new EnemyProjectileController(SCREEN_HEIGTH);
     private PlayerController playerController;
 

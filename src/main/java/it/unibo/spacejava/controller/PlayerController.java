@@ -40,7 +40,7 @@ public class PlayerController {
      * @param playerShip model del giocatore
      * @param keyHandler gestore degli input da tastiera
      * @param screenWidth larghezza delllo shermo per limitare il movimento delgiocaore
-     * @param soundManager gestore dei suoni per riprodurre effeti sonori come lo sparo e l'imaptto dei proitettili
+     * @param soundManager gestore dei suoni per riprodurre effeti sonori come lo sparo e l'impatto dei proitettili
      */
     public PlayerController(
         final PlayerShip playerShip,
@@ -116,7 +116,7 @@ public class PlayerController {
             //Controlla se il rettangolo del player si sovrappone a quello del proiettile
             if (isColliding(playerShip.getPosition(), playerShip.getWidth(), playerShip.getHeight(), 
                             p.getPosition(), p.getWidth(), p.getLenght())) {
-                playerShip.takeDamage(1); //Rimuove un punto vita
+                playerShip.takeDamage(p.getDamage()); //Rimuove un punto vita
                 EnemyProjectileController.removeProjectile(p); //Rimuove il proiettile che ha colpito il giocatore
                 System.out.println("Sei stato colpito! Vita rimanente: " + playerShip.getHealt()); //NOPMD
 

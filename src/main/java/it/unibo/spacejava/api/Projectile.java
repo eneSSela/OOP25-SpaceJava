@@ -35,4 +35,11 @@ public interface Projectile {
      * @return the width of the projectile
      */
     int getWidth();
+
+    /**
+     * Getter method that return the damage of the projectile.
+     * 
+     * @return the damage of the projectile
+     */
+    int getDamage();
 }
