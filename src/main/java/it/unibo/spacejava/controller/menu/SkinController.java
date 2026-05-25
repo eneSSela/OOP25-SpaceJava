@@ -1,6 +1,7 @@
 package it.unibo.spacejava.controller.menu;
 
 import java.awt.event.KeyEvent;
+import java.util.Objects;
 
 import it.unibo.spacejava.KeyHandler;
 import it.unibo.spacejava.model.menu.SkinModel;
@@ -24,7 +25,7 @@ public final class SkinController extends KeyHandler {
      * @param onBack l'azione che viene eseguita quando l'utente decide di tornare indietro.
      */
     public SkinController(final SkinModel model, final Command onBack) {
-        this.model = model;
+        this.model = Objects.requireNonNull(model, "Il model non poò essere nullo");
         this.onBack = onBack;
     }
 

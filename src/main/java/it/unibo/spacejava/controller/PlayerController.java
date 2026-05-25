@@ -2,8 +2,8 @@ package it.unibo.spacejava.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.spacejava.KeyHandler;
 import it.unibo.spacejava.Position;
 import it.unibo.spacejava.Skin;
@@ -16,10 +16,6 @@ import it.unibo.spacejava.model.sound.SoundManagerImpl;
  * altre verfiche come la collisione con i proiettili dei nemici,
  * e la gestione della skin del giocatore.
  */
-@SuppressFBWarnings(
-    value = "EI_EXPOSE_REP", 
-    justification = "Nel game loop è necessario condividere i riferimenti originali per le performance"
-)
 public class PlayerController {
 
     private static final double SHOOT_COOL_DOWN = 0.5; //Mezzo secondo tra uno sparo e l'altro
@@ -43,8 +39,8 @@ public class PlayerController {
         final PlayerShip playerShip,
         final KeyHandler keyHandler,
         final double screenWidth) {
-        this.playerShip = playerShip;
-        this.keyHandler = keyHandler;
+        this.playerShip = Objects.requireNonNull(playerShip, "Non può esser nullo");
+        this.keyHandler = Objects.requireNonNull(keyHandler, "Non puo esser nullo");
         this.screenWidth = screenWidth;
     }
 
@@ -144,6 +140,6 @@ public class PlayerController {
      * @return il model del giocatore
      */
     public PlayerShip getPlayerShip() {
-        return this.playerShip;
+        return Objects.requireNonNull(this.playerShip);
     }
 }

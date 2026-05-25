@@ -83,7 +83,7 @@ public final class SkinModel {
         return false;
     }
 
-     /**
+    /**
      * Aggiunge un observer che invia una notifica ogni volta che il model subisce una modifica.
      * 
      * @param observer il listener da aggiungere alla lista
@@ -110,5 +110,4 @@ public final class SkinModel {
             observer.updateMenuState();
         }
     }
-
 }

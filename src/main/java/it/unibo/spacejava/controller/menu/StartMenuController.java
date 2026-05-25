@@ -1,9 +1,10 @@
 package it.unibo.spacejava.controller.menu;
 
 import java.awt.event.KeyEvent;
+import java.util.Objects;
+
 import javax.swing.Timer;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.spacejava.KeyHandler;
 import it.unibo.spacejava.model.menu.StartMenuModel;
 import it.unibo.spacejava.model.sound.SoundManagerImpl;
@@ -15,10 +16,6 @@ import it.unibo.spacejava.api.Command;
  * riproduce i suoni quando l'utente seleziona un'opzione.
  * Infine, fornisce dei callback per le azioni da eseguire quando l'utente seleziona "Gioca", "Seleziona Skin" o "Esci".
  */
-@SuppressFBWarnings(
-    value = "EI_EXPOSE_REP", 
-    justification = "Nel game loop è necessario condividere i riferimenti originali per le performance" 
-)
 public class StartMenuController extends KeyHandler {
 
     private static final String SELECTION_SOUND_PATH = "/audio/selection.wav";
@@ -45,10 +42,10 @@ public class StartMenuController extends KeyHandler {
         final Command onPlay, 
         final Command onSkinSelection, 
         final Command onExit) {
-        this.model = model;
-        this.onPlay = onPlay;
-        this.onSkinSelection = onSkinSelection;
-        this.onExit = onExit;
+        this.model = Objects.requireNonNull(model, "Non può essere nullo");
+        this.onPlay = Objects.requireNonNull(onPlay);
+        this.onSkinSelection = Objects.requireNonNull(onSkinSelection);
+        this.onExit = Objects.requireNonNull(onExit);
 
         blinkTimer = new Timer(BLINK_INTERVAL, e -> model.setBlinkOn(!model.isBlinkOn()));
         blinkTimer.start();

@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.Objects;
+
 import javax.swing.JPanel;
 
 import it.unibo.spacejava.Skin;
@@ -52,7 +54,7 @@ public final class SkinSelectionView extends JPanel implements MenuObserver {
      * @param model del menu di selezione skin
      */
     public SkinSelectionView(final SkinModel model) {
-        this.model = model;
+        this.model = Objects.requireNonNull(model, "Il model non può essere nullo");
         this.model.addObserver(this);
         setBackground(Color.BLACK);
         setFocusable(true);
