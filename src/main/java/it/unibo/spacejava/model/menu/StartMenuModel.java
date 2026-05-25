@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import it.unibo.spacejava.api.StartMenuObserver;
+import it.unibo.spacejava.api.MenuObserver;
 
 /**
  * Classe che rappresenta  il model per la shcermata del menu iniziale,
@@ -16,7 +16,7 @@ public class StartMenuModel {
     private final List<String> options = List.of("Gioca", "Seleziona Skin", "Esci");
     private int selectedIndex;
     private boolean blinkOn;
-    private final List<StartMenuObserver> listeners = new CopyOnWriteArrayList<>();
+    private final List<MenuObserver> listeners = new CopyOnWriteArrayList<>();
 
     /**
      * Costruttore della classe StartMenuModel,
@@ -87,7 +87,7 @@ public class StartMenuModel {
      * 
      * @param observer il listener da aggiungere alla lista
      */
-    public void addObserver(final StartMenuObserver observer) {
+    public void addObserver(final MenuObserver observer) {
         listeners.add(Objects.requireNonNull(observer));
     }
 
@@ -97,7 +97,7 @@ public class StartMenuModel {
      * 
      * @param observer observer da rimuovere dalla lista
      */
-    public void removeObserver(final StartMenuObserver observer) {
+    public void removeObserver(final MenuObserver observer) {
         listeners.remove(observer);
     }
 
@@ -105,7 +105,7 @@ public class StartMenuModel {
      * Metodo che cilca tutti i listener presenti nella lista, per poterli notificare che il model a subito un cambiamento.
      */
     private void notifyListeners() {
-        for (final StartMenuObserver observer : listeners) {
+        for (final MenuObserver observer : listeners) {
             observer.updateMenuState();
         }
     }

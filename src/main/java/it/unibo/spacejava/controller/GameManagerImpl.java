@@ -97,7 +97,7 @@ public final class GameManagerImpl implements GameManger, Runnable {
                 startMenuView.requestFocusInWindow();
             }
         );
-        skinSelectionView = new SkinSelectionView(skinController);
+        skinSelectionView = new SkinSelectionView(skinModel);
         skinSelectionView.setFocusable(true);
         skinSelectionView.addKeyListener(skinController);
 

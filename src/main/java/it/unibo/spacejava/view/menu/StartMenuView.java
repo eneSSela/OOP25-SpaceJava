@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.spacejava.Utils;
-import it.unibo.spacejava.api.StartMenuObserver;
+import it.unibo.spacejava.api.MenuObserver;
 import it.unibo.spacejava.model.menu.StartMenuModel;
 
 /**
@@ -23,7 +23,7 @@ import it.unibo.spacejava.model.menu.StartMenuModel;
     value = "EI_EXPOSE_REP2", 
     justification = "Il design architetturale richiede che la View mantenga il riferimento diretto al Model"
 )
-public final class StartMenuView extends JPanel implements StartMenuObserver {
+public final class StartMenuView extends JPanel implements MenuObserver {
 
     private static final long serialVersionUID = 1L;
 

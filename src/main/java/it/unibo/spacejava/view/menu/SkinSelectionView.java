@@ -8,12 +8,13 @@ import javax.swing.JPanel;
 
 import it.unibo.spacejava.Skin;
 import it.unibo.spacejava.Utils;
-import it.unibo.spacejava.controller.menu.SkinController;
+import it.unibo.spacejava.api.MenuObserver;
+import it.unibo.spacejava.model.menu.SkinModel;
 
 /**
  * View dedicata alla rappresetazione della schermata per poter comprare o selezionare le skin disponibili per il giocatore.
  */
-public final class SkinSelectionView extends JPanel {
+public final class SkinSelectionView extends JPanel implements MenuObserver {
 
     private static final long serialVersionUID = 1L;
 
@@ -43,15 +44,16 @@ public final class SkinSelectionView extends JPanel {
     private static final String TEXT_CAN_BUY = "Premi SPAZIO per comprare!";
     private static final String TEXT_CANNOT_BUY = "Punti insufficienti";
 
-    private final transient SkinController controller;
+    private final transient SkinModel model;
 
     /**
      * Costruisce la view per la selezione delle skin.
      * 
-     * @param controller del menu di selezione skin
+     * @param model del menu di selezione skin
      */
-    public SkinSelectionView(final SkinController controller) {
-        this.controller = controller;
+    public SkinSelectionView(final SkinModel model) {
+        this.model = model;
+        this.model.addObserver(this);
         setBackground(Color.BLACK);
         setFocusable(true);
     }
@@ -65,10 +67,10 @@ public final class SkinSelectionView extends JPanel {
         final int height = getHeight();
         final FontMetrics fm = g2.getFontMetrics(); // Strumento vitale per centrare il testo!
 
-        final Skin currentSkin = controller.getPlayerSelectedSkin();
+        final Skin currentSkin = model.getSelectedSkin();
 
         // PUNTI DEL GIOCATORE (in alto a destra)
-        final String pointsText = TEXT_POINTS + controller.getPlayerPoints();
+        final String pointsText = TEXT_POINTS + model.getPoints();
         final int pointsWidth = fm.stringWidth(pointsText); // Calcola la larghezza esatta della scritta
         g2.setColor(COLOR_POINTS);
         g2.drawString(pointsText, width - pointsWidth - POINTS_PADDING_RIGHT, POINTS_MARGIN_TOP);
@@ -99,7 +101,7 @@ public final class SkinSelectionView extends JPanel {
             g2.drawString(lockedText, (width - lockedWidth) / 2, bottomY - LINE_SPACING);
 
             // Suggerimento di acquisto dinamico
-            if (controller.getPlayerPoints() >= currentSkin.getPrice()) {
+            if (model.getPoints() >= currentSkin.getPrice()) {
                 final int buyWidth = fm.stringWidth(TEXT_CAN_BUY);
                 g2.setColor(COLOR_CAN_BUY);
                 g2.drawString(TEXT_CAN_BUY, (width - buyWidth) / 2, bottomY);
@@ -109,5 +111,10 @@ public final class SkinSelectionView extends JPanel {
                 g2.drawString(TEXT_CANNOT_BUY, (width - cannotBuyWidth) / 2, bottomY);
             }
         }
+    }
+
+    @Override
+    public void updateMenuState() {
+        this.repaint();
     }
 }

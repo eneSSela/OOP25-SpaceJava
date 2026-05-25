@@ -5,6 +5,7 @@ import java.awt.event.KeyEvent;
 import it.unibo.spacejava.KeyHandler;
 import it.unibo.spacejava.model.menu.SkinModel;
 import it.unibo.spacejava.Skin;
+import it.unibo.spacejava.api.Command;
 
 /**
  * Classe che funge come controller per la shermnata della selezione delle skins, 
@@ -13,7 +14,7 @@ import it.unibo.spacejava.Skin;
 public final class SkinController extends KeyHandler {
 
     private final SkinModel model;
-    private final Runnable onBack;
+    private final Command onBack;
 
     /**
      * Costruttore della classe SkinController, che prende in input il model da utilizzare ,
@@ -22,7 +23,7 @@ public final class SkinController extends KeyHandler {
      * @param model è il model che contiene tutta la logica per la selezione delle skin.
      * @param onBack l'azione che viene eseguita quando l'utente decide di tornare indietro.
      */
-    public SkinController(final SkinModel model, final Runnable onBack) {
+    public SkinController(final SkinModel model, final Command onBack) {
         this.model = model;
         this.onBack = onBack;
     }
@@ -63,7 +64,7 @@ public final class SkinController extends KeyHandler {
                 System.out.println("Non hai abbastanza punti per comprare questa skin!"); //NOPMD
             }
         } else if (super.isEnterPressed() && currentSkin.isUnlock()) {
-            onBack.run();
+            onBack.execute();
         }
     }
 }

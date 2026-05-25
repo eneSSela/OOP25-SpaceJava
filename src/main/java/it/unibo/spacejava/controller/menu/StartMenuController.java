@@ -7,6 +7,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.spacejava.KeyHandler;
 import it.unibo.spacejava.model.menu.StartMenuModel;
 import it.unibo.spacejava.model.sound.SoundManagerImpl;
+import it.unibo.spacejava.api.Command;
 
 /**
  * Controller per il menu di start. Gestisce l'input da tastiera e aggiorna il model di conseguenza.
@@ -25,9 +26,9 @@ public class StartMenuController extends KeyHandler {
     private static final int BLINK_INTERVAL = 500; // Intervallo di lampeggiamento in millisecondi
 
     private final StartMenuModel model;
-    private final Runnable onPlay;
-    private final Runnable onSkinSelection;
-    private final Runnable onExit;
+    private final Command onPlay;
+    private final Command onSkinSelection;
+    private final Command onExit;
     private final Timer blinkTimer;
 
     /**
@@ -41,9 +42,9 @@ public class StartMenuController extends KeyHandler {
      */
     public StartMenuController(
         final StartMenuModel model, 
-        final Runnable onPlay, 
-        final Runnable onSkinSelection, 
-        final Runnable onExit) {
+        final Command onPlay, 
+        final Command onSkinSelection, 
+        final Command onExit) {
         this.model = model;
         this.onPlay = onPlay;
         this.onSkinSelection = onSkinSelection;
@@ -72,11 +73,11 @@ public class StartMenuController extends KeyHandler {
             SoundManagerImpl.getInstance().playSound(ENTER_SOUND_PATH);
             this.stop();
             if (model.getSelectedIndex() == 0) {
-                onPlay.run();
+                onPlay.execute();
             } else if (model.getSelectedIndex() == 1) {
-                onSkinSelection.run();
+                onSkinSelection.execute();
             } else {
-                onExit.run();
+                onExit.execute();
             }
         }
     }
