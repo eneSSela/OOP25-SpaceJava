@@ -6,6 +6,7 @@ import java.util.Objects;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -18,8 +19,25 @@ import it.unibo.spacejava.model.sound.api.SoundManager;
  */
 public final class SoundManagerImpl implements SoundManager {
 
+    //Unica istanza del SoundManger, per avere un unico gesore dei seuoni in tutto il gioco
+    private static final SoundManagerImpl INSTANCE = new SoundManagerImpl();
+
     //variabile per tenere in memoria la traccia audio che viene riprodotta in sottofondo
     private Clip backgroundMusicClip;
+
+    private SoundManagerImpl() {
+    }
+
+    /**
+     * Restistuisce l'unica instanza disponibile del SoundManager,
+     * questa scleta implementa il patter singleton, per garantire che ci sia un unico gestore dei suoni in tutto il gioco,
+     * evitando cosi problemi di sincronizzazione o conflitti nella riproduzione dei suoni.
+     * 
+     * @return l'implementazione globale del SoundManager
+     */
+    public static SoundManagerImpl getInstance() {
+        return INSTANCE;
+    }
 
     @Override
     public void playSound(final String soundName) {
@@ -31,6 +49,12 @@ public final class SoundManagerImpl implements SoundManager {
         try {
             final AudioInputStream audioIn = AudioSystem.getAudioInputStream(getClass().getResourceAsStream(soundName));
             final Clip clip = AudioSystem.getClip();
+            //Qusto listener serve per risolvere il memory leak
+            clip.addLineListener(e -> {
+                if (e.getType() == LineEvent.Type.STOP) {
+                    clip.close();
+                }
+            });
             clip.open(audioIn);
             clip.start();
         } catch (final UnsupportedAudioFileException | IOException | LineUnavailableException e) {

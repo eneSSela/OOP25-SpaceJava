@@ -15,6 +15,7 @@ public final class PlayerShip {
     private static final int PROJECTILE_WIDTH = 10;
     private static final int PROJECTILE_LENGTH = 40;
     private static final int DAMAGE = 1;
+    private static int playerPoints;
 
     private int healt = 3;
     private final Position position;
@@ -135,5 +136,43 @@ public final class PlayerShip {
 
         PlayerProjectileController.addProjectile(
                 new ProjectileImpl(new Position(startX, startY), PROJECTILE_LENGTH, PROJECTILE_WIDTH, DAMAGE));
+    }
+
+    /**
+     * Metodo per poter aggiungere i punti al giocatore.
+     * 
+     * @param p punti fatti dal giocare durante la partia, da aggiungere allo stato attaule del giocatore
+     */
+    public static void addPoints(final int p) {
+        if (p > 0) {
+            playerPoints += p;
+        }
+    }
+
+    /**
+     * Metodo per togliere i punti al giocatore, vienen chamato quando fa l'aquisto di una nuova skin.
+     * 
+     * @param p punti da togliere
+     */
+    public static void lessPoints(final int p) {
+        if (p > 0) {
+            playerPoints -= p;
+        }
+    }
+
+    /**
+     * Metodo per ritornare i punti accumulati dal giocatore, durante la partita.
+     * 
+     * @return i punti attuali del giocatore
+     */
+    public static int getPlayerPoints() {
+        return playerPoints;
+    }
+
+    /**
+     * Resetta i punti del giocatore a zero.
+     */
+    public static void resetPoints() {
+        playerPoints = 0;
     }
 }

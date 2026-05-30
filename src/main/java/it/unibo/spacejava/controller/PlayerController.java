@@ -2,25 +2,20 @@ package it.unibo.spacejava.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.spacejava.KeyHandler;
 import it.unibo.spacejava.Position;
 import it.unibo.spacejava.Skin;
 import it.unibo.spacejava.model.PlayerShip;
 import it.unibo.spacejava.model.ProjectileImpl;
-
-import it.unibo.spacejava.model.sound.api.SoundManager;
+import it.unibo.spacejava.model.sound.SoundManagerImpl;
 
 /**
  * La calsse che funge da controller del giocatore, gestice il movimento e lo sparo, 
  * altre verfiche come la collisione con i proiettili dei nemici,
  * e la gestione della skin del giocatore.
  */
-@SuppressFBWarnings(
-    value = "EI_EXPOSE_REP", 
-    justification = "Nel game loop è necessario condividere i riferimenti originali per le performance"
-)
 public class PlayerController {
 
     private static final double SHOOT_COOL_DOWN = 0.5; //Mezzo secondo tra uno sparo e l'altro
@@ -30,7 +25,6 @@ public class PlayerController {
     private final PlayerShip playerShip;
     private final KeyHandler keyHandler;
     private final double screenWidth;
-    private final SoundManager soundManager;
 
     private double timeSinceLastShot = SHOOT_COOL_DOWN;
 
@@ -40,17 +34,14 @@ public class PlayerController {
      * @param playerShip model del giocatore
      * @param keyHandler gestore degli input da tastiera
      * @param screenWidth larghezza delllo shermo per limitare il movimento delgiocaore
-     * @param soundManager gestore dei suoni per riprodurre effeti sonori come lo sparo e l'impatto dei proitettili
      */
     public PlayerController(
         final PlayerShip playerShip,
         final KeyHandler keyHandler,
-        final double screenWidth,
-        final SoundManager soundManager) {
-        this.playerShip = playerShip;
-        this.keyHandler = keyHandler;
+        final double screenWidth) {
+        this.playerShip = Objects.requireNonNull(playerShip, "Non può esser nullo");
+        this.keyHandler = Objects.requireNonNull(keyHandler, "Non puo esser nullo");
         this.screenWidth = screenWidth;
-        this.soundManager = soundManager; 
     }
 
     /**
@@ -72,7 +63,7 @@ public class PlayerController {
         if (keyHandler.isSpacePressed() && timeSinceLastShot >= SHOOT_COOL_DOWN) {
             playerShip.shoot();
             timeSinceLastShot = 0;
-            soundManager.playSound(SHOOT_SOUND_PATH);
+            SoundManagerImpl.getInstance().playSound(SHOOT_SOUND_PATH);
         }
     }
 
@@ -120,7 +111,7 @@ public class PlayerController {
                 EnemyProjectileController.removeProjectile(p); //Rimuove il proiettile che ha colpito il giocatore
                 System.out.println("Sei stato colpito! Vita rimanente: " + playerShip.getHealt()); //NOPMD
 
-                soundManager.playSound(HIT_SOUND_PATH);
+                SoundManagerImpl.getInstance().playSound(HIT_SOUND_PATH);
             }
         }
     }
@@ -149,6 +140,6 @@ public class PlayerController {
      * @return il model del giocatore
      */
     public PlayerShip getPlayerShip() {
-        return this.playerShip;
+        return Objects.requireNonNull(this.playerShip);
     }
 }

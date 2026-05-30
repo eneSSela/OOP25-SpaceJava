@@ -1,10 +1,12 @@
 package it.unibo.spacejava.controller.menu;
 
 import java.awt.event.KeyEvent;
+import java.util.Objects;
 
 import it.unibo.spacejava.KeyHandler;
 import it.unibo.spacejava.model.menu.SkinModel;
 import it.unibo.spacejava.Skin;
+import it.unibo.spacejava.api.Command;
 
 /**
  * Classe che funge come controller per la shermnata della selezione delle skins, 
@@ -13,7 +15,7 @@ import it.unibo.spacejava.Skin;
 public final class SkinController extends KeyHandler {
 
     private final SkinModel model;
-    private final Runnable onBack;
+    private final Command onBack;
 
     /**
      * Costruttore della classe SkinController, che prende in input il model da utilizzare ,
@@ -22,29 +24,9 @@ public final class SkinController extends KeyHandler {
      * @param model è il model che contiene tutta la logica per la selezione delle skin.
      * @param onBack l'azione che viene eseguita quando l'utente decide di tornare indietro.
      */
-    public SkinController(final SkinModel model, final Runnable onBack) {
-        this.model = model;
+    public SkinController(final SkinModel model, final Command onBack) {
+        this.model = Objects.requireNonNull(model, "Il model non poò essere nullo");
         this.onBack = onBack;
-    }
-
-    /**
-     * Getter per ottenere la skin attualmente selezionata dall'utente.
-     * 
-     * @return la skin che comparisce attaumente nella schermata di selezione,
-     *         che può essere acquistata o selezionata per il gioco.
-     */
-    public Skin getPlayerSelectedSkin() {
-        return model.getSelectedSkin();
-    }
-
-    /**
-     * Getter per richiere al model il numero di punti attauli del giocatre, 
-     * utilizati dalla view per poterli disegnre a schermo.
-     * 
-     * @return intero che indica i punti attauli del giocatore
-     */
-    public int getPlayerPoints() {
-        return model.getPoints();
     }
 
     @Override
@@ -63,7 +45,7 @@ public final class SkinController extends KeyHandler {
                 System.out.println("Non hai abbastanza punti per comprare questa skin!"); //NOPMD
             }
         } else if (super.isEnterPressed() && currentSkin.isUnlock()) {
-            onBack.run();
+            onBack.execute();
         }
     }
 }

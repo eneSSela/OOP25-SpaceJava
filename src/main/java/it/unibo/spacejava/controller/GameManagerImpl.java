@@ -37,12 +37,12 @@ public final class GameManagerImpl implements GameManger, Runnable {
     private static final int TILESIZE = 48; 
     private static final int SCREEN_WIDTH = TILESIZE * 16;
     private static final int SCREEN_HEIGTH = TILESIZE * 12;
+    private static final String BACKGROUND_MUSIC_PATH = "/audio/background_music.wav";
 
     //Comonenti del gioco, tra cui il thread del gioco, il pannello di gioco, il gestore dei suoni, 
     // il gestore degli input da tastiera e il layout a schede per gestire le diverse schermate (menu, gioco, selezione skin)
     private Thread gameThread;
     private final GamePanel gamePanel = new GamePanel(SCREEN_WIDTH, SCREEN_HEIGTH);
-    private final SoundManager soundManager = new SoundManagerImpl();
     private final KeyHandler gameKeyHandler = new KeyHandler();
     private final CardLayout cardLayout = new CardLayout();
 
@@ -52,11 +52,10 @@ public final class GameManagerImpl implements GameManger, Runnable {
 
     //Componenti della schermata di selezione skin
     private final SkinModel skinModel = new SkinModel();
-    private SkinController skinController;
     private SkinSelectionView skinSelectionView;
 
     //Compononenti dei nemici e del player
-    private final WaveManagerController waveManager = new WaveManagerController(SCREEN_WIDTH, soundManager);
+    private final WaveManagerController waveManager = new WaveManagerController(SCREEN_WIDTH, SoundManagerImpl.getInstance());
     private final EnemyProjectileController projectileController = new EnemyProjectileController(SCREEN_HEIGTH);
     private PlayerController playerController;
 
@@ -77,7 +76,7 @@ public final class GameManagerImpl implements GameManger, Runnable {
         gamePanel.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGTH));
 
         //Iniziallizazione Controller e view del menu
-        final StartMenuController startMenuController = new StartMenuController(startMenuModel, soundManager,
+        final StartMenuController startMenuController = new StartMenuController(startMenuModel,
             () -> {
                 cardLayout.show(cards, "GAME");
                 gamePanel.requestFocusInWindow();
@@ -88,17 +87,17 @@ public final class GameManagerImpl implements GameManger, Runnable {
             },
             this::stopGame
         );
-        startMenuView = new StartMenuView(startMenuController);
+        startMenuView = new StartMenuView(startMenuModel);
         startMenuView.addKeyListener(startMenuController);
 
         //Inizializzazione controller e view della schermata di selezione skin
-        skinController = new SkinController(skinModel,
+        final SkinController skinController = new SkinController(skinModel,
             () -> {
                 cardLayout.show(cards, "MENU");
                 startMenuView.requestFocusInWindow();
             }
         );
-        skinSelectionView = new SkinSelectionView(skinController);
+        skinSelectionView = new SkinSelectionView(skinModel);
         skinSelectionView.setFocusable(true);
         skinSelectionView.addKeyListener(skinController);
 
@@ -109,8 +108,8 @@ public final class GameManagerImpl implements GameManger, Runnable {
 
         final int startX = (int) (SCREEN_WIDTH / 2.0) - 32;
         final int startY = SCREEN_HEIGTH - 100;
-        final PlayerShip playerModel = new PlayerShip(startX, startY, skinController.getPlayerSelectedSkin());
-        playerController = new PlayerController(playerModel, gameKeyHandler, SCREEN_WIDTH, soundManager);
+        final PlayerShip playerModel = new PlayerShip(startX, startY, skinModel.getSelectedSkin());
+        playerController = new PlayerController(playerModel, gameKeyHandler, SCREEN_WIDTH);
 
         gamePanel.addKeyListener(gameKeyHandler);
         startMenuView.setFocusable(true);
@@ -124,6 +123,7 @@ public final class GameManagerImpl implements GameManger, Runnable {
 
     private void startThreadGame() {
         gameThread = new Thread(this);
+        SoundManagerImpl.getInstance().playBackgroundMusic(BACKGROUND_MUSIC_PATH);
         gameThread.start();
     }
 
@@ -151,8 +151,8 @@ public final class GameManagerImpl implements GameManger, Runnable {
                 if (startMenuView.isVisible()) {
                     startMenuView.repaint();
                 } else if (gamePanel.isVisible()) {
-                    if (!skinController.getPlayerSelectedSkin().equals(playerController.getPlayerSkin())) {
-                        playerController.setPlayerSkin(skinController.getPlayerSelectedSkin());
+                    if (!skinModel.getSelectedSkin().equals(playerController.getPlayerSkin())) {
+                        playerController.setPlayerSkin(skinModel.getSelectedSkin());
                     }
                     waveManager.update(timePerFrame);
                     projectileController.update(timePerFrame);

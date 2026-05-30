@@ -12,12 +12,13 @@ import java.util.Objects;
 import javax.swing.JPanel;
 
 import it.unibo.spacejava.Utils;
-import it.unibo.spacejava.controller.menu.StartMenuController;
+import it.unibo.spacejava.api.MenuObserver;
+import it.unibo.spacejava.model.menu.StartMenuModel;
 
 /**
  * Rappresenta la view del menu iniziale del gioco.
  */
-public final class StartMenuView extends JPanel {
+public final class StartMenuView extends JPanel implements MenuObserver {
 
     private static final long serialVersionUID = 1L;
 
@@ -40,20 +41,21 @@ public final class StartMenuView extends JPanel {
     private static final Color TITLE_COLOR = new Color(64, 224, 208);
     private static final Color BLINK_COLOR = new Color(57, 255, 20);
 
-    private final transient StartMenuController controller;
+    private final transient StartMenuModel model;
     private final transient Image logo;
     private final transient Image background;
 
     /**
      * Costruisce la view del menu iniziale.
      * 
-     * @param controller del menu
+     * @param model del menu
      */
-    public StartMenuView(final StartMenuController controller) {
-        this.controller = controller;
+    public StartMenuView(final StartMenuModel model) {
+        this.model = Objects.requireNonNull(model, "Il model non può essere nullo");
         setBackground(Color.BLACK);
         setFocusable(true);
 
+        this.model.addObserver(this);
         this.background = Utils.loadImage("/menu/background.png");
         this.logo = Utils.loadImage("/menu/logo.png");
     }
@@ -136,14 +138,14 @@ public final class StartMenuView extends JPanel {
         final Font menuFont = new Font(Font.MONOSPACED, Font.BOLD, Math.max(MIN_MENU_FONT_SIZE, w / MENU_FONT_DIVISOR));
         g2.setFont(menuFont);
 
-        for (final String option : controller.getOptions()) {
+        for (final String option : model.getOptions()) {
             final int optionW = fm.stringWidth(option);
-            final int i = controller.getOptions().indexOf(option);
+            final int i = model.getOptions().indexOf(option);
             final int x = (w - optionW) / 2;
             final int y = startY + gap * i;
 
-            final boolean selected = controller.getSelectedIndex() == i;
-            final boolean blink = selected && controller.isBlinkOn();
+            final boolean selected = model.getSelectedIndex() == i;
+            final boolean blink = selected && model.isBlinkOn();
 
             if (selected) {
                 drawSelectedOption(g2, option, x, y, blink);
@@ -172,10 +174,8 @@ public final class StartMenuView extends JPanel {
         g2.drawString(option, x, y);
     }
 
-    /**
-     * Usato per comunicare al controller di far femrare timer del blinker. 
-     */
-    public void stop() {
-        controller.stop();
+    @Override
+    public void updateMenuState() {
+        this.repaint();
     }
 }

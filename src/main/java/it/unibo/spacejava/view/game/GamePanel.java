@@ -4,17 +4,12 @@ import java.awt.Color;
 import java.awt.Font;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import it.unibo.spacejava.Utils;
 import it.unibo.spacejava.api.Enemy;
 import it.unibo.spacejava.controller.EnemyProjectileController;
 import it.unibo.spacejava.controller.PlayerController;
 import it.unibo.spacejava.model.ProjectileImpl;
-
 import javax.swing.JPanel;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 import java.awt.Graphics;
 import java.awt.Image;
 import java.util.List;
@@ -23,10 +18,6 @@ import java.util.Objects;
 /**
  * Panel responsabile del rendering della UI di gioco (nemici, proiettili, giocatore e HUD).
  */
-@SuppressFBWarnings(
-    value = "EI_EXPOSE_REP", 
-    justification = "Nel game loop è necessario condividere i riferimenti originali per le performance"
-)
 public final class GamePanel extends JPanel {
 
     private static final long serialVersionUID = 1L;
@@ -78,7 +69,7 @@ public final class GamePanel extends JPanel {
     public void render(final List<Enemy> enemies, final PlayerController player,
             final List<ProjectileImpl> playerProjectile) {
         this.currentEnemies = List.copyOf(enemies);
-        this.crtlPlayer = player;
+        this.crtlPlayer = Objects.requireNonNull(player, "Non può essere nullo");
         this.playerProjectiles = List.copyOf(playerProjectile);
         repaint();
     }
