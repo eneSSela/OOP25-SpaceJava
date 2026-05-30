@@ -9,8 +9,12 @@ import org.junit.jupiter.api.Test;
 import it.unibo.spacejava.model.PlayerShip;
 import it.unibo.spacejava.model.menu.SkinModel;
 
+/**
+ * Classe che permette di testare il model dello skin model.
+ */
 final class SkinModelTest {
 
+    private static final int POINTS_TO_ADD = 150;
     private SkinModel model;
 
     @BeforeEach
@@ -30,9 +34,9 @@ final class SkinModelTest {
     void testBuySkinWithInsufficientPoints() {
         model.selectNext(); // Passa alla "ship2" (costa 100)
         assertFalse(model.getSelectedSkin().isUnlock(), "La ship2 dovrebbe essere bloccata all'inizio");
-        
+
         final boolean result = model.buyCurrentSkin();
-        
+
         assertFalse(result, "L'acquisto deve fallire perché i punti sono 0");
         assertFalse(model.getSelectedSkin().isUnlock(), "La skin deve rimanere bloccata");
     }
@@ -40,12 +44,15 @@ final class SkinModelTest {
     @Test
     void testBuySkinWithSufficientPoints() {
         model.selectNext(); // Passa alla "ship2" (costa 100)
-        PlayerShip.addPoints(150);; // Aggiungiamo punti (usando il metodo suggerito)
-        
+        PlayerShip.addPoints(POINTS_TO_ADD); // Aggiungiamo punti (usando il metodo suggerito)
+
         final boolean result = model.buyCurrentSkin();
-        
+
         assertTrue(result, "L'acquisto deve avere successo");
         assertTrue(model.getSelectedSkin().isUnlock(), "La skin deve risultare sbloccata dopo l'acquisto");
-        assertEquals(50, model.getPoints(), "I punti devono essere stati scalati correttamente (150 - 100 = 50)");
+        assertEquals(
+            POINTS_TO_ADD - model.getSelectedSkin().getPrice(),
+            model.getPoints(),
+            "I punti devono essere stati scalati correttamente (150 - 100 = 50)");
     }
 }
