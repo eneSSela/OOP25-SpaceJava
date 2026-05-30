@@ -6,6 +6,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import it.unibo.spacejava.Skin;
 import it.unibo.spacejava.api.MenuObserver;
+import it.unibo.spacejava.model.PlayerShip;
 
 /**
  * Classe che funge da model per la schermata di selezione delle skin,
@@ -14,8 +15,8 @@ import it.unibo.spacejava.api.MenuObserver;
 public final class SkinModel {
 
     //variabili per test (potrebbe cambiare)
-    private int playerPoints;
     private int selectedIndex;
+
     // lista dove aggiungere tutte le possibili skin
     private final List<Skin> skins = List.of(
         new Skin("Default", "/skins/spaceShips_001.png", 0, true), // Skin di default, già sbloccata
@@ -29,7 +30,6 @@ public final class SkinModel {
      * e inzializzo anche la lista delle skin.
      */
     public SkinModel() {
-        this.playerPoints = 0;
         this.selectedIndex = 0;
     }
 
@@ -39,7 +39,7 @@ public final class SkinModel {
      * @return integer che identifica i punti attuali del giocatore, utilizzabili per sbloccare skins
      */
     public int getPoints() {
-        return playerPoints;
+        return PlayerShip.getPlayerPoints();
     }
 
     /**
@@ -74,8 +74,8 @@ public final class SkinModel {
      */
     public boolean buyCurrentSkin() {
         final Skin current = getSelectedSkin();
-        if (!current.isUnlock() && playerPoints >= current.getPrice()) {
-            playerPoints -= current.getPrice(); // Scala i punti
+        if (!current.isUnlock() && PlayerShip.getPlayerPoints() >= current.getPrice()) {
+            PlayerShip.lessPoints(current.getPrice()); // Scala i punti
             current.unlock();                   // Sblocca la skin
             this.notifyListeners();
             return true;
