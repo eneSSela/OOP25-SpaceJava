@@ -51,7 +51,6 @@ public final class GameManagerImpl implements GameManger, Runnable {
 
     //Componenti della schermata di selezione skin
     private final SkinModel skinModel = new SkinModel();
-    private SkinController skinController;
     private SkinSelectionView skinSelectionView;
 
     //Compononenti dei nemici e del player
@@ -91,7 +90,7 @@ public final class GameManagerImpl implements GameManger, Runnable {
         startMenuView.addKeyListener(startMenuController);
 
         //Inizializzazione controller e view della schermata di selezione skin
-        skinController = new SkinController(skinModel,
+        final SkinController skinController = new SkinController(skinModel,
             () -> {
                 cardLayout.show(cards, "MENU");
                 startMenuView.requestFocusInWindow();
@@ -108,7 +107,7 @@ public final class GameManagerImpl implements GameManger, Runnable {
 
         final int startX = (int) (SCREEN_WIDTH / 2.0) - 32;
         final int startY = SCREEN_HEIGTH - 100;
-        final PlayerShip playerModel = new PlayerShip(startX, startY, skinController.getPlayerSelectedSkin());
+        final PlayerShip playerModel = new PlayerShip(startX, startY, skinModel.getSelectedSkin());
         playerController = new PlayerController(playerModel, gameKeyHandler, SCREEN_WIDTH);
 
         gamePanel.addKeyListener(gameKeyHandler);
@@ -151,8 +150,8 @@ public final class GameManagerImpl implements GameManger, Runnable {
                 if (startMenuView.isVisible()) {
                     startMenuView.repaint();
                 } else if (gamePanel.isVisible()) {
-                    if (!skinController.getPlayerSelectedSkin().equals(playerController.getPlayerSkin())) {
-                        playerController.setPlayerSkin(skinController.getPlayerSelectedSkin());
+                    if (!skinModel.getSelectedSkin().equals(playerController.getPlayerSkin())) {
+                        playerController.setPlayerSkin(skinModel.getSelectedSkin());
                     }
                     waveManager.update(timePerFrame);
                     projectileController.update(timePerFrame);

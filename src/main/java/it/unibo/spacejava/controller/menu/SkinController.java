@@ -29,26 +29,6 @@ public final class SkinController extends KeyHandler {
         this.onBack = onBack;
     }
 
-    /**
-     * Getter per ottenere la skin attualmente selezionata dall'utente.
-     * 
-     * @return la skin che comparisce attaumente nella schermata di selezione,
-     *         che può essere acquistata o selezionata per il gioco.
-     */
-    public Skin getPlayerSelectedSkin() {
-        return model.getSelectedSkin();
-    }
-
-    /**
-     * Getter per richiere al model il numero di punti attauli del giocatre, 
-     * utilizati dalla view per poterli disegnre a schermo.
-     * 
-     * @return intero che indica i punti attauli del giocatore
-     */
-    public int getPlayerPoints() {
-        return model.getPoints();
-    }
-
     @Override
     public void keyPressed(final KeyEvent e) {
         super.keyPressed(e);

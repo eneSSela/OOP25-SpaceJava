@@ -18,11 +18,7 @@ public final class SkinModel {
     private int selectedIndex;
 
     // lista dove aggiungere tutte le possibili skin
-    private final List<Skin> skins = List.of(
-        new Skin("Default", "/skins/spaceShips_001.png", 0, true), // Skin di default, già sbloccata
-        new Skin("ship2", "/skins/spaceShips_002.png", 100, false),
-        new Skin("ship3", "/skins/spaceShips_003.png", 300, false)
-    );
+    private final List<Skin> skins;
     private final List<MenuObserver> listeners = new CopyOnWriteArrayList<>();
 
     /**
@@ -30,6 +26,7 @@ public final class SkinModel {
      * e inzializzo anche la lista delle skin.
      */
     public SkinModel() {
+        this.skins = SkinFactory.createListOfSkins();
         this.selectedIndex = 0;
     }
 
