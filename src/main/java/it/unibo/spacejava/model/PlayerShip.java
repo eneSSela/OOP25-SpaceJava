@@ -167,4 +167,11 @@ public final class PlayerShip {
     public static int getPlayerPoints() {
         return playerPoints;
     }
+
+    /**
+     * Resetta i punti del giocatore a zero.
+     */
+    public static void resetPoints() {
+        playerPoints = 0;
+    }
 }
