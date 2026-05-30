@@ -15,7 +15,6 @@ import it.unibo.spacejava.model.PlayerShip;
 import it.unibo.spacejava.model.menu.SkinModel;
 import it.unibo.spacejava.model.menu.StartMenuModel;
 import it.unibo.spacejava.model.sound.SoundManagerImpl;
-import it.unibo.spacejava.model.sound.api.SoundManager;
 import it.unibo.spacejava.view.game.GamePanel;
 import it.unibo.spacejava.view.menu.SkinSelectionView;
 import it.unibo.spacejava.view.menu.StartMenuView;
