@@ -48,6 +48,7 @@ public final class GameManagerImpl implements GameManger, Runnable {
     //Componenti del menu
     private final StartMenuModel startMenuModel = new StartMenuModel();
     private StartMenuView startMenuView;
+    private StartMenuController startMenuController;
 
     //Componenti della schermata di selezione skin
     private final SkinModel skinModel = new SkinModel();
@@ -75,7 +76,7 @@ public final class GameManagerImpl implements GameManger, Runnable {
         gamePanel.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGTH));
 
         //Iniziallizazione Controller e view del menu
-        final StartMenuController startMenuController = new StartMenuController(startMenuModel,
+        startMenuController = new StartMenuController(startMenuModel,
             () -> {
                 cardLayout.show(cards, "GAME");
                 gamePanel.requestFocusInWindow();
@@ -94,6 +95,9 @@ public final class GameManagerImpl implements GameManger, Runnable {
             () -> {
                 cardLayout.show(cards, "MENU");
                 startMenuView.requestFocusInWindow();
+                if (startMenuController != null) {
+                    startMenuController.start();
+                }
             }
         );
         skinSelectionView = new SkinSelectionView(skinModel);
