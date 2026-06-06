@@ -55,7 +55,7 @@ public final class SkinSelectionView extends JPanel implements MenuObserver {
      */
     public SkinSelectionView(final SkinModel model) {
         this.model = Objects.requireNonNull(model, "Il model non può essere nullo");
-        this.model.addObserver(this);
+        this.model.setObserver(this);
         setBackground(Color.BLACK);
         setFocusable(true);
     }

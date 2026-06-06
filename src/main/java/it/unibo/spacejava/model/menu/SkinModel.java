@@ -2,7 +2,6 @@ package it.unibo.spacejava.model.menu;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import it.unibo.spacejava.Skin;
 import it.unibo.spacejava.api.MenuObserver;
@@ -19,7 +18,7 @@ public final class SkinModel {
 
     // lista dove aggiungere tutte le possibili skin
     private final List<Skin> skins;
-    private final List<MenuObserver> listeners = new CopyOnWriteArrayList<>();
+    private MenuObserver observer;
 
     /**
      * Costruttore per definire le due variabili (punti e l'idice di selezione della skin) a 0,
@@ -53,7 +52,7 @@ public final class SkinModel {
      */
     public void selectPrevious() {
         selectedIndex = (selectedIndex - 1 + skins.size()) % skins.size();
-        this.notifyListeners();
+        this.notifyListener();
     }
 
     /**
@@ -61,7 +60,7 @@ public final class SkinModel {
      */
     public void selectNext() {
         selectedIndex = (selectedIndex + 1) % skins.size();
-        this.notifyListeners();
+        this.notifyListener();
     }
 
     /**
@@ -74,7 +73,7 @@ public final class SkinModel {
         if (!current.isUnlock() && PlayerShip.getPlayerPoints() >= current.getPrice()) {
             PlayerShip.lessPoints(current.getPrice()); // Scala i punti
             current.unlock();                   // Sblocca la skin
-            this.notifyListeners();
+            this.notifyListener();
             return true;
         }
         return false;
@@ -83,28 +82,16 @@ public final class SkinModel {
     /**
      * Aggiunge un observer che invia una notifica ogni volta che il model subisce una modifica.
      * 
-     * @param observer il listener da aggiungere alla lista
+     * @param obs il listener da aggiungere alla lista
      */
-    public void addObserver(final MenuObserver observer) {
-        listeners.add(Objects.requireNonNull(observer));
+    public void setObserver(final MenuObserver obs) {
+        observer = Objects.requireNonNull(obs);
     }
 
     /**
-     * Il contrario del precedente, rimuove un observer dalla lista degli observer,
-     * che vengono notificati ad ogni modifica del model.
-     * 
-     * @param observer observer da rimuovere dalla lista
+     * Metodo usato per poter notificare al observer che il model a subito un cambiamento.
      */
-    public void removeObserver(final MenuObserver observer) {
-        listeners.remove(observer);
-    }
-
-    /**
-     * Metodo che cilca tutti i listener presenti nella lista, per poterli notificare che il model a subito un cambiamento.
-     */
-    private void notifyListeners() {
-        for (final MenuObserver observer : listeners) {
-            observer.updateMenuState();
-        }
+    private void notifyListener() {
+        observer.updateMenuState();
     }
 }

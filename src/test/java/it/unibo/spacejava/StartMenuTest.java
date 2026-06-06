@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import it.unibo.spacejava.api.MenuObserver;
 import it.unibo.spacejava.model.menu.StartMenuModel;
+import it.unibo.spacejava.view.menu.StartMenuView;
 
 /**
  * Classe di test sul model del star menu.
@@ -18,6 +19,7 @@ final class StartMenuTest {
     @BeforeEach
     void setUp() {
         this.model = new StartMenuModel();
+        this.model.setObserver(new StartMenuView(model));
     }
 
     @Test
@@ -56,7 +58,7 @@ final class StartMenuTest {
         final boolean[] observerCalled = {false};
 
         final MenuObserver mockObserver = () -> observerCalled[0] = true;
-        model.addObserver(mockObserver);
+        model.setObserver(mockObserver);
 
         //provoco un azzione per far scatter l'observer
         model.selectNext();

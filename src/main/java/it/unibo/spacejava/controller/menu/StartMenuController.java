@@ -86,7 +86,7 @@ public class StartMenuController extends KeyHandler {
         blinkTimer.stop();
     }
 
-      /**
+    /**
      * Avvia o riavvia il timer del lampeggiamento.
      */
     public void start() {

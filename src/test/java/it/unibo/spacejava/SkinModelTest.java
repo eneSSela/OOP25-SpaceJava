@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import it.unibo.spacejava.model.PlayerShip;
 import it.unibo.spacejava.model.menu.SkinModel;
+import it.unibo.spacejava.view.menu.SkinSelectionView;
 
 /**
  * Classe che permette di testare il model dello skin model.
@@ -21,6 +22,7 @@ final class SkinModelTest {
     void setUp() {
         PlayerShip.resetPoints();
         model = new SkinModel();
+        this.model.setObserver(new SkinSelectionView(model));
     }
 
     @Test

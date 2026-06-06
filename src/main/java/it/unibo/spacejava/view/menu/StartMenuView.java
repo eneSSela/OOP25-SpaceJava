@@ -55,7 +55,7 @@ public final class StartMenuView extends JPanel implements MenuObserver {
         setBackground(Color.BLACK);
         setFocusable(true);
 
-        this.model.addObserver(this);
+        this.model.setObserver(this);
         this.background = Utils.loadImage("/menu/background.png");
         this.logo = Utils.loadImage("/menu/logo.png");
     }
