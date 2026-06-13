@@ -15,17 +15,15 @@ public final class BossEnemy extends AbstractEnemy {
     private static final double ATTACK_OFFSET = 10.0;
     private static final int PROJECTILE_WIDTH = 80;
     private static final int PROJECTILE_HEIGHT = 60;
-    private static final int DEFAULT_TYPE = 3;
     private static final int DEFAULT_DAMAGE = 2;
 
     /**
      * Constructs a BossEnemy with initial position.
      *
-     * @param startX the initial X coordinate
-     * @param startY the initial Y coordinate
+     * @param position the starting position
      */
-    public BossEnemy(final int startX, final int startY) {
-        super(new Position(startX, startY), DEFAULT_HEALTH, DEFAULT_HEIGHT, DEFAULT_WIDTH, DEFAULT_TYPE);
+    public BossEnemy(final Position position) {
+        super(position, DEFAULT_HEALTH, DEFAULT_HEIGHT, DEFAULT_WIDTH, EnemyType.BOSS);
     }
 
     /**

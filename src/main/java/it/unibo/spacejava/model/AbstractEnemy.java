@@ -13,7 +13,7 @@ public abstract class AbstractEnemy implements Enemy {
     private int health;
     private final double width;
     private final double height;
-    private final int type;
+    private final EnemyType type;
 
     /**
      * Constructs an enemy.
@@ -28,7 +28,9 @@ public abstract class AbstractEnemy implements Enemy {
         value = "EI_EXPOSE_REP2", 
         justification = "Position non richiede copie difensive"
     )
-    public AbstractEnemy(final Position position, final int health, final double height, final double width, final int type) {
+    public AbstractEnemy(
+        final Position position, final int health, final double height, final double width, final EnemyType type
+    ) {
         this.position = position;
         this.health = health;
         this.height = height;
@@ -86,7 +88,7 @@ public abstract class AbstractEnemy implements Enemy {
      * @return il tipo di nemico
      */
     @Override
-    public final int type() {
+    public final EnemyType type() {
         return this.type;
     }
 

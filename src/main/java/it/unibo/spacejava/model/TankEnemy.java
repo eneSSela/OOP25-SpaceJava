@@ -15,17 +15,15 @@ public final class TankEnemy extends AbstractEnemy {
     private static final double ATTACK_OFFSET = 10.0;
     private static final int PROJECTILE_WIDTH = 40;
     private static final int PROJECTILE_HEIGHT = 30;
-    private static final int DEFAULT_TYPE = 1;
     private static final int DEFAULT_DAMAGE = 1;
 
     /**
      * Constructs a TankEnemy with initial position.
      *
-     * @param startX the initial X coordinate
-     * @param startY the initial Y coordinate
+     * @param position the starting position
      */
-    public TankEnemy(final int startX, final int startY) {
-        super(new Position(startX, startY), DEFAULT_HEALTH, DEFAULT_HEIGHT, DEFAULT_WIDTH, DEFAULT_TYPE);
+    public TankEnemy(final Position position) {
+        super(position, DEFAULT_HEALTH, DEFAULT_HEIGHT, DEFAULT_WIDTH, EnemyType.TANK);
     }
 
     /**

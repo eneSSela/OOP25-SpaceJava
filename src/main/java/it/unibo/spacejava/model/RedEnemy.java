@@ -15,17 +15,15 @@ public final class RedEnemy extends AbstractEnemy {
     private static final double ATTACK_OFFSET = 10.0;
     private static final int PROJECTILE_WIDTH = 40;
     private static final int PROJECTILE_HEIGHT = 30;
-    private static final int DEFAULT_TYPE = 2;
     private static final int DEFAULT_DAMAGE = 2;
 
     /**
      * Constructs a RedEnemy with initial position.
      *
-     * @param startX the initial X coordinate
-     * @param startY the initial Y coordinate
+     * @param position the starting position
      */
-    public RedEnemy(final int startX, final int startY) {
-        super(new Position(startX, startY), DEFAULT_HEALTH, DEFAULT_HEIGHT, DEFAULT_WIDTH, DEFAULT_TYPE);
+    public RedEnemy(final Position position) {
+        super(position, DEFAULT_HEALTH, DEFAULT_HEIGHT, DEFAULT_WIDTH, EnemyType.RED);
     }
 
     /**
