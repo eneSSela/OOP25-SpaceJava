@@ -1,75 +1,29 @@
 package it.unibo.spacejava.model;
 
-import java.util.Objects;
-
 import it.unibo.spacejava.Position;
-import it.unibo.spacejava.api.Enemy;
 import it.unibo.spacejava.controller.EnemyProjectileController;
 
 /**
- * Nemico rosso (aumento di danno).
+ * RedEnemy è una estenzione della classe astratta AbstractEnemy.
+ * Rappresenta una entità nemica con la propria posizione, vita e capacità di attacco.
+ * Questo nemico è caratterizzato da un danno aumentato.
  */
-public final class RedEnemy implements Enemy {
+public final class RedEnemy extends AbstractEnemy {
     private static final double DEFAULT_WIDTH = 40.0;
     private static final double DEFAULT_HEIGHT = 40.0;
     private static final int DEFAULT_HEALTH = 2;
     private static final double ATTACK_OFFSET = 10.0;
     private static final int PROJECTILE_WIDTH = 40;
     private static final int PROJECTILE_HEIGHT = 30;
-    private static final int TYPE = 2;
-    private static final int DAMAGE = 2;
-
-    private final Position position;
-    private int health;
-    private final double width;
-    private final double height;
+    private static final int DEFAULT_DAMAGE = 2;
 
     /**
-     * Constructs a BaseEnemy with initial position.
+     * Constructs a RedEnemy with initial position.
      *
-     * @param startX the initial X coordinate
-     * @param startY the initial Y coordinate
+     * @param position the starting position
      */
-    public RedEnemy(final int startX, final int startY) {
-        this.position = new Position(startX, startY);
-        this.health = DEFAULT_HEALTH;
-        this.width = DEFAULT_WIDTH;
-        this.height = DEFAULT_HEIGHT;
-    }
-
-    @Override
-    public Position getPosition() {
-        return Objects.requireNonNull(this.position);
-    }
-
-    @Override
-    public double getWidth() {
-        return this.width;
-    }
-
-    @Override
-    public double getHeight() {
-        return this.height;
-    }
-
-    @Override
-    public int getHealth() {
-        return this.health;
-    }
-
-    /**
-     * Reduces the health of this enemy by the given damage amount.
-     *
-     * @param damage the amount of damage to take
-     */
-    @Override
-    public void takeDamage(final int damage) {
-        this.health -= damage;
-    }
-
-    @Override
-    public boolean isDead() {
-        return this.health <= 0;
+    public RedEnemy(final Position position) {
+        super(position, DEFAULT_HEALTH, DEFAULT_HEIGHT, DEFAULT_WIDTH, EnemyType.RED);
     }
 
     /**
@@ -77,16 +31,13 @@ public final class RedEnemy implements Enemy {
      */
     @Override
     public void attack() {
-        final int startX = this.position.getX() + (int) (this.width / 2 - ATTACK_OFFSET);
-        final int startY = this.position.getY() + (int) this.height;
+        final int startX = super.getPosition().getX() + (int) (DEFAULT_WIDTH / 2 - ATTACK_OFFSET);
+        final int startY = super.getPosition().getY() + (int) DEFAULT_HEIGHT;
 
         final Position projectilePos = new Position(startX, startY);
 
-        EnemyProjectileController.addProjectile(new ProjectileImpl(projectilePos, PROJECTILE_WIDTH, PROJECTILE_HEIGHT, DAMAGE));
-    }
-
-    @Override
-    public int type() {
-        return TYPE;
+        EnemyProjectileController.addProjectile(
+            new ProjectileImpl(projectilePos, PROJECTILE_WIDTH, PROJECTILE_HEIGHT, DEFAULT_DAMAGE)
+        );
     }
 }

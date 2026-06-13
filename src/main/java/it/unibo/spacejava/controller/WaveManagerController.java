@@ -3,11 +3,9 @@ package it.unibo.spacejava.controller;
 import it.unibo.spacejava.Position;
 import it.unibo.spacejava.Utils;
 import it.unibo.spacejava.api.Enemy;
-import it.unibo.spacejava.model.BaseEnemy;
-import it.unibo.spacejava.model.BossEnemy;
+import it.unibo.spacejava.model.EnemyFactory;
+import it.unibo.spacejava.model.EnemyType;
 import it.unibo.spacejava.model.ProjectileImpl;
-import it.unibo.spacejava.model.RedEnemy;
-import it.unibo.spacejava.model.TankEnemy;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,6 +34,7 @@ public final class WaveManagerController {
     private final List<Enemy> enemies;
     private final double screenWidth;
     private int waveNum = 1;
+    private final EnemyFactory enemyFactory = new EnemyFactory();
 
     /**
      * Costruisce una nuova oindata di nemici, in base alla larghezza dello schermo.
@@ -65,7 +64,8 @@ public final class WaveManagerController {
                     for (int col = 0; col < cols; col++) {
                         final int x = startX + (col * spacingX);
                         final int y = startY + (row * spacingY);
-                        enemies.add(new BaseEnemy(x, y));
+                        final Position enemyPos = new Position(x, y);
+                        enemies.add(enemyFactory.createEnemy(EnemyType.BASE, enemyPos));
                     }
                 }
                 break;
@@ -74,35 +74,39 @@ public final class WaveManagerController {
                     for (int col = 0; col < cols; col++) {
                         final int x = startX + (col * spacingX);
                         final int y = startY + (row * spacingY);
+                        final Position enemyPos = new Position(x, y);
                         if (row == 0) {
-                            enemies.add(new BaseEnemy(x, y));
+                            enemies.add(enemyFactory.createEnemy(EnemyType.BASE, enemyPos));
                         } else {
-                            enemies.add(new TankEnemy(x, y));
+                            enemies.add(enemyFactory.createEnemy(EnemyType.TANK, enemyPos));
                         }
                     }
                 }
                 break;
             case BOSS_WAVE_NUM:
-                enemies.add(new BossEnemy(startX, startY));
+                final Position enemyPos = new Position(startX, startY);
+                enemies.add(enemyFactory.createEnemy(EnemyType.BOSS, enemyPos));
                 break;
             default:
                 if (waveNum % BOSS_WAVE_NUM == 0) {
-                    enemies.add(new BossEnemy(startX, startY));
+                    final Position ePos = new Position(startX, startY);
+                    enemies.add(enemyFactory.createEnemy(EnemyType.BOSS, ePos));
                 } else {
                     for (int row = 0; row < rows; row++) {
                         for (int col = 0; col < cols; col++) {
                             final int x = startX + (col * spacingX);
                             final int y = startY + (row * spacingY);
+                            final Position ePos = new Position(x, y);
                             final int randEnemy = RANDOM_ENEMY.nextInt(3);
                             switch (randEnemy) {
                                 case 0:
-                                    enemies.add(new BaseEnemy(x, y));
+                                    enemies.add(enemyFactory.createEnemy(EnemyType.BASE, ePos));
                                     break;
                                 case 1:
-                                    enemies.add(new TankEnemy(x, y));
+                                    enemies.add(enemyFactory.createEnemy(EnemyType.TANK, ePos));
                                     break;
                                 case 2:
-                                    enemies.add(new RedEnemy(x, y));
+                                    enemies.add(enemyFactory.createEnemy(EnemyType.RED, ePos));
                                     break;
                                 default:
                                     break;
@@ -190,7 +194,7 @@ public final class WaveManagerController {
 
     private void checkhitEnemies() {
         final List<ProjectileImpl> playerProjectiles = PlayerProjectileController.getProjectileList();
-        Enemy rmEnemy = new BaseEnemy(0, 0);
+        Enemy rmEnemy = enemyFactory.createEnemy(EnemyType.BASE, new Position(0, 0));
         ProjectileImpl rmProjectile = new ProjectileImpl(new Position(0, 0), 0, 0, 0);
         Boolean kill = false;
         Boolean hit = false;

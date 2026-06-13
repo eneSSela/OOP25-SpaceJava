@@ -1,6 +1,7 @@
 package it.unibo.spacejava.api;
 
 import it.unibo.spacejava.Position;
+import it.unibo.spacejava.model.EnemyType;
 
 /**
  * This is a intarface that describe the method of a enemy.
@@ -41,7 +42,7 @@ public interface Enemy {
      * 
      * @return type of the enemy
      */
-    int type();
+    EnemyType type();
 
     /**
      * Method that decrease the health of the enemy when it is hit by a projectile. 

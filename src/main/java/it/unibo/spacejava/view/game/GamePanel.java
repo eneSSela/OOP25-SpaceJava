@@ -96,7 +96,7 @@ public final class GamePanel extends JPanel {
         if (baseEnemyImage != null && enemies != null) {
             for (final Enemy e : enemies) {
                 switch (e.type()) {
-                    case 0:
+                    case BASE:
                         g.drawImage(baseEnemyImage,
                             e.getPosition().getX(),
                             e.getPosition().getY(),
@@ -104,7 +104,7 @@ public final class GamePanel extends JPanel {
                             (int) e.getHeight(),
                             null);
                         break;
-                    case 1:
+                    case TANK:
                             g.drawImage(tankEnemyImage,
                                 e.getPosition().getX(),
                                 e.getPosition().getY(),
@@ -112,7 +112,7 @@ public final class GamePanel extends JPanel {
                                 (int) e.getHeight(),
                                 null);
                         break;
-                    case 2:
+                    case RED:
                             g.drawImage(redEnemyImage,
                                 e.getPosition().getX(),
                                 e.getPosition().getY(),
@@ -120,15 +120,13 @@ public final class GamePanel extends JPanel {
                                 (int) e.getHeight(),
                                 null);
                         break;
-                    case 3:
+                    case BOSS:
                             g.drawImage(bossEnemyImage,
                                 e.getPosition().getX(),
                                 e.getPosition().getY(),
                                 (int) e.getWidth(),
                                 (int) e.getHeight(),
                                 null);
-                        break;
-                    default:
                         break;
                 }
             }
