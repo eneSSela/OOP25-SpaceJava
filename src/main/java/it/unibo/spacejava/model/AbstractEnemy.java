@@ -26,7 +26,7 @@ public abstract class AbstractEnemy implements Enemy {
      */
     @SuppressFBWarnings(
         value = "EI_EXPOSE_REP2", 
-        justification = "Position è gestito in modo sicuro e non richiede copie difensive"
+        justification = "Position non richiede copie difensive"
     )
     public AbstractEnemy(final Position position, final int health, final double height, final double width, final int type) {
         this.position = position;
@@ -43,7 +43,7 @@ public abstract class AbstractEnemy implements Enemy {
      */
     @SuppressFBWarnings(
         value = "EI_EXPOSE_REP", 
-        justification = "Position è gestito in modo sicuro e non richiede copie difensive"
+        justification = "Position non richiede copie difensive"
     )
     @Override
     public final Position getPosition() {
@@ -61,7 +61,7 @@ public abstract class AbstractEnemy implements Enemy {
     }
 
     /**
-     * Restituisce la altezza del nemico.
+     * Restituisce l'altezza del nemico.
      * 
      * @return la altezza del nemico
      */

@@ -4,8 +4,8 @@ import it.unibo.spacejava.Position;
 import it.unibo.spacejava.controller.EnemyProjectileController;
 
 /**
- * BaseEnemy is an implementation of the Enemy interface.
- * It represents a basic enemy entity in the game with position, health, and attack capabilities.
+ * BaseEnemy è una estenzione della classe astratta AbstractEnemy.
+ * Rappresenta una entità nemica base con la propria posizione, vita e capacità di attacco.
  */
 public final class BaseEnemy extends AbstractEnemy {
     private static final double DEFAULT_WIDTH = 40.0;

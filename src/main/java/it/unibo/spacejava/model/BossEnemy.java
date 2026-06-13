@@ -4,7 +4,9 @@ import it.unibo.spacejava.Position;
 import it.unibo.spacejava.controller.EnemyProjectileController;
 
 /**
- * Nemico boss.
+ * BossEnemy è una estenzione della classe astratta AbstractEnemy.
+ * Rappresenta una entità nemica boss con la propria posizione, vita e capacità di attacco.
+ * Questo nemico è caratterizzato da dimensioni maggiori, danno maggiore e vita maggiore.
  */
 public final class BossEnemy extends AbstractEnemy {
     private static final double DEFAULT_WIDTH = 200.0;
