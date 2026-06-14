@@ -43,7 +43,7 @@ public final class GamePanel extends JPanel {
      */
     public GamePanel(final int width, final int height) {
         super.setSize(width, height);
-        super.setBackground(Color.BLACK);
+        //super.setBackground(Color.BLACK);
         loadImages();
     }
 
@@ -77,6 +77,7 @@ public final class GamePanel extends JPanel {
     @Override
     protected void paintComponent(final Graphics g) {
         super.paintComponent(g);
+        drawBackground(g, this.getWidth(), this.getHeight());
         drawEnemies(g, currentEnemies);
         final List<ProjectileImpl> projectiles = EnemyProjectileController.getProjectileList();
         drawEnemyProjectiles(g, projectiles);
@@ -191,6 +192,16 @@ public final class GamePanel extends JPanel {
 
             // Disegniamo la scritta "Vite: X" in alto a destra
             g.drawString("Vite: " + health, HEALTH_X_POSITION, HEALTH_Y_POSITION);
+        }
+    }
+
+    private void drawBackground(final Graphics g, final int w, final int h) {
+        final Image background = Utils.loadImage("/background/background_image.png");
+        if (Objects.isNull(background)) {
+            g.setColor(Color.BLACK);
+            g.fillRect(0, 0, w, h);
+        } else {
+            g.drawImage(background, 0, 0, w, h, null);
         }
     }
 }
