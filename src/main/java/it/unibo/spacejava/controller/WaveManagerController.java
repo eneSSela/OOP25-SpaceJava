@@ -3,9 +3,12 @@ package it.unibo.spacejava.controller;
 import it.unibo.spacejava.Position;
 import it.unibo.spacejava.Utils;
 import it.unibo.spacejava.api.Enemy;
+import it.unibo.spacejava.model.BossEnemy;
 import it.unibo.spacejava.model.EnemyFactory;
 import it.unibo.spacejava.model.EnemyType;
 import it.unibo.spacejava.model.ProjectileImpl;
+import it.unibo.spacejava.model.RedEnemy;
+import it.unibo.spacejava.model.TankEnemy;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -88,6 +91,7 @@ public final class WaveManagerController {
                 enemies.add(enemyFactory.createEnemy(EnemyType.BOSS, enemyPos));
                 break;
             default:
+                increaseDifficulty();
                 if (waveNum % BOSS_WAVE_NUM == 0) {
                     final Position ePos = new Position(startX, startY);
                     enemies.add(enemyFactory.createEnemy(EnemyType.BOSS, ePos));
@@ -202,7 +206,7 @@ public final class WaveManagerController {
             for (final ProjectileImpl p : playerProjectiles) {
                 if (Utils
                     .isColliding(e.getPosition(), e.getWidth(), e.getHeight(), p.getPosition(), p.getWidth(), p.getLenght())) {
-                    e.takeDamage(p.getDamage()); //Chiedi ad Ale di aggiungere damage ai proiettili.
+                    e.takeDamage(p.getDamage());
                     rmProjectile = p;
                     hit = true;
                     if (e.isDead()) {
@@ -219,6 +223,23 @@ public final class WaveManagerController {
             if (kill) {
                 enemies.remove(rmEnemy);
             }
+        }
+    }
+
+    private void increaseDifficulty() {
+        final int select = RANDOM_ENEMY.nextInt(3);
+        switch (select) {
+            case 0:
+                TankEnemy.upgrade();
+                break;
+            case 1:
+                RedEnemy.upgrade();
+                break;
+            case 2:
+                BossEnemy.upgrade();
+                break;
+            default:
+                break;
         }
     }
 

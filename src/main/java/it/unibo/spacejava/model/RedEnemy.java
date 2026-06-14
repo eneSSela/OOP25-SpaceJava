@@ -17,6 +17,8 @@ public final class RedEnemy extends AbstractEnemy {
     private static final int PROJECTILE_HEIGHT = 30;
     private static final int DEFAULT_DAMAGE = 2;
 
+    private static int damage = DEFAULT_DAMAGE;
+
     /**
      * Constructs a RedEnemy with initial position.
      *
@@ -37,7 +39,23 @@ public final class RedEnemy extends AbstractEnemy {
         final Position projectilePos = new Position(startX, startY);
 
         EnemyProjectileController.addProjectile(
-            new ProjectileImpl(projectilePos, PROJECTILE_WIDTH, PROJECTILE_HEIGHT, DEFAULT_DAMAGE)
+            new ProjectileImpl(projectilePos, PROJECTILE_WIDTH, PROJECTILE_HEIGHT, damage)
         );
+    }
+
+    /**
+     * Aumenta il danno del nemico rosso.
+     */
+    public static void upgrade() {
+        damage++;
+    }
+
+    /**
+     * Restistuisce il danno del nemico rosso per la HUD.
+     * 
+     * @return damage
+     */
+    public static int getHUDDamage() {
+        return damage;
     }
 }
