@@ -46,19 +46,22 @@ public final class BunkerController {
      * Verifica le collsiosi tra i proiettili (sia del giocatore che nemici) e i bunker, 
      * applicando danno ai bunker e rimuovendo i proiettili che colpiscono un bunker.
      */
-    public void checkCollisions() {
-        final List<ProjectileImpl> playerProjectiles = PlayerProjectileController.getProjectileList();
-        final List<ProjectileImpl> enemyProjectiles = EnemyProjectileController.getProjectileList();
+    public void checkCollisions(final List<ProjectileImpl> playerProjectiles, final List<ProjectileImpl> enemyProjectiles) {
+       
+        final var playerIt = playerProjectiles.iterator();
+        final var enemyIt = enemyProjectiles.iterator();
 
         for (final Bunker b : bunkers) {
-            for (final ProjectileImpl p : playerProjectiles) {
+            while (playerIt.hasNext()) {
+                final ProjectileImpl p = playerIt.next();
                 if (isColliding(b, p)) {
                     PlayerProjectileController.removeProjectile(p);
                     break;
                 }
             }
 
-            for (final ProjectileImpl p : enemyProjectiles) {
+            while (enemyIt.hasNext()) {
+                final ProjectileImpl p = enemyIt.next();
                 if (isColliding(b, p)) {
                     b.takeDamage(p.getDamage());
                     EnemyProjectileController.removeProjectile(p);

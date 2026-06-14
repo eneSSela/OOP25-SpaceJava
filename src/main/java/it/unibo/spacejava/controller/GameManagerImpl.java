@@ -164,7 +164,7 @@ public final class GameManagerImpl implements GameManger, Runnable {
                     playerController.update(timePerFrame);
                     PlayerProjectileController.update(timePerFrame);
                     playerController.checkEnemyCollision();
-                    bunkerController.checkCollisions();
+                    bunkerController.checkCollisions(PlayerProjectileController.getProjectileList(), EnemyProjectileController.getProjectileList());
 
                     gamePanel.render(waveManager.getEnemies(), playerController, PlayerProjectileController.getProjectileList(), bunkerController.getBunkers());
                 } else if (skinSelectionView.isVisible()) {
