@@ -48,7 +48,7 @@ public final class PlayerShip {
      * @return la larghezza
      */
     public double getWidth() {
-        return WIDTH;
+        return WIDTH * 2;
     }
 
     /**
@@ -57,7 +57,7 @@ public final class PlayerShip {
      * @return l'altezza
      */
     public double getHeight() {
-        return HEIGHT;
+        return HEIGHT * 2;
     }
 
     /**
