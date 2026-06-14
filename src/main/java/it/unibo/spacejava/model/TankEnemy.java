@@ -11,11 +11,13 @@ import it.unibo.spacejava.controller.EnemyProjectileController;
 public final class TankEnemy extends AbstractEnemy {
     private static final double DEFAULT_WIDTH = 40.0;
     private static final double DEFAULT_HEIGHT = 40.0;
-    private static final int DEFAULT_HEALTH = 3;
     private static final double ATTACK_OFFSET = 10.0;
     private static final int PROJECTILE_WIDTH = 40;
     private static final int PROJECTILE_HEIGHT = 30;
     private static final int DEFAULT_DAMAGE = 1;
+    private static final int DEFAULT_HEALTH = 3;
+
+    private static int health = DEFAULT_HEALTH;
 
     /**
      * Constructs a TankEnemy with initial position.
@@ -23,7 +25,7 @@ public final class TankEnemy extends AbstractEnemy {
      * @param position the starting position
      */
     public TankEnemy(final Position position) {
-        super(position, DEFAULT_HEALTH, DEFAULT_HEIGHT, DEFAULT_WIDTH, EnemyType.TANK);
+        super(position, health, DEFAULT_HEIGHT, DEFAULT_WIDTH, EnemyType.TANK);
     }
 
     /**
@@ -39,5 +41,21 @@ public final class TankEnemy extends AbstractEnemy {
         EnemyProjectileController.addProjectile(
             new ProjectileImpl(projectilePos, PROJECTILE_WIDTH, PROJECTILE_HEIGHT, DEFAULT_DAMAGE)
         );
+    }
+
+    /**
+     * Aumenta la vita del nemico tank.
+     */
+    public static void upgrade() {
+        health++;
+    }
+
+    /**
+     * Restistuisce la vita del nemico tank per la HUD.
+     * 
+     * @return health
+     */
+    public static int getHUDHealth() {
+        return health;
     }
 }

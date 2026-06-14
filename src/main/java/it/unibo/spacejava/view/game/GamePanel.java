@@ -8,7 +8,11 @@ import it.unibo.spacejava.Utils;
 import it.unibo.spacejava.api.Enemy;
 import it.unibo.spacejava.controller.EnemyProjectileController;
 import it.unibo.spacejava.controller.PlayerController;
+import it.unibo.spacejava.model.BossEnemy;
 import it.unibo.spacejava.model.ProjectileImpl;
+import it.unibo.spacejava.model.RedEnemy;
+import it.unibo.spacejava.model.TankEnemy;
+
 import javax.swing.JPanel;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -23,8 +27,17 @@ public final class GamePanel extends JPanel {
     private static final long serialVersionUID = 1L;
     private static final Logger LOGGER = Logger.getLogger(GamePanel.class.getName());
     private static final int HEALTH_FONT_SIZE = 20;
+    private static final int ENEMY_DATA_FONT_SIZE = 15;
     private static final int HEALTH_X_POSITION = 20;
-    private static final int HEALTH_Y_POSITION = 30;
+    private static final int HUD_TEXT_Y_POSITION = 30;
+    private static final int HUD_IMG_Y_POSITION = 15;
+    private static final int HUD_ENEMY_IMG_SIZE = 20;
+    private static final int TANK_HUD_IMG_X = 300;
+    private static final int RED_HUD_IMG_X = 425;
+    private static final int BOSS_HUD_IMG_X = 550;
+    private static final int TANK_HEALTH_X = 330;
+    private static final int RED_DAMAGE_X = 455;
+    private static final int TANK_INFO_X = 600;
 
     private transient Image baseEnemyImage;
     private transient Image tankEnemyImage;
@@ -190,7 +203,37 @@ public final class GamePanel extends JPanel {
             }
 
             // Disegniamo la scritta "Vite: X" in alto a destra
-            g.drawString("Vite: " + health, HEALTH_X_POSITION, HEALTH_Y_POSITION);
+            g.drawString("Vite: " + health, HEALTH_X_POSITION, HUD_TEXT_Y_POSITION);
+
+            //Disegno le statistiche che possono incrementare dei nemici
+
+            g.setColor(Color.ORANGE);
+            g.setFont(new Font("Monospaced", Font.BOLD, ENEMY_DATA_FONT_SIZE));
+
+            g.drawImage(tankEnemyImage,
+                            TANK_HUD_IMG_X,
+                            HUD_IMG_Y_POSITION,
+                            HUD_ENEMY_IMG_SIZE,
+                            HUD_ENEMY_IMG_SIZE,
+                            null);
+            g.drawString("Vita:" + TankEnemy.getHUDHealth(), TANK_HEALTH_X, HUD_TEXT_Y_POSITION);
+
+            g.drawImage(redEnemyImage,
+                            RED_HUD_IMG_X,
+                            HUD_IMG_Y_POSITION,
+                            HUD_ENEMY_IMG_SIZE,
+                            HUD_ENEMY_IMG_SIZE,
+                            null);
+            g.drawString("Danno:" + RedEnemy.getHUDDamage(), RED_DAMAGE_X, HUD_TEXT_Y_POSITION);
+
+            g.drawImage(bossEnemyImage,
+                            BOSS_HUD_IMG_X,
+                            HUD_IMG_Y_POSITION,
+                            HUD_ENEMY_IMG_SIZE * 2,
+                            HUD_ENEMY_IMG_SIZE,
+                            null);
+            g.drawString("Vita:" + BossEnemy.getHUDHealth() + " Danno:" + BossEnemy.getHUDDamage(),
+             TANK_INFO_X, HUD_TEXT_Y_POSITION);
         }
     }
 }
