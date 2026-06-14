@@ -21,7 +21,7 @@ public final class SkinSelectionView extends JPanel implements MenuObserver {
     private static final long serialVersionUID = 1L;
 
     // --- COSTANTI DI DIMENSIONAMENTO ---
-    private static final int SHIP_SIZE = 64;
+    private static final int SHIP_SIZE = 128;
     private static final int SHIP_OFFSET = SHIP_SIZE / 2;
 
     // --- COSTANTI DI MARGINE E SPAZIATURA ---

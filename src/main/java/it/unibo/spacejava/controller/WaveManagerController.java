@@ -219,7 +219,7 @@ public final class WaveManagerController {
 
         if (hit) {
             soundManager.playSound(HIT_SOUND_PATH);
-            playerProjectiles.remove(rmProjectile);
+            PlayerProjectileController.removeProjectile(rmProjectile);
             if (kill) {
                 enemies.remove(rmEnemy);
             }

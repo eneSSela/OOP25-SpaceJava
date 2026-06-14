@@ -58,6 +58,7 @@ public final class GameManagerImpl implements GameManger, Runnable {
     private final WaveManagerController waveManager = new WaveManagerController(SCREEN_WIDTH, SoundManagerImpl.getInstance());
     private final EnemyProjectileController projectileController = new EnemyProjectileController(SCREEN_HEIGTH);
     private PlayerController playerController;
+    private BunkerController bunkerController;
 
 
     /**
@@ -113,6 +114,7 @@ public final class GameManagerImpl implements GameManger, Runnable {
         final int startY = SCREEN_HEIGTH - 100;
         final PlayerShip playerModel = new PlayerShip(startX, startY, skinModel.getSelectedSkin());
         playerController = new PlayerController(playerModel, gameKeyHandler, SCREEN_WIDTH);
+        bunkerController = new BunkerController(SCREEN_WIDTH, SCREEN_HEIGTH);
 
         gamePanel.addKeyListener(gameKeyHandler);
         startMenuView.setFocusable(true);
@@ -162,8 +164,9 @@ public final class GameManagerImpl implements GameManger, Runnable {
                     playerController.update(timePerFrame);
                     PlayerProjectileController.update(timePerFrame);
                     playerController.checkEnemyCollision();
+                    bunkerController.checkCollisions(PlayerProjectileController.getProjectileList(), EnemyProjectileController.getProjectileList());
 
-                    gamePanel.render(waveManager.getEnemies(), playerController, PlayerProjectileController.getProjectileList());
+                    gamePanel.render(waveManager.getEnemies(), playerController, PlayerProjectileController.getProjectileList(), bunkerController.getBunkers());
                 } else if (skinSelectionView.isVisible()) {
                     skinSelectionView.repaint();
                 }

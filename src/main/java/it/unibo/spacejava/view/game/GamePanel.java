@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import it.unibo.spacejava.Utils;
+import it.unibo.spacejava.api.Bunker;
 import it.unibo.spacejava.api.Enemy;
 import it.unibo.spacejava.controller.EnemyProjectileController;
 import it.unibo.spacejava.controller.PlayerController;
@@ -43,10 +44,13 @@ public final class GamePanel extends JPanel {
     private transient Image tankEnemyImage;
     private transient Image bossEnemyImage;
     private transient Image redEnemyImage;
-    private transient List<Enemy> currentEnemies;
     private transient Image projectileImage;
+    private transient Image bunkerImage;
+    private transient Image backgroundImage;
+    private transient List<Enemy> currentEnemies;
     private transient PlayerController crtlPlayer;
     private transient List<ProjectileImpl> playerProjectiles;
+    private transient List<Bunker> listBunker;
 
     /**
      * Costruisce un GamePanel con dimensioni specificate.
@@ -56,7 +60,7 @@ public final class GamePanel extends JPanel {
      */
     public GamePanel(final int width, final int height) {
         super.setSize(width, height);
-        super.setBackground(Color.BLACK);
+        //super.setBackground(Color.BLACK);
         loadImages();
     }
 
@@ -66,6 +70,8 @@ public final class GamePanel extends JPanel {
         tankEnemyImage = Utils.loadImage("/enemies/tankEnemy.png");
         bossEnemyImage = Utils.loadImage("/enemies/bossEnemy.png");
         redEnemyImage = Utils.loadImage("/enemies/redEnemy.png");
+        backgroundImage = Utils.loadImage("/background/background_image.png");
+        bunkerImage = Utils.loadImage("/background/bunker_image.png");
 
         if (Objects.isNull(baseEnemyImage) || Objects.isNull(projectileImage)) {
             LOGGER.log(Level.WARNING, "Immagini non caricate correttamente");
@@ -78,34 +84,54 @@ public final class GamePanel extends JPanel {
      * @param enemies lista dei nemici
      * @param player controller del giocatore
      * @param playerProjectile lista dei proiettili del giocatore
+     * @param listBunker lista dei bunker attivi 
      */
     public void render(final List<Enemy> enemies, final PlayerController player,
-            final List<ProjectileImpl> playerProjectile) {
+            final List<ProjectileImpl> playerProjectile, List<Bunker> listBunker) {
         this.currentEnemies = List.copyOf(enemies);
         this.crtlPlayer = Objects.requireNonNull(player, "Non può essere nullo");
         this.playerProjectiles = List.copyOf(playerProjectile);
+        this.listBunker = List.copyOf(listBunker);
         repaint();
     }
 
     @Override
     protected void paintComponent(final Graphics g) {
         super.paintComponent(g);
+        drawBackground(g, this.getWidth(), this.getHeight());
         drawEnemies(g, currentEnemies);
         final List<ProjectileImpl> projectiles = EnemyProjectileController.getProjectileList();
         drawEnemyProjectiles(g, projectiles);
-
+        drawBunkers(g, listBunker);
         drawPlayer(g);
         drawPlayerProjectiles(g);
         drawHUD(g);
     }
 
-    /**
-     * Disegna i nemici.
-     *
-     * @param g il contesto grafico
-     * @param enemies la lista dei nemici
-     */
-    public void drawEnemies(final Graphics g, final List<Enemy> enemies) {
+    private void drawBunkers(final Graphics g, final List<Bunker> listBunker) {
+        if (listBunker != null && !listBunker.isEmpty()) {
+            for (final Bunker bunker : listBunker) {
+                final int bunkerX = bunker.getPosition().getX();
+                final int bunkerY = bunker.getPosition().getY();
+                final int bunkerWidth = bunker.getWidth();
+                final int bunkerHeight = bunker.getHeight();
+
+                g.setFont(new Font("Monospaced", Font.BOLD, HEALTH_FONT_SIZE));
+                g.setColor(Color.WHITE);
+                g.drawString("HP: " + bunker.getHealth(), bunkerX, bunkerY - 10);
+
+                if (bunkerImage != null) {
+                    g.drawImage(bunkerImage, bunkerX, bunkerY, bunkerWidth, bunkerHeight, null);
+                } else {
+                    g.setColor(Color.GRAY);
+                    g.fillRect(bunkerX, bunkerY, bunkerWidth, bunkerHeight);
+                }
+            }
+        }
+    }
+
+    
+    private void drawEnemies(final Graphics g, final List<Enemy> enemies) {
         if (baseEnemyImage != null && enemies != null) {
             for (final Enemy e : enemies) {
                 switch (e.type()) {
@@ -146,13 +172,7 @@ public final class GamePanel extends JPanel {
         }
     }
 
-    /**
-     * Disegna i proiettili nemici.
-     *
-     * @param g il contesto grafico
-     * @param projectiles la lista dei proiettili nemici
-     */
-    public void drawEnemyProjectiles(final Graphics g, final List<ProjectileImpl> projectiles) {
+    private void drawEnemyProjectiles(final Graphics g, final List<ProjectileImpl> projectiles) {
         if (projectiles != null && !projectiles.isEmpty()) {
             for (final ProjectileImpl projectileImpl : projectiles) {
                 g.drawImage(projectileImage,
@@ -234,6 +254,15 @@ public final class GamePanel extends JPanel {
                             null);
             g.drawString("Vita:" + BossEnemy.getHUDHealth() + " Danno:" + BossEnemy.getHUDDamage(),
              TANK_INFO_X, HUD_TEXT_Y_POSITION);
+        }
+    }
+
+    private void drawBackground(final Graphics g, final int w, final int h) {
+        if (Objects.isNull(backgroundImage)) {
+            g.setColor(Color.BLACK);
+            g.fillRect(0, 0, w, h);
+        } else {
+            g.drawImage(backgroundImage, 0, 0, w, h, null);
         }
     }
 }
