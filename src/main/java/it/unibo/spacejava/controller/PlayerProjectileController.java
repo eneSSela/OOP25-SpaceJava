@@ -3,6 +3,7 @@ package it.unibo.spacejava.controller;
 import it.unibo.spacejava.Position;
 import it.unibo.spacejava.model.ProjectileImpl;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -26,8 +27,9 @@ public final class PlayerProjectileController {
         justification = "La lista viene modificata direttamente da altri controller per gestire le collisioni"
     )
     public static List<ProjectileImpl> getProjectileList() {
-        //return Collections.unmodifiableList(PROJECTILE_LIST);
-        return PROJECTILE_LIST;
+        synchronized (PROJECTILE_LIST) {
+            return Collections.unmodifiableList(new ArrayList<>(PROJECTILE_LIST));
+        }
     }
 
     /**
@@ -37,13 +39,15 @@ public final class PlayerProjectileController {
      */
     public static void update(final double delta) {
         // I proiettili del player si muovono verso l'alto (Y diminuisce)
-        for (final ProjectileImpl p : PROJECTILE_LIST) {
-            final int newY = p.getPosition().getY() - (int) (PROJECTILE_SPEED * delta);
-            p.setPosition(new Position(p.getPosition().getX(), newY));
-        }
+        synchronized (PROJECTILE_LIST) {
+            for (final ProjectileImpl p : PROJECTILE_LIST) {
+                final int newY = p.getPosition().getY() - (int) (PROJECTILE_SPEED * delta);
+                p.setPosition(new Position(p.getPosition().getX(), newY));
+            }
 
-        // Rimuove automaticamente i proiettili quando superano il bordo superiore (Y < 0)
-        PROJECTILE_LIST.removeIf(p -> p.getPosition().getY() < 0);
+            // Rimuove automaticamente i proiettili quando superano il bordo superiore (Y < 0)
+            PROJECTILE_LIST.removeIf(p -> p.getPosition().getY() < 0);
+        }
     }
 
     /**
@@ -52,7 +56,19 @@ public final class PlayerProjectileController {
      * @param projectileImpl il proiettile da aggiungere alla lista dei proiettili attivi del giocatore
      */
     public static void addProjectile(final ProjectileImpl projectileImpl) {
-        // TODO Auto-generated method stub
-        PROJECTILE_LIST.add(projectileImpl);
+        synchronized (PROJECTILE_LIST) {
+            PROJECTILE_LIST.add(projectileImpl);
+        }
+    }
+
+    /**
+     * Rimuove un proiettile specifico dalla lista dei proiettili attivi del giocatore.
+     * 
+     * @param projectileImpl il proiettile da rimuovere dalla lista dei proiettili attivi del giocatore
+     */
+    public static void removeProjectile(final ProjectileImpl projectileImpl) {
+        synchronized (PROJECTILE_LIST) {
+            PROJECTILE_LIST.remove(projectileImpl);
+        }
     }
 }
