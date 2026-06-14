@@ -6,7 +6,7 @@ import it.unibo.spacejava.Position;
  * Interface that represents a defensive bunker/shield for the player.
  */
 public interface Bunker {
-   
+
     /**
      * @return the position of the bunker
      */
@@ -29,6 +29,7 @@ public interface Bunker {
 
     /**
      * Reduces the health of the bunker when hit.
+     * 
      * @param damage the amount of damage taken
      */
     void takeDamage(int damage);

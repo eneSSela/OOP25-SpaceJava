@@ -39,6 +39,7 @@ public final class GamePanel extends JPanel {
     private static final int TANK_HEALTH_X = 330;
     private static final int RED_DAMAGE_X = 455;
     private static final int TANK_INFO_X = 600;
+    private static final String FONT_NAME = "Monospaced";
 
     private transient Image baseEnemyImage;
     private transient Image tankEnemyImage;
@@ -84,14 +85,14 @@ public final class GamePanel extends JPanel {
      * @param enemies lista dei nemici
      * @param player controller del giocatore
      * @param playerProjectile lista dei proiettili del giocatore
-     * @param listBunker lista dei bunker attivi 
+     * @param bunkers lista dei bunker attivi 
      */
     public void render(final List<Enemy> enemies, final PlayerController player,
-            final List<ProjectileImpl> playerProjectile, List<Bunker> listBunker) {
+            final List<ProjectileImpl> playerProjectile, final List<Bunker> bunkers) {
         this.currentEnemies = List.copyOf(enemies);
         this.crtlPlayer = Objects.requireNonNull(player, "Non può essere nullo");
         this.playerProjectiles = List.copyOf(playerProjectile);
-        this.listBunker = List.copyOf(listBunker);
+        this.listBunker = List.copyOf(bunkers);
         repaint();
     }
 
@@ -108,15 +109,15 @@ public final class GamePanel extends JPanel {
         drawHUD(g);
     }
 
-    private void drawBunkers(final Graphics g, final List<Bunker> listBunker) {
-        if (listBunker != null && !listBunker.isEmpty()) {
-            for (final Bunker bunker : listBunker) {
+    private void drawBunkers(final Graphics g, final List<Bunker> bunkers) {
+        if (bunkers != null && !bunkers.isEmpty()) {
+            for (final Bunker bunker : bunkers) {
                 final int bunkerX = bunker.getPosition().getX();
                 final int bunkerY = bunker.getPosition().getY();
                 final int bunkerWidth = bunker.getWidth();
                 final int bunkerHeight = bunker.getHeight();
 
-                g.setFont(new Font("Monospaced", Font.BOLD, HEALTH_FONT_SIZE));
+                g.setFont(new Font(FONT_NAME, Font.BOLD, HEALTH_FONT_SIZE));
                 g.setColor(Color.WHITE);
                 g.drawString("HP: " + bunker.getHealth(), bunkerX, bunkerY - 10);
 
@@ -130,7 +131,6 @@ public final class GamePanel extends JPanel {
         }
     }
 
-    
     private void drawEnemies(final Graphics g, final List<Enemy> enemies) {
         if (baseEnemyImage != null && enemies != null) {
             for (final Enemy e : enemies) {
@@ -211,7 +211,7 @@ public final class GamePanel extends JPanel {
 
     private void drawHUD(final Graphics g) {
         if (crtlPlayer != null) { // Controlliamo che il player sia stato caricato
-            g.setFont(new Font("Monospaced", Font.BOLD, HEALTH_FONT_SIZE));
+            g.setFont(new Font(FONT_NAME, Font.BOLD, HEALTH_FONT_SIZE));
 
             final int health = crtlPlayer.getPlayerShip().getHealt();
 
@@ -228,7 +228,7 @@ public final class GamePanel extends JPanel {
             //Disegno le statistiche che possono incrementare dei nemici
 
             g.setColor(Color.ORANGE);
-            g.setFont(new Font("Monospaced", Font.BOLD, ENEMY_DATA_FONT_SIZE));
+            g.setFont(new Font(FONT_NAME, Font.BOLD, ENEMY_DATA_FONT_SIZE));
 
             g.drawImage(tankEnemyImage,
                             TANK_HUD_IMG_X,

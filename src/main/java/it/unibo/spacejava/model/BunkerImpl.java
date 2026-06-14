@@ -5,6 +5,9 @@ import java.util.Objects;
 import it.unibo.spacejava.Position;
 import it.unibo.spacejava.api.Bunker;
 
+/**
+ * Implementazione di un bunker difensivo per il giocatore.
+ */
 public final class BunkerImpl implements Bunker {
 
     private final Position position;
@@ -12,6 +15,15 @@ public final class BunkerImpl implements Bunker {
     private final int height;
     private int health;
 
+    /**
+     * Costruisce un nuovo bunker con la posizione, dimensione e salute specificate.
+     * 
+     * @param startX la coordinata X iniziale del bunker
+     * @param startY la coordinata Y iniziale del bunker
+     * @param widht la larghezza del bunker
+     * @param height l'altezza del bunker
+     * @param maxHealth i punti vita massimi del bunker
+     */
     public BunkerImpl(final int startX, final int startY, final int widht, final int height, final int maxHealth) {
         this.position = new Position(startX, startY);
         this.width = widht;
@@ -50,5 +62,4 @@ public final class BunkerImpl implements Bunker {
     public boolean isDestroyed() {
         return this.health <= 0; 
     }
-    
 }

@@ -22,13 +22,9 @@ public final class PlayerProjectileController {
      * 
      * @return la lista dei proiettili attivi del giocatore
      */
-    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(
-        value = "MS_EXPOSE_REP", 
-        justification = "La lista viene modificata direttamente da altri controller per gestire le collisioni"
-    )
     public static List<ProjectileImpl> getProjectileList() {
         synchronized (PROJECTILE_LIST) {
-            return Collections.unmodifiableList(new ArrayList<>(PROJECTILE_LIST));
+            return Collections.unmodifiableList(PROJECTILE_LIST);
         }
     }
 

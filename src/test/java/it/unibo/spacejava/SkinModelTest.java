@@ -15,7 +15,7 @@ import it.unibo.spacejava.view.menu.SkinSelectionView;
  */
 final class SkinModelTest {
 
-    private static final int POINTS_TO_ADD = 150;
+    private static final int POINTS_TO_ADD = 5000;
     private SkinModel model;
 
     @BeforeEach
@@ -54,7 +54,7 @@ final class SkinModelTest {
         assertTrue(model.getSelectedSkin().isUnlock(), "La skin deve risultare sbloccata dopo l'acquisto");
         assertEquals(
             POINTS_TO_ADD - model.getSelectedSkin().getPrice(),
-            model.getPoints(),
-            "I punti devono essere stati scalati correttamente (150 - 100 = 50)");
+            PlayerShip.getPlayerPoints(),
+            "I punti devono essere stati scalati correttamente (5000 - 1000 = 4000)");
     }
 }

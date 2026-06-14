@@ -12,7 +12,7 @@ import it.unibo.spacejava.model.ProjectileImpl;
  */
 public final class EnemyProjectileController {
 
-    private static final List<ProjectileImpl> projectiles = new ArrayList<>();
+    private static final List<ProjectileImpl> PROJECTILES_LIST = new ArrayList<>();
     private static final double SPEED = 150.0;
     private final int screenHeight;
 
@@ -32,13 +32,13 @@ public final class EnemyProjectileController {
      */
     public void update(final double delta) {
         final int movement = Math.max(1, (int) Math.round(SPEED * delta));
-        synchronized (projectiles) {
-            for (final ProjectileImpl p : projectiles) {
+        synchronized (PROJECTILES_LIST) {
+            for (final ProjectileImpl p : PROJECTILES_LIST) {
                 p.setPosition(new Position(p.getPosition().getX(), p.getPosition().getY() + movement));
             }
 
             //removes out of bounds projectiles
-            projectiles.removeIf(p -> p.getPosition().getY() >= screenHeight);
+            PROJECTILES_LIST.removeIf(p -> p.getPosition().getY() >= screenHeight);
         }
     }
 
@@ -48,8 +48,8 @@ public final class EnemyProjectileController {
      * @return la lista dei proiettili
      */
     public static List<ProjectileImpl> getProjectileList() {
-        synchronized (projectiles) {
-            return Collections.unmodifiableList(new ArrayList<>(projectiles));
+        synchronized (PROJECTILES_LIST) {
+            return Collections.unmodifiableList(new ArrayList<>(PROJECTILES_LIST));
         }
     }
 
@@ -59,8 +59,8 @@ public final class EnemyProjectileController {
      * @param projectileImpl il proiettile da aggiungere
      */
     public static void addProjectile(final ProjectileImpl projectileImpl) {
-        synchronized (projectiles) {
-            projectiles.add(projectileImpl);
+        synchronized (PROJECTILES_LIST) {
+            PROJECTILES_LIST.add(projectileImpl);
         }
     }
 
@@ -70,8 +70,8 @@ public final class EnemyProjectileController {
      * @param projectileToRemove il proiettile da rimuovere
      */
     static void removeProjectile(final ProjectileImpl projectileToRemove) {
-        synchronized (projectiles) {
-            projectiles.remove(projectileToRemove);
+        synchronized (PROJECTILES_LIST) {
+            PROJECTILES_LIST.remove(projectileToRemove);
         }
     }
 }
