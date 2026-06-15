@@ -1,41 +1,61 @@
-package it.unibo.spacejava.model;
+package it.unibo.spacejava.model.enemies;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.spacejava.Position;
 import it.unibo.spacejava.api.Enemy;
+import it.unibo.spacejava.controller.EnemyProjectileController;
+import it.unibo.spacejava.model.EnemyType;
+import it.unibo.spacejava.model.ProjectileImpl;
 
 /**
  * Classe astratta che implementa Enemy, che accomuna i metodi uguali di tutti i nemici.
  */
 public abstract class AbstractEnemy implements Enemy {
 
+    private static final double ATTACK_OFFSET = 10.0;
     private final Position position;
-    private int health;
     private final double width;
     private final double height;
     private final EnemyType type;
+    private final int projectileWidth;
+    private final int projectileHeight;
+    private final int damage;
+    private int health;
 
     /**
-     * Constructs an enemy.
+     * Crea un nemico.
      *
-     * @param position starting position of the enemy
-     * @param health health of the enemy
-     * @param height height of the enemy
-     * @param width width of the enemy
-     * @param type type of the enemy
+     * @param position Posizione iniziale.
+     * @param health vita iniziale.
+     * @param height altezza.
+     * @param width larghezza.
+     * @param type tipo di nemico.
+     * @param projectileWidth larghezza proiettile.
+     * @param projectileHeight altezza proiettile.
+     * @param damage danno.
      */
     @SuppressFBWarnings(
         value = "EI_EXPOSE_REP2", 
         justification = "Position non richiede copie difensive"
     )
     public AbstractEnemy(
-        final Position position, final int health, final double height, final double width, final EnemyType type
+        final Position position,
+        final int health,
+        final double height,
+        final double width,
+        final EnemyType type,
+        final int projectileWidth,
+        final int projectileHeight,
+        final int damage
     ) {
         this.position = position;
         this.health = health;
         this.height = height;
         this.width = width;
         this.type = type;
+        this.projectileWidth = projectileWidth;
+        this.projectileHeight = projectileHeight;
+        this.damage = damage;
     }
 
     /**
@@ -88,18 +108,33 @@ public abstract class AbstractEnemy implements Enemy {
      * @return il tipo di nemico
      */
     @Override
-    public final EnemyType type() {
+    public final EnemyType getType() {
         return this.type;
     }
 
     /**
-     * Reduces the health of this enemy by the given damage amount.
-     *
-     * @param damage the amount of damage to take
+     * Attacca creando un proiettile sotto di sé.
      */
     @Override
-    public void takeDamage(final int damage) {
-        this.health -= damage;
+    public void attack() {
+        final int startX = position.getX() + (int) (width / 2 - ATTACK_OFFSET);
+        final int startY = position.getY() + (int) height;
+
+        final Position projectilePos = new Position(startX, startY);
+
+        EnemyProjectileController.addProjectile(
+            new ProjectileImpl(projectilePos, projectileWidth, projectileHeight, damage)
+        );
+    }
+
+    /**
+     * Riduce la vita del nemico in base al danno ricevuto.
+     *
+     * @param damageReceived danno ricevuto
+     */
+    @Override
+    public void takeDamage(final int damageReceived) {
+        this.health -= damageReceived;
     }
 
     /**

@@ -10,9 +10,9 @@ import it.unibo.spacejava.api.Enemy;
 import it.unibo.spacejava.api.Projectile;
 import it.unibo.spacejava.controller.EnemyProjectileController;
 import it.unibo.spacejava.controller.PlayerController;
-import it.unibo.spacejava.model.BossEnemy;
-import it.unibo.spacejava.model.RedEnemy;
-import it.unibo.spacejava.model.TankEnemy;
+import it.unibo.spacejava.model.enemies.BossEnemy;
+import it.unibo.spacejava.model.enemies.RedEnemy;
+import it.unibo.spacejava.model.enemies.TankEnemy;
 
 import javax.swing.JPanel;
 import java.awt.Graphics;
@@ -134,7 +134,7 @@ public final class GamePanel extends JPanel {
     private void drawEnemies(final Graphics g, final List<Enemy> enemies) {
         if (baseEnemyImage != null && enemies != null) {
             for (final Enemy e : enemies) {
-                switch (e.type()) {
+                switch (e.getType()) {
                     case BASE:
                         g.drawImage(baseEnemyImage,
                             e.getPosition().getX(),

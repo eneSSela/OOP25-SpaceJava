@@ -42,7 +42,7 @@ public interface Enemy {
      * 
      * @return type of the enemy
      */
-    EnemyType type();
+    EnemyType getType();
 
     /**
      * Method that decrease the health of the enemy when it is hit by a projectile. 

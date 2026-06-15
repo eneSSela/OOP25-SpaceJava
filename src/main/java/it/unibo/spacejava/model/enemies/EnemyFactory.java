@@ -1,7 +1,8 @@
-package it.unibo.spacejava.model;
+package it.unibo.spacejava.model.enemies;
 
 import it.unibo.spacejava.Position;
 import it.unibo.spacejava.api.Enemy;
+import it.unibo.spacejava.model.EnemyType;
 
 /**
  * Classe factory che gestisce la creazione dei singoli nemici.

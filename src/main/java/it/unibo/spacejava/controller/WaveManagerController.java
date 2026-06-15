@@ -4,12 +4,12 @@ import it.unibo.spacejava.Position;
 import it.unibo.spacejava.Utils;
 import it.unibo.spacejava.api.Enemy;
 import it.unibo.spacejava.api.Projectile;
-import it.unibo.spacejava.model.BossEnemy;
-import it.unibo.spacejava.model.EnemyFactory;
 import it.unibo.spacejava.model.EnemyType;
 import it.unibo.spacejava.model.ProjectileImpl;
-import it.unibo.spacejava.model.RedEnemy;
-import it.unibo.spacejava.model.TankEnemy;
+import it.unibo.spacejava.model.enemies.BossEnemy;
+import it.unibo.spacejava.model.enemies.EnemyFactory;
+import it.unibo.spacejava.model.enemies.RedEnemy;
+import it.unibo.spacejava.model.enemies.TankEnemy;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,8 +23,8 @@ import it.unibo.spacejava.model.sound.api.SoundManager;
  */
 public final class WaveManagerController {
 
-    private static final double SPEED_X = 60.0; // Movement pixels per second
-    private static final double DESCENT = 20.0; // Descent pixels
+    private static final double SPEED_X = 60.0;
+    private static final double DESCENT = 20.0; 
     private static final double COOLDOWN = 1.0; 
     private static final double SHOOT_PROBABILITY = 0.5;
     private static final int BOSS_WAVE_NUM = 3;
@@ -53,7 +53,9 @@ public final class WaveManagerController {
         this.soundManager = soundManager;
     }
 
-    // Spawns a grill of enemies
+    /**
+     * Gestisce la creazione delle ondate di nemici.
+     */
     private void spawnWave() {
         final int rows = 2;
         final int cols = 8;
@@ -92,11 +94,13 @@ public final class WaveManagerController {
                 enemies.add(enemyFactory.createEnemy(EnemyType.BOSS, enemyPos));
                 break;
             default:
+                // Aumenta la difficoltà ogni roud dopo i primi tre.
                 increaseDifficulty();
                 if (waveNum % BOSS_WAVE_NUM == 0) {
                     final Position ePos = new Position(startX, startY);
                     enemies.add(enemyFactory.createEnemy(EnemyType.BOSS, ePos));
                 } else {
+                    // Crea un'ondata con nemici casuali.
                     for (int row = 0; row < rows; row++) {
                         for (int col = 0; col < cols; col++) {
                             final int x = startX + (col * spacingX);
@@ -130,7 +134,7 @@ public final class WaveManagerController {
      */
     public void update(final double delta) {
 
-        // Checks if the wave is defeated
+        // Controlla se l'ondata è stata sconfitta
         if (enemies.isEmpty()) {
             ++waveNum;
             spawnWave();
@@ -139,7 +143,7 @@ public final class WaveManagerController {
         checkhitEnemies();
 
         boolean hitEdge = false;
-        // Checks if an enemy touches the edge
+        // Controlla se un nemico tocca il bordo
         for (final Enemy e : enemies) {
             final int enemyRightEdge = e.getPosition().getX() + (int) e.getWidth();
             final int enemyLeftEdge = e.getPosition().getX();
@@ -153,7 +157,6 @@ public final class WaveManagerController {
             }
         }
 
-        // Checks if the edge is touched
         if (hitEdge) {
             isMovingRight = !isMovingRight;
             for (final Enemy e : enemies) {
@@ -161,7 +164,7 @@ public final class WaveManagerController {
             }
         }
 
-        // Moves the wave horizontally
+        // Sposta l'orda in orizzontale
         double movement = SPEED_X * delta;
         if (!isMovingRight) {
             movement = -movement;
@@ -171,7 +174,7 @@ public final class WaveManagerController {
             e.getPosition().setX((int) (e.getPosition().getX() + movement));
         }
 
-        // Calculates shot cooldown and randomly decides if an enemy gets to shoot
+        // Decide se un nemico spara
         timeSinceLastShot += delta;
         if (!enemies.isEmpty() && timeSinceLastShot >= COOLDOWN) {
             if (Math.random() < SHOOT_PROBABILITY) {
@@ -190,19 +193,25 @@ public final class WaveManagerController {
         return Collections.unmodifiableList(enemies);
     }
 
-    // Selects a random enemy and makes it attak
+    /**
+     * Sceglie un nemico casuale e lo fa attaccare.
+     */
     private void shoot() {
         soundManager.playSound(SHOOT_SOUND_PATH);
         final int randomIndex = (int) (Math.random() * enemies.size());
         enemies.get(randomIndex).attack();
     }
 
+    /**
+     * Controlla se un nemico viene colpito e se un nemico muore e quindi lo rimuove dall'ondata.
+     */
     private void checkhitEnemies() {
         final List<Projectile> playerProjectiles = PlayerProjectileController.getProjectileList();
         Enemy rmEnemy = enemyFactory.createEnemy(EnemyType.BASE, new Position(0, 0));
         Projectile rmProjectile = new ProjectileImpl(new Position(0, 0), 0, 0, 0);
         Boolean kill = false;
         Boolean hit = false;
+        // Controlla se un nemico è colpito
         for (final Enemy e : enemies) {
             for (final Projectile p : playerProjectiles) {
                 if (Utils
@@ -221,12 +230,16 @@ public final class WaveManagerController {
         if (hit) {
             soundManager.playSound(HIT_SOUND_PATH);
             PlayerProjectileController.removeProjectile(rmProjectile);
+            // Se un nemico ha esaurito le vite viene rimosso dall'ondata.
             if (kill) {
                 enemies.remove(rmEnemy);
             }
         }
     }
 
+    /**
+     * Sceglie casualmente che tipo di nemico rendere più forte.
+     */
     private void increaseDifficulty() {
         final int select = RANDOM_ENEMY.nextInt(3);
         switch (select) {

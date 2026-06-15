@@ -1,7 +1,7 @@
-package it.unibo.spacejava.model;
+package it.unibo.spacejava.model.enemies;
 
 import it.unibo.spacejava.Position;
-import it.unibo.spacejava.controller.EnemyProjectileController;
+import it.unibo.spacejava.model.EnemyType;
 
 /**
  * BossEnemy è una estenzione della classe astratta AbstractEnemy.
@@ -11,9 +11,8 @@ import it.unibo.spacejava.controller.EnemyProjectileController;
 public final class BossEnemy extends AbstractEnemy {
     private static final double DEFAULT_WIDTH = 200.0;
     private static final double DEFAULT_HEIGHT = 120.0;
-    private static final double ATTACK_OFFSET = 10.0;
-    private static final int PROJECTILE_WIDTH = 80;
-    private static final int PROJECTILE_HEIGHT = 60;
+    private static final int DEFAULT_PROJECTILE_WIDTH = 80;
+    private static final int DEFAULT_PROJECTILE_HEIGHT = 60;
     private static final int HEALTH_UPGRADE = 5;
     private static final int DEFAULT_HEALTH = 20;
     private static final int DEFAULT_DAMAGE = 2;
@@ -22,26 +21,20 @@ public final class BossEnemy extends AbstractEnemy {
     private static int damage = DEFAULT_DAMAGE;
 
     /**
-     * Constructs a BossEnemy with initial position.
+     * Crea un BossEnemy data una posizione iniziale.
      *
-     * @param position the starting position
+     * @param position la posizione iniziale
      */
     public BossEnemy(final Position position) {
-        super(position, health, DEFAULT_HEIGHT, DEFAULT_WIDTH, EnemyType.BOSS);
-    }
-
-    /**
-     * Performs an attack by creating a projectile below the enemy.
-     */
-    @Override
-    public void attack() {
-        final int startX = super.getPosition().getX() + (int) (DEFAULT_WIDTH / 2 - ATTACK_OFFSET);
-        final int startY = super.getPosition().getY() + (int) DEFAULT_HEIGHT;
-
-        final Position projectilePos = new Position(startX, startY);
-
-        EnemyProjectileController.addProjectile(
-            new ProjectileImpl(projectilePos, PROJECTILE_WIDTH, PROJECTILE_HEIGHT, damage)
+        super(
+            position,
+            health,
+            DEFAULT_HEIGHT,
+            DEFAULT_WIDTH,
+            EnemyType.BOSS,
+            DEFAULT_PROJECTILE_WIDTH,
+            DEFAULT_PROJECTILE_HEIGHT,
+            DEFAULT_DAMAGE
         );
     }
 
