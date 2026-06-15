@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.unibo.spacejava.api.Bunker;
+import it.unibo.spacejava.api.Projectile;
 import it.unibo.spacejava.model.BunkerImpl;
-import it.unibo.spacejava.model.ProjectileImpl;
 
 /**
  * Controller che gestisce i bunker difensivi del giocatore, 
@@ -50,19 +50,19 @@ public final class BunkerController {
      * @param playerProjectiles lista dei proiettili del giocatore
      * @param enemyProjectiles lista dei proiettili dei nemici
      */
-    public void checkCollisions(final List<ProjectileImpl> playerProjectiles, final List<ProjectileImpl> enemyProjectiles) {
+    public void checkCollisions(final List<Projectile> playerProjectiles, final List<Projectile> enemyProjectiles) {
         //usole le copie delle liste dei proiettili per risolvere il problema di errori di concorenza
-        final List<ProjectileImpl> playerProjectilesSnapshot = new ArrayList<>(playerProjectiles);
-        final List<ProjectileImpl> enemyProjectilesSnapshot = new ArrayList<>(enemyProjectiles);
+        final List<Projectile> playerProjectilesSnapshot = new ArrayList<>(playerProjectiles);
+        final List<Projectile> enemyProjectilesSnapshot = new ArrayList<>(enemyProjectiles);
 
         for (final Bunker b : bunkers) {
-            for (final ProjectileImpl p : playerProjectilesSnapshot) {
+            for (final Projectile p : playerProjectilesSnapshot) {
                 if (isColliding(b, p)) {
                     PlayerProjectileController.removeProjectile(p);
                 }
             }
 
-            for (final ProjectileImpl p : enemyProjectilesSnapshot) {
+            for (final Projectile p : enemyProjectilesSnapshot) {
                 if (isColliding(b, p)) {
                     b.takeDamage(p.getDamage()); // Applica danno al bunker
                     EnemyProjectileController.removeProjectile(p);
@@ -73,7 +73,7 @@ public final class BunkerController {
         bunkers.removeIf(Bunker::isDestroyed);
     }
 
-    private boolean isColliding(final Bunker b, final ProjectileImpl p) {
+    private boolean isColliding(final Bunker b, final Projectile p) {
         return p.getPosition().getX() < b.getPosition().getX() + b.getWidth()
             && p.getPosition().getX() + p.getWidth() > b.getPosition().getX() 
             && p.getPosition().getY() < b.getPosition().getY() + b.getHeight()
