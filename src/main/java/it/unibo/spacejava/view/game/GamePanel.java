@@ -134,7 +134,7 @@ public final class GamePanel extends JPanel {
     private void drawEnemies(final Graphics g, final List<Enemy> enemies) {
         if (baseEnemyImage != null && enemies != null) {
             for (final Enemy e : enemies) {
-                switch (e.type()) {
+                switch (e.getType()) {
                     case BASE:
                         g.drawImage(baseEnemyImage,
                             e.getPosition().getX(),

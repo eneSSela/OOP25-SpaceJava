@@ -89,7 +89,7 @@ public abstract class AbstractEnemy implements Enemy {
      * @return il tipo di nemico
      */
     @Override
-    public final EnemyType type() {
+    public final EnemyType getType() {
         return this.type;
     }
 
