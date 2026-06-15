@@ -1,9 +1,7 @@
 package it.unibo.spacejava.model.enemies;
 
 import it.unibo.spacejava.Position;
-import it.unibo.spacejava.controller.EnemyProjectileController;
 import it.unibo.spacejava.model.EnemyType;
-import it.unibo.spacejava.model.ProjectileImpl;
 
 /**
  * RedEnemy è una estenzione della classe astratta AbstractEnemy.
@@ -14,9 +12,8 @@ public final class RedEnemy extends AbstractEnemy {
     private static final double DEFAULT_WIDTH = 40.0;
     private static final double DEFAULT_HEIGHT = 40.0;
     private static final int DEFAULT_HEALTH = 2;
-    private static final double ATTACK_OFFSET = 10.0;
-    private static final int PROJECTILE_WIDTH = 40;
-    private static final int PROJECTILE_HEIGHT = 30;
+    private static final int DEFAULT_PROJECTILE_WIDTH = 40;
+    private static final int DEFAULT_PROJECTILE_HEIGHT = 30;
     private static final int DEFAULT_DAMAGE = 2;
 
     private static int damage = DEFAULT_DAMAGE;
@@ -27,21 +24,15 @@ public final class RedEnemy extends AbstractEnemy {
      * @param position la posizione iniziale.
      */
     public RedEnemy(final Position position) {
-        super(position, DEFAULT_HEALTH, DEFAULT_HEIGHT, DEFAULT_WIDTH, EnemyType.RED);
-    }
-
-    /**
-     * Attacca creando un proiettile sotto di sé.
-     */
-    @Override
-    public void attack() {
-        final int startX = super.getPosition().getX() + (int) (DEFAULT_WIDTH / 2 - ATTACK_OFFSET);
-        final int startY = super.getPosition().getY() + (int) DEFAULT_HEIGHT;
-
-        final Position projectilePos = new Position(startX, startY);
-
-        EnemyProjectileController.addProjectile(
-            new ProjectileImpl(projectilePos, PROJECTILE_WIDTH, PROJECTILE_HEIGHT, damage)
+        super(
+            position,
+            DEFAULT_HEALTH,
+            DEFAULT_HEIGHT,
+            DEFAULT_WIDTH,
+            EnemyType.RED,
+            DEFAULT_PROJECTILE_WIDTH,
+            DEFAULT_PROJECTILE_HEIGHT,
+            DEFAULT_DAMAGE
         );
     }
 

@@ -1,9 +1,7 @@
 package it.unibo.spacejava.model.enemies;
 
 import it.unibo.spacejava.Position;
-import it.unibo.spacejava.controller.EnemyProjectileController;
 import it.unibo.spacejava.model.EnemyType;
-import it.unibo.spacejava.model.ProjectileImpl;
 
 /**
  * TankEnemy è una estenzione della classe astratta AbstractEnemy.
@@ -13,9 +11,8 @@ import it.unibo.spacejava.model.ProjectileImpl;
 public final class TankEnemy extends AbstractEnemy {
     private static final double DEFAULT_WIDTH = 40.0;
     private static final double DEFAULT_HEIGHT = 40.0;
-    private static final double ATTACK_OFFSET = 10.0;
-    private static final int PROJECTILE_WIDTH = 40;
-    private static final int PROJECTILE_HEIGHT = 30;
+    private static final int DEFAULT_PROJECTILE_WIDTH = 40;
+    private static final int DEFAULT_PROJECTILE_HEIGHT = 30;
     private static final int DEFAULT_DAMAGE = 1;
     private static final int DEFAULT_HEALTH = 3;
 
@@ -27,21 +24,15 @@ public final class TankEnemy extends AbstractEnemy {
      * @param position la posizione iniziale.
      */
     public TankEnemy(final Position position) {
-        super(position, health, DEFAULT_HEIGHT, DEFAULT_WIDTH, EnemyType.TANK);
-    }
-
-    /**
-     * Attacca creando un proiettile sotto di sé.
-     */
-    @Override
-    public void attack() {
-        final int startX = super.getPosition().getX() + (int) (DEFAULT_WIDTH / 2 - ATTACK_OFFSET);
-        final int startY = super.getPosition().getY() + (int) DEFAULT_HEIGHT;
-
-        final Position projectilePos = new Position(startX, startY);
-
-        EnemyProjectileController.addProjectile(
-            new ProjectileImpl(projectilePos, PROJECTILE_WIDTH, PROJECTILE_HEIGHT, DEFAULT_DAMAGE)
+        super(
+            position,
+            health,
+            DEFAULT_HEIGHT,
+            DEFAULT_WIDTH,
+            EnemyType.TANK,
+            DEFAULT_PROJECTILE_WIDTH,
+            DEFAULT_PROJECTILE_HEIGHT,
+            DEFAULT_DAMAGE
         );
     }
 
