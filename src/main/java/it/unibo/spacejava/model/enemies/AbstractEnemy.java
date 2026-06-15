@@ -1,8 +1,9 @@
-package it.unibo.spacejava.model;
+package it.unibo.spacejava.model.enemies;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.spacejava.Position;
 import it.unibo.spacejava.api.Enemy;
+import it.unibo.spacejava.model.EnemyType;
 
 /**
  * Classe astratta che implementa Enemy, che accomuna i metodi uguali di tutti i nemici.
@@ -10,19 +11,19 @@ import it.unibo.spacejava.api.Enemy;
 public abstract class AbstractEnemy implements Enemy {
 
     private final Position position;
-    private int health;
     private final double width;
     private final double height;
     private final EnemyType type;
+    private int health;
 
     /**
-     * Constructs an enemy.
+     * Crea un nemico.
      *
-     * @param position starting position of the enemy
-     * @param health health of the enemy
-     * @param height height of the enemy
-     * @param width width of the enemy
-     * @param type type of the enemy
+     * @param position Posizione iniziale.
+     * @param health vita iniziale.
+     * @param height altezza.
+     * @param width larghezza.
+     * @param type tipo di nemico.
      */
     @SuppressFBWarnings(
         value = "EI_EXPOSE_REP2", 
@@ -93,9 +94,9 @@ public abstract class AbstractEnemy implements Enemy {
     }
 
     /**
-     * Reduces the health of this enemy by the given damage amount.
+     * Riduce la vita del nemico in base al danno ricevuto.
      *
-     * @param damage the amount of damage to take
+     * @param damage danno ricevuto
      */
     @Override
     public void takeDamage(final int damage) {

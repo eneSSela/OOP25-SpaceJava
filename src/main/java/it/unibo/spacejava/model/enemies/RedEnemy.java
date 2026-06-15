@@ -1,7 +1,9 @@
-package it.unibo.spacejava.model;
+package it.unibo.spacejava.model.enemies;
 
 import it.unibo.spacejava.Position;
 import it.unibo.spacejava.controller.EnemyProjectileController;
+import it.unibo.spacejava.model.EnemyType;
+import it.unibo.spacejava.model.ProjectileImpl;
 
 /**
  * RedEnemy è una estenzione della classe astratta AbstractEnemy.
@@ -20,16 +22,16 @@ public final class RedEnemy extends AbstractEnemy {
     private static int damage = DEFAULT_DAMAGE;
 
     /**
-     * Constructs a RedEnemy with initial position.
+     * Crea un RedEnemy data una posizione iniziale.
      *
-     * @param position the starting position
+     * @param position la posizione iniziale.
      */
     public RedEnemy(final Position position) {
         super(position, DEFAULT_HEALTH, DEFAULT_HEIGHT, DEFAULT_WIDTH, EnemyType.RED);
     }
 
     /**
-     * Performs an attack by creating a projectile below the enemy.
+     * Attacca creando un proiettile sotto di sé.
      */
     @Override
     public void attack() {

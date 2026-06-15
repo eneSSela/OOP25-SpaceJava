@@ -9,10 +9,10 @@ import it.unibo.spacejava.api.Bunker;
 import it.unibo.spacejava.api.Enemy;
 import it.unibo.spacejava.controller.EnemyProjectileController;
 import it.unibo.spacejava.controller.PlayerController;
-import it.unibo.spacejava.model.BossEnemy;
 import it.unibo.spacejava.model.ProjectileImpl;
-import it.unibo.spacejava.model.RedEnemy;
-import it.unibo.spacejava.model.TankEnemy;
+import it.unibo.spacejava.model.enemies.BossEnemy;
+import it.unibo.spacejava.model.enemies.RedEnemy;
+import it.unibo.spacejava.model.enemies.TankEnemy;
 
 import javax.swing.JPanel;
 import java.awt.Graphics;

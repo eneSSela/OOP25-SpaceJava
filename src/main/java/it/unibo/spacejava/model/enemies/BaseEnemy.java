@@ -1,7 +1,9 @@
-package it.unibo.spacejava.model;
+package it.unibo.spacejava.model.enemies;
 
 import it.unibo.spacejava.Position;
 import it.unibo.spacejava.controller.EnemyProjectileController;
+import it.unibo.spacejava.model.EnemyType;
+import it.unibo.spacejava.model.ProjectileImpl;
 
 /**
  * BaseEnemy è una estenzione della classe astratta AbstractEnemy.
@@ -17,16 +19,16 @@ public final class BaseEnemy extends AbstractEnemy {
     private static final int DEFAULT_DAMAGE = 1;
 
     /**
-     * Constructs a BaseEnemy with initial position.
+     * Crea un BaseEnemy data una posizione iniziale.
      *
-     * @param position the starting position
+     * @param position la posizione iniziale.
      */
     public BaseEnemy(final Position position) {
         super(position, DEFAULT_HEALTH, DEFAULT_HEIGHT, DEFAULT_WIDTH, EnemyType.BASE);
     }
 
     /**
-     * Performs an attack by creating a projectile below the enemy.
+     * Attacca creando un proiettile sotto di sé.
      */
     @Override
     public void attack() {
