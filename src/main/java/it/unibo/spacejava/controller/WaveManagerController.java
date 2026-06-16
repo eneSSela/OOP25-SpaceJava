@@ -207,7 +207,7 @@ public final class WaveManagerController {
     private void checkhitEnemies() {
         final List<Projectile> playerProjectiles = PlayerProjectileController.getProjectileList();
         Enemy rmEnemy = EnemyFactory.createEnemy(EnemyType.BASE, new Position(0, 0));
-        ProjectileImpl rmProjectile = new ProjectileImpl(new Position(0, 0), 0, 0, 0);
+        Projectile rmProjectile = new ProjectileImpl(new Position(0, 0), 0, 0, 0);
         Boolean kill = false;
         Boolean hit = false;
         // Controlla se un nemico è colpito
