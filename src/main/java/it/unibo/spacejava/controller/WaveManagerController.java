@@ -37,7 +37,6 @@ public final class WaveManagerController {
     private final List<Enemy> enemies;
     private final double screenWidth;
     private int waveNum = 1;
-    private final EnemyFactory enemyFactory = new EnemyFactory();
 
     /**
      * Costruisce una nuova oindata di nemici, in base alla larghezza dello schermo.
@@ -70,7 +69,7 @@ public final class WaveManagerController {
                         final int x = startX + (col * spacingX);
                         final int y = startY + (row * spacingY);
                         final Position enemyPos = new Position(x, y);
-                        enemies.add(enemyFactory.createEnemy(EnemyType.BASE, enemyPos));
+                        enemies.add(EnemyFactory.createEnemy(EnemyType.BASE, enemyPos));
                     }
                 }
                 break;
@@ -81,23 +80,23 @@ public final class WaveManagerController {
                         final int y = startY + (row * spacingY);
                         final Position enemyPos = new Position(x, y);
                         if (row == 0) {
-                            enemies.add(enemyFactory.createEnemy(EnemyType.BASE, enemyPos));
+                            enemies.add(EnemyFactory.createEnemy(EnemyType.BASE, enemyPos));
                         } else {
-                            enemies.add(enemyFactory.createEnemy(EnemyType.TANK, enemyPos));
+                            enemies.add(EnemyFactory.createEnemy(EnemyType.TANK, enemyPos));
                         }
                     }
                 }
                 break;
             case BOSS_WAVE_NUM:
                 final Position enemyPos = new Position(startX, startY);
-                enemies.add(enemyFactory.createEnemy(EnemyType.BOSS, enemyPos));
+                enemies.add(EnemyFactory.createEnemy(EnemyType.BOSS, enemyPos));
                 break;
             default:
                 // Aumenta la difficoltà ogni roud dopo i primi tre.
                 increaseDifficulty();
                 if (waveNum % BOSS_WAVE_NUM == 0) {
                     final Position ePos = new Position(startX, startY);
-                    enemies.add(enemyFactory.createEnemy(EnemyType.BOSS, ePos));
+                    enemies.add(EnemyFactory.createEnemy(EnemyType.BOSS, ePos));
                 } else {
                     // Crea un'ondata con nemici casuali.
                     for (int row = 0; row < rows; row++) {
@@ -108,13 +107,13 @@ public final class WaveManagerController {
                             final int randEnemy = RANDOM_ENEMY.nextInt(3);
                             switch (randEnemy) {
                                 case 0:
-                                    enemies.add(enemyFactory.createEnemy(EnemyType.BASE, ePos));
+                                    enemies.add(EnemyFactory.createEnemy(EnemyType.BASE, ePos));
                                     break;
                                 case 1:
-                                    enemies.add(enemyFactory.createEnemy(EnemyType.TANK, ePos));
+                                    enemies.add(EnemyFactory.createEnemy(EnemyType.TANK, ePos));
                                     break;
                                 case 2:
-                                    enemies.add(enemyFactory.createEnemy(EnemyType.RED, ePos));
+                                    enemies.add(EnemyFactory.createEnemy(EnemyType.RED, ePos));
                                     break;
                                 default:
                                     break;
@@ -206,7 +205,7 @@ public final class WaveManagerController {
      */
     private void checkhitEnemies() {
         final List<ProjectileImpl> playerProjectiles = PlayerProjectileController.getProjectileList();
-        Enemy rmEnemy = enemyFactory.createEnemy(EnemyType.BASE, new Position(0, 0));
+        Enemy rmEnemy = EnemyFactory.createEnemy(EnemyType.BASE, new Position(0, 0));
         ProjectileImpl rmProjectile = new ProjectileImpl(new Position(0, 0), 0, 0, 0);
         Boolean kill = false;
         Boolean hit = false;

@@ -7,7 +7,10 @@ import it.unibo.spacejava.model.EnemyType;
 /**
  * Classe factory che gestisce la creazione dei singoli nemici.
  */
-public class EnemyFactory {
+public final class EnemyFactory {
+
+    private EnemyFactory() {
+    }
 
     /**
      * Crea un nemico in base al tipo e posizione iniziali dati.
@@ -16,7 +19,7 @@ public class EnemyFactory {
      * @param startPosition posizione iniziale per il nemico da creare
      * @return lo specifico nemico creato
      */
-    public Enemy createEnemy(final EnemyType type, final Position startPosition) {
+    public static Enemy createEnemy(final EnemyType type, final Position startPosition) {
         switch (type) {
             case BASE:
                 return new BaseEnemy(startPosition);
