@@ -1,7 +1,7 @@
 package it.unibo.spacejava.controller;
 
 import it.unibo.spacejava.Position;
-import it.unibo.spacejava.model.ProjectileImpl;
+import it.unibo.spacejava.api.Projectile;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
  * gesttisce la lista goblale dei proiettili attivi, aggiornando la loro poszione , rimuovendo queelli che escono dallo schermo.
  */
 public final class PlayerProjectileController {
-    private static final List<ProjectileImpl> PROJECTILE_LIST = new ArrayList<>();
+    private static final List<Projectile> PROJECTILE_LIST = new ArrayList<>();
     private static final double PROJECTILE_SPEED = 400.0;
 
     private PlayerProjectileController() {
@@ -22,7 +22,7 @@ public final class PlayerProjectileController {
      * 
      * @return la lista dei proiettili attivi del giocatore
      */
-    public static List<ProjectileImpl> getProjectileList() {
+    public static List<Projectile> getProjectileList() {
         synchronized (PROJECTILE_LIST) {
             return Collections.unmodifiableList(PROJECTILE_LIST);
         }
@@ -36,7 +36,7 @@ public final class PlayerProjectileController {
     public static void update(final double delta) {
         // I proiettili del player si muovono verso l'alto (Y diminuisce)
         synchronized (PROJECTILE_LIST) {
-            for (final ProjectileImpl p : PROJECTILE_LIST) {
+            for (final Projectile p : PROJECTILE_LIST) {
                 final int newY = p.getPosition().getY() - (int) (PROJECTILE_SPEED * delta);
                 p.setPosition(new Position(p.getPosition().getX(), newY));
             }
@@ -51,7 +51,7 @@ public final class PlayerProjectileController {
      * 
      * @param projectileImpl il proiettile da aggiungere alla lista dei proiettili attivi del giocatore
      */
-    public static void addProjectile(final ProjectileImpl projectileImpl) {
+    public static void addProjectile(final Projectile projectileImpl) {
         synchronized (PROJECTILE_LIST) {
             PROJECTILE_LIST.add(projectileImpl);
         }
@@ -62,7 +62,7 @@ public final class PlayerProjectileController {
      * 
      * @param projectileImpl il proiettile da rimuovere dalla lista dei proiettili attivi del giocatore
      */
-    public static void removeProjectile(final ProjectileImpl projectileImpl) {
+    public static void removeProjectile(final Projectile projectileImpl) {
         synchronized (PROJECTILE_LIST) {
             PROJECTILE_LIST.remove(projectileImpl);
         }

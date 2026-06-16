@@ -3,6 +3,7 @@ package it.unibo.spacejava.controller;
 import it.unibo.spacejava.Position;
 import it.unibo.spacejava.Utils;
 import it.unibo.spacejava.api.Enemy;
+import it.unibo.spacejava.api.Projectile;
 import it.unibo.spacejava.model.EnemyType;
 import it.unibo.spacejava.model.ProjectileImpl;
 import it.unibo.spacejava.model.enemies.BossEnemy;
@@ -204,14 +205,14 @@ public final class WaveManagerController {
      * Controlla se un nemico viene colpito e se un nemico muore e quindi lo rimuove dall'ondata.
      */
     private void checkhitEnemies() {
-        final List<ProjectileImpl> playerProjectiles = PlayerProjectileController.getProjectileList();
+        final List<Projectile> playerProjectiles = PlayerProjectileController.getProjectileList();
         Enemy rmEnemy = EnemyFactory.createEnemy(EnemyType.BASE, new Position(0, 0));
         ProjectileImpl rmProjectile = new ProjectileImpl(new Position(0, 0), 0, 0, 0);
         Boolean kill = false;
         Boolean hit = false;
         // Controlla se un nemico è colpito
         for (final Enemy e : enemies) {
-            for (final ProjectileImpl p : playerProjectiles) {
+            for (final Projectile p : playerProjectiles) {
                 if (Utils
                     .isColliding(e.getPosition(), e.getWidth(), e.getHeight(), p.getPosition(), p.getWidth(), p.getLenght())) {
                     e.takeDamage(p.getDamage());

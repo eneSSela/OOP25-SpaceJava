@@ -7,9 +7,9 @@ import java.util.logging.Logger;
 import it.unibo.spacejava.Utils;
 import it.unibo.spacejava.api.Bunker;
 import it.unibo.spacejava.api.Enemy;
+import it.unibo.spacejava.api.Projectile;
 import it.unibo.spacejava.controller.EnemyProjectileController;
 import it.unibo.spacejava.controller.PlayerController;
-import it.unibo.spacejava.model.ProjectileImpl;
 import it.unibo.spacejava.model.enemies.BossEnemy;
 import it.unibo.spacejava.model.enemies.RedEnemy;
 import it.unibo.spacejava.model.enemies.TankEnemy;
@@ -50,7 +50,7 @@ public final class GamePanel extends JPanel {
     private transient Image backgroundImage;
     private transient List<Enemy> currentEnemies;
     private transient PlayerController crtlPlayer;
-    private transient List<ProjectileImpl> playerProjectiles;
+    private transient List<Projectile> playerProjectiles;
     private transient List<Bunker> listBunker;
 
     /**
@@ -88,7 +88,7 @@ public final class GamePanel extends JPanel {
      * @param bunkers lista dei bunker attivi 
      */
     public void render(final List<Enemy> enemies, final PlayerController player,
-            final List<ProjectileImpl> playerProjectile, final List<Bunker> bunkers) {
+            final List<Projectile> playerProjectile, final List<Bunker> bunkers) {
         this.currentEnemies = List.copyOf(enemies);
         this.crtlPlayer = Objects.requireNonNull(player, "Non può essere nullo");
         this.playerProjectiles = List.copyOf(playerProjectile);
@@ -101,7 +101,7 @@ public final class GamePanel extends JPanel {
         super.paintComponent(g);
         drawBackground(g, this.getWidth(), this.getHeight());
         drawEnemies(g, currentEnemies);
-        final List<ProjectileImpl> projectiles = EnemyProjectileController.getProjectileList();
+        final List<Projectile> projectiles = EnemyProjectileController.getProjectileList();
         drawEnemyProjectiles(g, projectiles);
         drawBunkers(g, listBunker);
         drawPlayer(g);
@@ -172,9 +172,9 @@ public final class GamePanel extends JPanel {
         }
     }
 
-    private void drawEnemyProjectiles(final Graphics g, final List<ProjectileImpl> projectiles) {
+    private void drawEnemyProjectiles(final Graphics g, final List<Projectile> projectiles) {
         if (projectiles != null && !projectiles.isEmpty()) {
-            for (final ProjectileImpl projectileImpl : projectiles) {
+            for (final Projectile projectileImpl : projectiles) {
                 g.drawImage(projectileImage,
                             projectileImpl.getPosition().getX(),
                             projectileImpl.getPosition().getY(),
@@ -199,7 +199,7 @@ public final class GamePanel extends JPanel {
     private void drawPlayerProjectiles(final Graphics g) {
         if (playerProjectiles != null && !playerProjectiles.isEmpty()) {
             g.setColor(Color.CYAN); // i proiettili del giocatore saranno azzurri
-            for (final ProjectileImpl p : playerProjectiles) {
+            for (final Projectile p : playerProjectiles) {
                 g.fillRect(
                         p.getPosition().getX(),
                         p.getPosition().getY(),

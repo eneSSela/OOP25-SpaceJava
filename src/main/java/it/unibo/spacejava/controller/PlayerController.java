@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import it.unibo.spacejava.api.Projectile;
 import it.unibo.spacejava.KeyHandler;
 import it.unibo.spacejava.Position;
 import it.unibo.spacejava.Skin;
 import it.unibo.spacejava.model.PlayerShip;
-import it.unibo.spacejava.model.ProjectileImpl;
 import it.unibo.spacejava.model.sound.SoundManagerImpl;
 
 /**
@@ -101,9 +101,9 @@ public class PlayerController {
      */
     public void checkEnemyCollision() {
         //Recuperiamo la lista dei proiettili nemici
-        final List<ProjectileImpl> enemyProjectiles = new ArrayList<>(EnemyProjectileController.getProjectileList());
+        final List<Projectile> enemyProjectiles = new ArrayList<>(EnemyProjectileController.getProjectileList());
 
-        for (final ProjectileImpl p : enemyProjectiles) {
+        for (final Projectile p : enemyProjectiles) {
             //Controlla se il rettangolo del player si sovrappone a quello del proiettile
             if (isColliding(playerShip.getPosition(), playerShip.getWidth(), playerShip.getHeight(), 
                             p.getPosition(), p.getWidth(), p.getLenght())) {
