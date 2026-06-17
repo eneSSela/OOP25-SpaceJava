@@ -48,6 +48,24 @@ public final class SkinModel {
     }
 
     /**
+     * Getter per restituire l'idece di selezione.
+     * 
+     * @return integer che idica l'idice della skin 
+     */
+    public int getSelectedIndex() {
+        return this.selectedIndex;
+    }
+
+    /**
+     * Getter che serve per sapere il numeor esatto di skin.
+     * 
+     * @return la lunghezza della lista delle skin
+     */
+    public int getTotalSkins() {
+        return this.skins.size();
+    }
+
+    /**
      * Seleziona la skin precedente nella lista.
      */
     public void selectPrevious() {
