@@ -15,18 +15,19 @@ import it.unibo.spacejava.model.enemies.EnemyFactory;
 /**
  * Classe di test per i nemici.
  */
-public class EnemyTest {
+final class EnemyTest {
+    private static final int MAXDMG = 999;
 
     //Verifica che l'inizializzazione dei nemici sia corretta, testando EnemyFactory e i metodi di AbstractEnemy.
     @Test
     void testInitialization() {
-        Position startingPosition = new Position(100, 100);
-        Enemy basEnemy = EnemyFactory.createEnemy(EnemyType.BASE, startingPosition);
+        final Position startingPosition = new Position(100, 100);
+        final Enemy basEnemy = EnemyFactory.createEnemy(EnemyType.BASE, startingPosition);
 
         //Controllo che la posizione sia stata assegnata correttamente.
         assertEquals(startingPosition, basEnemy.getPosition());
         //Controllo che le statistiche abbiano senso.
-        assertTrue(basEnemy.getType() == EnemyType.BASE);
+        assertEquals(basEnemy.getType(), EnemyType.BASE);
         assertTrue(basEnemy.getHealth() > 0);
         assertTrue(basEnemy.getHeight() > 0);
         assertTrue(basEnemy.getWidth() > 0);
@@ -38,39 +39,39 @@ public class EnemyTest {
     @Test
     void testTakeDamageAndDeath() {
         //Controllo nemico base.
-        Enemy baseEnemy = EnemyFactory.createEnemy(EnemyType.BASE, new Position(0, 0));
-        assertTrue(baseEnemy.getHealth() == 1);
+        final Enemy baseEnemy = EnemyFactory.createEnemy(EnemyType.BASE, new Position(0, 0));
+        assertEquals(baseEnemy.getHealth(), 1);
         baseEnemy.takeDamage(1);
         //Controllo che il nemico sia effettivamente morto.
         assertTrue(baseEnemy.isDead());
 
         //Controllo nemico tank.
-        Enemy tankEnemy = EnemyFactory.createEnemy(EnemyType.TANK, new Position(0, 0));
-        int startingTankHealth = tankEnemy.getHealth();
+        final Enemy tankEnemy = EnemyFactory.createEnemy(EnemyType.TANK, new Position(0, 0));
+        final int startingTankHealth = tankEnemy.getHealth();
         tankEnemy.takeDamage(1);
         //Controllo che la vita sia effettivamente diminuita.
         assertTrue(startingTankHealth > tankEnemy.getHealth());
-        tankEnemy.takeDamage(999);
+        tankEnemy.takeDamage(MAXDMG);
         //Controllo che il nemico sia effettivamente morto.
         assertTrue(tankEnemy.isDead());
 
         //Controllo nemico red.
-        Enemy redEnemy = EnemyFactory.createEnemy(EnemyType.RED, new Position(0, 0));
-        int startingRedHealth = redEnemy.getHealth();
+        final Enemy redEnemy = EnemyFactory.createEnemy(EnemyType.RED, new Position(0, 0));
+        final int startingRedHealth = redEnemy.getHealth();
         redEnemy.takeDamage(1);
         //Controllo che la vita sia effettivamente diminuita.
         assertTrue(startingRedHealth > redEnemy.getHealth());
-        redEnemy.takeDamage(999);
+        redEnemy.takeDamage(MAXDMG);
         //Controllo che il nemico sia effettivamente morto.
         assertTrue(redEnemy.isDead());
 
         //Controllo nemico boss.
-        Enemy bossEnemy = EnemyFactory.createEnemy(EnemyType.BOSS, new Position(0, 0));
-        int startingBossHealth = bossEnemy.getHealth();
+        final Enemy bossEnemy = EnemyFactory.createEnemy(EnemyType.BOSS, new Position(0, 0));
+        final int startingBossHealth = bossEnemy.getHealth();
         bossEnemy.takeDamage(1);
         //Controllo che la vita sia effettivamente diminuita.
         assertTrue(startingBossHealth > bossEnemy.getHealth());
-        bossEnemy.takeDamage(999);
+        bossEnemy.takeDamage(MAXDMG);
         //Controllo che il nemico sia effettivamente morto.
         assertTrue(bossEnemy.isDead());
     }
@@ -80,8 +81,8 @@ public class EnemyTest {
      */
     @Test
     void testProjectileGeneration() {
-        Position startingPosition = new Position(100, 100);
-        Enemy enemy = EnemyFactory.createEnemy(EnemyType.BASE, startingPosition);
+        final Position startingPosition = new Position(100, 100);
+        final Enemy enemy = EnemyFactory.createEnemy(EnemyType.BASE, startingPosition);
         enemy.attack();
         //Controllo se un proiettile è stato effettivamente aggiunto alla lista dei proiettili nemici.
         assertFalse(EnemyProjectileController.getProjectileList().isEmpty());
