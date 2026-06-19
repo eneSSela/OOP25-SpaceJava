@@ -5,7 +5,6 @@ import it.unibo.spacejava.Utils;
 import it.unibo.spacejava.api.Enemy;
 import it.unibo.spacejava.api.Projectile;
 import it.unibo.spacejava.model.EnemyType;
-import it.unibo.spacejava.model.ProjectileImpl;
 import it.unibo.spacejava.model.enemies.BossEnemy;
 import it.unibo.spacejava.model.enemies.EnemyFactory;
 import it.unibo.spacejava.model.enemies.RedEnemy;
@@ -40,7 +39,7 @@ public final class WaveManagerController {
     private int waveNum = 1;
 
     /**
-     * Costruisce una nuova oindata di nemici, in base alla larghezza dello schermo.
+     * Costruisce una nuova ondata di nemici, in base alla larghezza dello schermo.
      * 
      * @param screenWidth larghezza dello schermo
      * @param soundManager gestore dei suoni per riprodurre effeti sonori come lo sparo e l'impatto dei proitettili
@@ -141,6 +140,8 @@ public final class WaveManagerController {
 
         checkhitEnemies();
 
+        enemies.removeIf(Enemy::isDead);
+
         boolean hitEdge = false;
         // Controlla se un nemico tocca il bordo
         for (final Enemy e : enemies) {
@@ -202,13 +203,11 @@ public final class WaveManagerController {
     }
 
     /**
-     * Controlla se un nemico viene colpito e se un nemico muore e quindi lo rimuove dall'ondata.
+     * Controlla se un nemico viene colpito.
      */
     private void checkhitEnemies() {
         final List<Projectile> playerProjectiles = PlayerProjectileController.getProjectileList();
-        Enemy rmEnemy = EnemyFactory.createEnemy(EnemyType.BASE, new Position(0, 0));
-        Projectile rmProjectile = new ProjectileImpl(new Position(0, 0), 0, 0, 0);
-        Boolean kill = false;
+        final List<Projectile> projectilesToRemove = new ArrayList<>();
         Boolean hit = false;
         // Controlla se un nemico è colpito
         for (final Enemy e : enemies) {
@@ -216,23 +215,18 @@ public final class WaveManagerController {
                 if (Utils
                     .isColliding(e.getPosition(), e.getWidth(), e.getHeight(), p.getPosition(), p.getWidth(), p.getLenght())) {
                     e.takeDamage(p.getDamage());
-                    rmProjectile = p;
+                    projectilesToRemove.add(p);
                     hit = true;
-                    if (e.isDead()) {
-                        rmEnemy = e;
-                        kill = true;
-                    }
                 }
             }
         }
-
+        //Fa partire un suono quando colpisci un nemico.
         if (hit) {
             soundManager.playSound(HIT_SOUND_PATH);
-            PlayerProjectileController.removeProjectile(rmProjectile);
-            // Se un nemico ha esaurito le vite viene rimosso dall'ondata.
-            if (kill) {
-                enemies.remove(rmEnemy);
-            }
+        }
+        //Rimuove i proiettili che hanno colpito un nemico.
+        for (final Projectile p : projectilesToRemove) {
+            PlayerProjectileController.removeProjectile(p);
         }
     }
 
