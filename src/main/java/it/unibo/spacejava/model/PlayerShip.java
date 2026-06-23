@@ -2,7 +2,6 @@ package it.unibo.spacejava.model;
 
 import it.unibo.spacejava.Position;
 import it.unibo.spacejava.Skin;
-import it.unibo.spacejava.controller.PlayerProjectileController;
 
 /**
  * Classe che rappresenta la logica della navicella dell'utente.
@@ -12,12 +11,8 @@ public final class PlayerShip {
     private static final double WIDTH = 50.0;
     private static final double HEIGHT = 55.0;
     private static final double SPEED = 300.0;
-    private static final int PROJECTILE_WIDTH = 10;
-    private static final int PROJECTILE_LENGTH = 40;
-    private static final int DAMAGE = 1;
-    private static int playerPoints;
 
-    private int healt = 3;
+    private int health = 3;
     private final Position position;
     private Skin currentSkin;
 
@@ -106,7 +101,7 @@ public final class PlayerShip {
      * @return la salute corrente
      */
     public int getHealt() {
-        return healt;
+        return health;
     }
 
     /**
@@ -115,7 +110,7 @@ public final class PlayerShip {
      * @param damage il danno ricevuto
      */
     public void takeDamage(final int damage) {
-        this.healt -= damage;
+        this.health -= damage;
     }
 
     /**
@@ -124,55 +119,7 @@ public final class PlayerShip {
      * @return true se la salute è minore o uguale a zero
      */
     public boolean isDead() {
-        return this.healt <= 0;
+        return this.health <= 0;
     }
 
-    /**
-     * Spara un proiettile dal centro superiore della navicella.
-     */
-    public void shoot() {
-        final int startX = position.getX() + (int) (getWidth() / 2) - (int) (PROJECTILE_WIDTH / 2.0);
-        final int startY = position.getY();
-
-        PlayerProjectileController.addProjectile(
-                new ProjectileImpl(new Position(startX, startY), PROJECTILE_LENGTH, PROJECTILE_WIDTH, DAMAGE));
-    }
-
-    /**
-     * Metodo per poter aggiungere i punti al giocatore.
-     * 
-     * @param p punti fatti dal giocare durante la partia, da aggiungere allo stato attaule del giocatore
-     */
-    public static void addPoints(final int p) {
-        if (p > 0) {
-            playerPoints += p;
-        }
-    }
-
-    /**
-     * Metodo per togliere i punti al giocatore, vienen chamato quando fa l'aquisto di una nuova skin.
-     * 
-     * @param p punti da togliere
-     */
-    public static void lessPoints(final int p) {
-        if (p > 0) {
-            playerPoints -= p;
-        }
-    }
-
-    /**
-     * Metodo per ritornare i punti accumulati dal giocatore, durante la partita.
-     * 
-     * @return i punti attuali del giocatore
-     */
-    public static int getPlayerPoints() {
-        return playerPoints;
-    }
-
-    /**
-     * Resetta i punti del giocatore a zero.
-     */
-    public static void resetPoints() {
-        playerPoints = 0;
-    }
 }

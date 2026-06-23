@@ -18,13 +18,19 @@ public final class BunkerController {
     private static final int BUNKER_HEALTH = 10; // Punti vita per ogni bunker
     private final List<Bunker> bunkers = new ArrayList<>();
 
+    private final PlayerProjectileController playerProjController;
+    private final EnemyProjectileController enemyProjController;
+
     /**
      * Costruisce i 4 bunker posizionati equidistantemente tra loto e sopra il palyer.
      * 
      * @param screenWidth la larghezza dello schermo, usata per posizionare i bunker equidistantemente
      * @param screenHeight l'altezza dello schermo, usata per posizionare i bunker sopra il giocatore
      */
-    public BunkerController(final int screenWidth, final int screenHeight) {
+    public BunkerController(final int screenWidth, final int screenHeight, final PlayerProjectileController playerProjController, final EnemyProjectileController enemyProjController) {
+        this.playerProjController = playerProjController;
+        this.enemyProjController = enemyProjController;
+        
         // Generiamo 4 bunker distanziati equamente
         final int spacing = screenWidth / 5; 
         final int startY = screenHeight - 180; // Posizionati sopra il giocatore
@@ -56,7 +62,7 @@ public final class BunkerController {
         final List<Projectile> enemyProjectilesSnapshot = new ArrayList<>(enemyProjectiles);
 
         for (final Bunker b : bunkers) {
-            playerProjectilesSnapshot.stream().filter(p -> isColliding(b,p)).forEach(p -> PlayerProjectileController.removeProjectile(p));
+            playerProjectilesSnapshot.stream().filter(p -> isColliding(b,p)).forEach(p -> this.playerProjController.removeProjectile(p));
             enemyProjectilesSnapshot.stream().filter(p -> isColliding(b, p)).forEach(p -> {
                 b.takeDamage(p.getDamage());
                 EnemyProjectileController.removeProjectile(p);

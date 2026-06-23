@@ -3,12 +3,14 @@ package it.unibo.spacejava.controller;
 import it.unibo.spacejava.Position;
 import it.unibo.spacejava.Utils;
 import it.unibo.spacejava.api.Enemy;
+import it.unibo.spacejava.api.GameManger;
 import it.unibo.spacejava.api.Projectile;
 import it.unibo.spacejava.model.EnemyType;
 import it.unibo.spacejava.model.enemies.BossEnemy;
 import it.unibo.spacejava.model.enemies.EnemyFactory;
 import it.unibo.spacejava.model.enemies.RedEnemy;
 import it.unibo.spacejava.model.enemies.TankEnemy;
+import it.unibo.spacejava.controller.PlayerProjectileController;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,6 +34,8 @@ public final class WaveManagerController {
     private static final String HIT_SOUND_PATH = "/audio/hit.wav";
 
     private final SoundManager soundManager;
+    private final GameManger gameManager;
+    private final PlayerProjectileController playerProjectileController;
     private boolean isMovingRight = true;
     private double timeSinceLastShot;
     private final List<Enemy> enemies;
@@ -44,11 +48,13 @@ public final class WaveManagerController {
      * @param screenWidth larghezza dello schermo
      * @param soundManager gestore dei suoni per riprodurre effeti sonori come lo sparo e l'impatto dei proitettili
      */
-    public WaveManagerController(final double screenWidth, final SoundManager soundManager) {
+    public WaveManagerController(final double screenWidth, final SoundManager soundManager, final GameManger gameManager, final PlayerProjectileController playerProjectileController) {
         this.screenWidth = screenWidth;
         this.enemies = new ArrayList<>();
         this.spawnWave();
         this.soundManager = soundManager;
+        this.gameManager = gameManager;
+        this.playerProjectileController = playerProjectileController;
     }
 
     /**
@@ -140,6 +146,19 @@ public final class WaveManagerController {
 
         checkhitEnemies();
 
+        // Prima di rimuoverli, controlliamo chi è morto e diamo i punti.
+        for (final Enemy e : enemies) {
+            if (e.isDead()) {
+                switch (e.getType()) {
+                    case BASE: this.gameManager.addScore(100); break;
+                    case TANK: this.gameManager.addScore(200); break;
+                    case RED: this.gameManager.addScore(150); break;
+                    case BOSS: this.gameManager.addScore(1000); break;
+                    default:   this.gameManager.addScore(50); break;
+                }
+            }
+        }
+
         enemies.removeIf(Enemy::isDead);
 
         boolean hitEdge = false;
@@ -206,7 +225,7 @@ public final class WaveManagerController {
      * Controlla se un nemico viene colpito.
      */
     private void checkhitEnemies() {
-        final List<Projectile> playerProjectiles = PlayerProjectileController.getProjectileList();
+        final List<Projectile> playerProjectiles = this.playerProjectileController.getProjectileList();
         final List<Projectile> projectilesToRemove = new ArrayList<>();
         Boolean hit = false;
         // Controlla se un nemico è colpito
@@ -226,7 +245,7 @@ public final class WaveManagerController {
         }
         //Rimuove i proiettili che hanno colpito un nemico.
         for (final Projectile p : projectilesToRemove) {
-            PlayerProjectileController.removeProjectile(p);
+            this.playerProjectileController.removeProjectile(p);
         }
     }
 

@@ -5,7 +5,7 @@ import java.util.Objects;
 
 import it.unibo.spacejava.Skin;
 import it.unibo.spacejava.api.MenuObserver;
-import it.unibo.spacejava.model.PlayerShip;
+import it.unibo.spacejava.api.GameManger;
 
 /**
  * Classe che funge da model per la schermata di selezione delle skin,
@@ -20,13 +20,16 @@ public final class SkinModel {
     private final List<Skin> skins;
     private MenuObserver observer;
 
+    private final GameManger gameManager;
+
     /**
      * Costruttore per definire le due variabili (punti e l'idice di selezione della skin) a 0,
      * e inzializzo anche la lista delle skin.
      */
-    public SkinModel() {
+    public SkinModel(final GameManger gameManager) {
         this.skins = SkinFactory.createListOfSkins();
         this.selectedIndex = 0;
+        this.gameManager = Objects.requireNonNull(gameManager);
     }
 
     /**
@@ -35,7 +38,7 @@ public final class SkinModel {
      * @return integer che identifica i punti attuali del giocatore, utilizzabili per sbloccare skins
      */
     public int getPoints() {
-        return PlayerShip.getPlayerPoints();
+        return gameManager.getScore();
     }
 
     /**
@@ -88,8 +91,8 @@ public final class SkinModel {
      */
     public boolean buyCurrentSkin() {
         final Skin current = getSelectedSkin();
-        if (!current.isUnlock() && PlayerShip.getPlayerPoints() >= current.getPrice()) {
-            PlayerShip.lessPoints(current.getPrice()); // Scala i punti
+        if (!current.isUnlock() && this.gameManager.getScore() >= current.getPrice()) {
+            this.gameManager.decreaseScore(current.getPrice()); // Scala i punti
             current.unlock();                   // Sblocca la skin
             this.notifyListener();
             return true;
