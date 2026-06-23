@@ -56,7 +56,10 @@ public final class BunkerController {
         final List<Projectile> enemyProjectilesSnapshot = new ArrayList<>(enemyProjectiles);
 
         for (final Bunker b : bunkers) {
-            playerProjectilesSnapshot.stream().filter(p -> isColliding(b,p)).forEach(p -> PlayerProjectileController.removeProjectile(p));
+            playerProjectilesSnapshot
+                .stream()
+                .filter(p -> isColliding(b, p))
+                .forEach(PlayerProjectileController::removeProjectile);
             enemyProjectilesSnapshot.stream().filter(p -> isColliding(b, p)).forEach(p -> {
                 b.takeDamage(p.getDamage());
                 EnemyProjectileController.removeProjectile(p);

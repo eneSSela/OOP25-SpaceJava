@@ -69,7 +69,7 @@ public final class EnemyProjectileController {
      * 
      * @param projectileToRemove il proiettile da rimuovere
      */
-    static void removeProjectile(final Projectile projectileToRemove) {
+    public static void removeProjectile(final Projectile projectileToRemove) {
         synchronized (PROJECTILES_LIST) {
             PROJECTILES_LIST.remove(projectileToRemove);
         }
