@@ -7,13 +7,31 @@ package it.unibo.spacejava.api;
 public interface GameManger {
 
     /**
-     * Questo è il metodo dove inizializamo tutti i componenti necasiri al gioco, come la view il controller ed il model del menu.
+     * Avvia il gioco
      */
     void startGame();
 
+    /**
+     * Aggiunge puti al punteggio
+     * @param points punti da aggiungere
+     */
     void addScore(int points);
+    
+    /**
+     * Restituisce il punteggio
+     * @return punteggio corrente
+     */
     int getScore();
+
+    /**
+     * Sottrae punti dal punteggio
+     * @param points punti da sottrarre
+     */
     void decreaseScore(int points);
+
+    /**
+     * Resetta il punteggio
+     */
     void resetScore();
 
 }

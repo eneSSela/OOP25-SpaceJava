@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import it.unibo.spacejava.model.PlayerShip;
+import it.unibo.spacejava.api.GameManger;
 import it.unibo.spacejava.model.menu.SkinModel;
 import it.unibo.spacejava.view.menu.SkinSelectionView;
 
@@ -17,11 +17,21 @@ final class SkinModelTest {
 
     private static final int POINTS_TO_ADD = 5000;
     private SkinModel model;
+    private GameManger fakeGameManager;
 
     @BeforeEach
     void setUp() {
-        PlayerShip.resetPoints();
-        model = new SkinModel();
+        //Creiamo un finto gestore per simulare i punti durante il test
+        fakeGameManager = new GameManger() {
+            private int score = 0;
+            @Override public void startGame() {}
+            @Override public void addScore(final int points) { this.score += points; }
+            @Override public int getScore() { return this.score; }
+            @Override public void decreaseScore(final int points) { this.score -= points; }
+            @Override public void resetScore() { this.score = 0; }
+        };
+
+        model = new SkinModel(fakeGameManager);
         this.model.setObserver(new SkinSelectionView(model));
     }
 
@@ -46,7 +56,7 @@ final class SkinModelTest {
     @Test
     void testBuySkinWithSufficientPoints() {
         model.selectNext(); // Passa alla "ship2" (costa 100)
-        PlayerShip.addPoints(POINTS_TO_ADD); // Aggiungiamo punti (usando il metodo suggerito)
+        fakeGameManager.addScore(POINTS_TO_ADD); // Aggiungiamo punti (usando il metodo suggerito)
 
         final boolean result = model.buyCurrentSkin();
 
@@ -54,7 +64,7 @@ final class SkinModelTest {
         assertTrue(model.getSelectedSkin().isUnlock(), "La skin deve risultare sbloccata dopo l'acquisto");
         assertEquals(
             POINTS_TO_ADD - model.getSelectedSkin().getPrice(),
-            PlayerShip.getPlayerPoints(),
+            fakeGameManager.getScore(),
             "I punti devono essere stati scalati correttamente (5000 - 1000 = 4000)");
     }
 }
