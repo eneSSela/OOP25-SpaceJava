@@ -7,30 +7,33 @@ package it.unibo.spacejava.api;
 public interface GameManger {
 
     /**
-     * Avvia il gioco
+     * Avvia il gioco.
      */
     void startGame();
 
     /**
-     * Aggiunge puti al punteggio
+     * Aggiunge puti al punteggio.
+     * 
      * @param points punti da aggiungere
      */
     void addScore(int points);
-    
+
     /**
-     * Restituisce il punteggio
+     * Restituisce il punteggio.
+     * 
      * @return punteggio corrente
      */
     int getScore();
 
     /**
-     * Sottrae punti dal punteggio
+     * Sottrae punti dal punteggio.
+     * 
      * @param points punti da sottrarre
      */
     void decreaseScore(int points);
 
     /**
-     * Resetta il punteggio
+     * Resetta il punteggio.
      */
     void resetScore();
 

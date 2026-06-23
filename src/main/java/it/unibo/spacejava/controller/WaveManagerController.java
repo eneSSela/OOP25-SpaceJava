@@ -10,13 +10,13 @@ import it.unibo.spacejava.model.enemies.BossEnemy;
 import it.unibo.spacejava.model.enemies.EnemyFactory;
 import it.unibo.spacejava.model.enemies.RedEnemy;
 import it.unibo.spacejava.model.enemies.TankEnemy;
-import it.unibo.spacejava.controller.PlayerProjectileController;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.spacejava.model.sound.api.SoundManager;
 
 /**
@@ -24,6 +24,10 @@ import it.unibo.spacejava.model.sound.api.SoundManager;
  */
 public final class WaveManagerController {
 
+    private static final int SCORE_BASE = 100;
+    private static final int SCORE_TANK = 200;
+    private static final int SCORE_RED = 150;
+    private static final int SCORE_BOSS = 1000;
     private static final double SPEED_X = 60.0;
     private static final double DESCENT = 20.0; 
     private static final double COOLDOWN = 1.0; 
@@ -47,8 +51,13 @@ public final class WaveManagerController {
      * 
      * @param screenWidth larghezza dello schermo
      * @param soundManager gestore dei suoni per riprodurre effeti sonori come lo sparo e l'impatto dei proitettili
+     * @param gameManager gestore del punteggio
+     * @param playerProjectileController controller dei proiettili
      */
-    public WaveManagerController(final double screenWidth, final SoundManager soundManager, final GameManger gameManager, final PlayerProjectileController playerProjectileController) {
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Dependency injection is intended here")
+    public WaveManagerController(final double screenWidth, final SoundManager soundManager, 
+                                final GameManger gameManager, 
+                                final PlayerProjectileController playerProjectileController) {
         this.screenWidth = screenWidth;
         this.enemies = new ArrayList<>();
         this.spawnWave();
@@ -150,11 +159,18 @@ public final class WaveManagerController {
         for (final Enemy e : enemies) {
             if (e.isDead()) {
                 switch (e.getType()) {
-                    case BASE: this.gameManager.addScore(100); break;
-                    case TANK: this.gameManager.addScore(200); break;
-                    case RED: this.gameManager.addScore(150); break;
-                    case BOSS: this.gameManager.addScore(1000); break;
-                    default:   this.gameManager.addScore(50); break;
+                    case BASE:
+                        this.gameManager.addScore(SCORE_BASE);
+                        break;
+                    case TANK:
+                        this.gameManager.addScore(SCORE_TANK);
+                        break;
+                    case RED:
+                        this.gameManager.addScore(SCORE_RED);
+                        break;
+                    case BOSS:
+                        this.gameManager.addScore(SCORE_BOSS);
+                        break;
                 }
             }
         }

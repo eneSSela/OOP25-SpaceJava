@@ -3,6 +3,7 @@ package it.unibo.spacejava.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.spacejava.api.Bunker;
 import it.unibo.spacejava.api.Projectile;
 import it.unibo.spacejava.model.BunkerImpl;
@@ -26,11 +27,16 @@ public final class BunkerController {
      * 
      * @param screenWidth la larghezza dello schermo, usata per posizionare i bunker equidistantemente
      * @param screenHeight l'altezza dello schermo, usata per posizionare i bunker sopra il giocatore
+     * @param playerProjController controller proiettili player
+     * @param enemyProjController controller proiettili nemici
      */
-    public BunkerController(final int screenWidth, final int screenHeight, final PlayerProjectileController playerProjController, final EnemyProjectileController enemyProjController) {
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Dependency injection is intended here")
+    public BunkerController(final int screenWidth, final int screenHeight, 
+                            final PlayerProjectileController playerProjController, 
+                            final EnemyProjectileController enemyProjController) {
         this.playerProjController = playerProjController;
         this.enemyProjController = enemyProjController;
-        
+
         // Generiamo 4 bunker distanziati equamente
         final int spacing = screenWidth / 5; 
         final int startY = screenHeight - 180; // Posizionati sopra il giocatore
@@ -62,10 +68,13 @@ public final class BunkerController {
         final List<Projectile> enemyProjectilesSnapshot = new ArrayList<>(enemyProjectiles);
 
         for (final Bunker b : bunkers) {
-            playerProjectilesSnapshot.stream().filter(p -> isColliding(b,p)).forEach(p -> this.playerProjController.removeProjectile(p));
-            enemyProjectilesSnapshot.stream().filter(p -> isColliding(b, p)).forEach(p -> {
+            playerProjectilesSnapshot.stream().filter(p -> isColliding(b, p))
+            .forEach(this.playerProjController::removeProjectile);
+            enemyProjectilesSnapshot.stream()
+            .filter(p -> isColliding(b, p))
+            .forEach(p -> {
                 b.takeDamage(p.getDamage());
-                EnemyProjectileController.removeProjectile(p);
+                this.enemyProjController.removeProjectile(p);
             });
         }
 

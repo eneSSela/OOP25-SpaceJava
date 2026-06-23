@@ -3,6 +3,8 @@ package it.unibo.spacejava.model.menu;
 import java.util.List;
 import java.util.Objects;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import it.unibo.spacejava.Skin;
 import it.unibo.spacejava.api.MenuObserver;
 import it.unibo.spacejava.api.GameManger;
@@ -25,7 +27,10 @@ public final class SkinModel {
     /**
      * Costruttore per definire le due variabili (punti e l'idice di selezione della skin) a 0,
      * e inzializzo anche la lista delle skin.
+     * 
+     * @param gameManager il gestore del gioco
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Dependency injection is intended here")
     public SkinModel(final GameManger gameManager) {
         this.skins = SkinFactory.createListOfSkins();
         this.selectedIndex = 0;

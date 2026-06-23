@@ -28,17 +28,40 @@ final class WaveManagerControllerTest {
     void setUp() {
         // Creiamo istanze finte per far funzionare il costruttore in isolamento
         final GameManger fakeGameManager = new GameManger() {
-            @Override public void startGame() {}
-            @Override public void addScore(final int points) {}
-            @Override public int getScore() {return 0; }
-            @Override public void decreaseScore(final int points) {}
-            @Override public void resetScore() {}
+            @Override 
+            public void startGame() {
+            }
+
+            @Override 
+            public void addScore(final int points) {
+            }
+
+            @Override 
+            public int getScore() {
+                return 0;
+            }
+
+            @Override 
+            public void decreaseScore(final int points) {
+            }
+
+            @Override 
+            public void resetScore() {
+            }
         };
 
         final SoundManager fakeSound = new SoundManager() {
-            @Override public void playSound(final String path) {}
-            @Override public void playBackgroundMusic(final String path) {}
-            @Override public void stopBackgroundMusic() {}
+            @Override 
+            public void playSound(final String path) {
+            }
+
+            @Override 
+            public void playBackgroundMusic(final String path) {
+            }
+
+            @Override 
+            public void stopBackgroundMusic() {
+            }
         };
 
         final PlayerProjectileController projCtrl = new PlayerProjectileController();

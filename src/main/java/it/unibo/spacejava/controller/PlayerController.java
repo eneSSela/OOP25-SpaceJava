@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import it.unibo.spacejava.api.Projectile;
 import it.unibo.spacejava.KeyHandler;
 import it.unibo.spacejava.Position;
@@ -40,8 +42,10 @@ public class PlayerController {
      * 
      * @param playerShip model del giocatore
      * @param keyHandler gestore degli input da tastiera
-     * @param screenWidth larghezza delllo shermo per limitare il movimento delgiocaore
+     * @param screenWidth larghezza delllo shermo per limitare il movimento del giocatore
+     * @param projectileController il controller dei proiettili
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Dependency injection is intended here")
     public PlayerController(
         final PlayerShip playerShip,
         final KeyHandler keyHandler,
@@ -82,7 +86,8 @@ public class PlayerController {
         final int startX = playerShip.getPosition().getX() + (int) (playerShip.getWidth() / 2) - (int) (PROJECTILE_WIDTH / 2.0);
         final int startY = playerShip.getPosition().getY();
 
-        ProjectileImpl newProjectile = new ProjectileImpl(new Position(startX, startY), PROJECTILE_LENGTH, PROJECTILE_WIDTH, DAMAGE);
+        final ProjectileImpl newProjectile = new ProjectileImpl(
+            new Position(startX, startY), PROJECTILE_LENGTH, PROJECTILE_WIDTH, DAMAGE);
         projectileController.addProjectile(newProjectile);
 
         SoundManagerImpl.getInstance().playSound(SHOOT_SOUND_PATH);

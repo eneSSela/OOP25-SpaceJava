@@ -57,15 +57,19 @@ public final class GameManagerImpl implements GameManger, Runnable {
     private SkinSelectionView skinSelectionView;
 
     //Compononenti dei nemici e del player
-    private WaveManagerController waveManager;
+    private final WaveManagerController waveManager;
     private final EnemyProjectileController projectileController = new EnemyProjectileController(SCREEN_HEIGTH);
     private PlayerController playerController;
     private BunkerController bunkerController;
 
+    /**
+     * Costruisce il GameManager inizializzando i punteggi e i controller.
+     */
     public GameManagerImpl() {
         this.score = 0;
         this.skinModel = new SkinModel(this);
-        this.waveManager = new WaveManagerController(SCREEN_WIDTH, SoundManagerImpl.getInstance(), this, this.playerProjController);
+        this.waveManager = new WaveManagerController(SCREEN_WIDTH, SoundManagerImpl.getInstance(), 
+                                                    this, this.playerProjController);
     }
 
     /**
@@ -120,8 +124,10 @@ public final class GameManagerImpl implements GameManger, Runnable {
         final int startX = (int) (SCREEN_WIDTH / 2.0) - 32;
         final int startY = SCREEN_HEIGTH - 100;
         final PlayerShip playerModel = new PlayerShip(startX, startY, skinModel.getSelectedSkin());
-        playerController = new PlayerController(playerModel, gameKeyHandler,playerProjController, SCREEN_WIDTH);
-        bunkerController = new BunkerController(SCREEN_WIDTH, SCREEN_HEIGTH, this.playerProjController, this.projectileController);
+        playerController = new PlayerController(playerModel, gameKeyHandler,
+                                                playerProjController, SCREEN_WIDTH);
+        bunkerController = new BunkerController(SCREEN_WIDTH, SCREEN_HEIGTH, 
+                                                this.playerProjController, this.projectileController);
 
         gamePanel.addKeyListener(gameKeyHandler);
         startMenuView.setFocusable(true);
@@ -192,10 +198,12 @@ public final class GameManagerImpl implements GameManger, Runnable {
     }
 
     /**
-     * Incrementa il punteggio attuale della partita
+     * Incrementa il punteggio attuale della partita.
+     * 
      * @param points punti da aggiungere
      */
-    public void addScore(final int points) {
+    @Override
+    public synchronized void addScore(final int points) {
         if (points > 0) {
             this.score += points;
         }
@@ -203,9 +211,11 @@ public final class GameManagerImpl implements GameManger, Runnable {
 
     /**
      * Decrementa il punteggio (es. per l'acquisto di skin nello shop).
+     * 
      * @param points punti da sottrarre
      */
-    public void decreaseScore(final int points) {
+    @Override
+    public synchronized void decreaseScore(final int points) {
         if (points > 0 && this.score >= points) {
             this.score -= points;
         }
@@ -214,14 +224,16 @@ public final class GameManagerImpl implements GameManger, Runnable {
     /**
      * Restituisce il punteggio corrente.
      */
-    public int getScore() {
+    @Override
+    public synchronized int getScore() {
         return this.score;
     }
 
     /**
      * Restituisce il punteggio all'inizio di una nuova partite.
      */
-    public void resetScore() {
+    @Override
+    public synchronized void resetScore() {
         this.score = 0;
     }
 

@@ -23,12 +23,30 @@ final class SkinModelTest {
     void setUp() {
         //Creiamo un finto gestore per simulare i punti durante il test
         fakeGameManager = new GameManger() {
-            private int score = 0;
-            @Override public void startGame() {}
-            @Override public void addScore(final int points) { this.score += points; }
-            @Override public int getScore() { return this.score; }
-            @Override public void decreaseScore(final int points) { this.score -= points; }
-            @Override public void resetScore() { this.score = 0; }
+            private int score;
+            @Override
+            public void startGame() {
+            }
+
+            @Override
+            public void addScore(final int points) {
+                this.score += points;
+            }
+
+            @Override
+            public int getScore() {
+                return this.score;
+            }
+
+            @Override
+            public void decreaseScore(final int points) {
+                this.score -= points;
+            }
+
+            @Override
+            public void resetScore() {
+                this.score = 0;
+            }
         };
 
         model = new SkinModel(fakeGameManager);
