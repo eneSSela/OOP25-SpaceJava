@@ -213,7 +213,7 @@ public final class GamePanel extends JPanel {
         if (crtlPlayer != null) { // Controlliamo che il player sia stato caricato
             g.setFont(new Font(FONT_NAME, Font.BOLD, HEALTH_FONT_SIZE));
 
-            final int health = crtlPlayer.getPlayerShip().getHealt();
+            final int health = crtlPlayer.getPlayerShip().getHealth();
 
             // Cambiamo colore in base alla vita rimanente
             if (health > 1) {

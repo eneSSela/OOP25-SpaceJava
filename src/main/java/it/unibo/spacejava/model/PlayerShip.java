@@ -100,7 +100,7 @@ public final class PlayerShip {
      *
      * @return la salute corrente
      */
-    public int getHealt() {
+    public int getHealth() {
         return health;
     }
 

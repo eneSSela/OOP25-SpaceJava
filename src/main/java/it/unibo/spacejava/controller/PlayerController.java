@@ -135,7 +135,7 @@ public class PlayerController {
                             p.getPosition(), p.getWidth(), p.getLenght())) {
                 playerShip.takeDamage(p.getDamage()); //Rimuove un punto vita
                 EnemyProjectileController.removeProjectile(p); //Rimuove il proiettile che ha colpito il giocatore
-                System.out.println("Sei stato colpito! Vita rimanente: " + playerShip.getHealt()); //NOPMD
+                System.out.println("Sei stato colpito! Vita rimanente: " + playerShip.getHealth()); //NOPMD
 
                 SoundManagerImpl.getInstance().playSound(HIT_SOUND_PATH);
             }
