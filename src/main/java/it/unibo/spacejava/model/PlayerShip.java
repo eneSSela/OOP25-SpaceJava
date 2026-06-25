@@ -1,7 +1,10 @@
 package it.unibo.spacejava.model;
 
+import java.util.Objects;
+
 import it.unibo.spacejava.Position;
 import it.unibo.spacejava.Skin;
+import it.unibo.spacejava.api.Score;
 
 /**
  * Classe che rappresenta la logica della navicella dell'utente.
@@ -15,6 +18,7 @@ public final class PlayerShip {
     private int health = 3;
     private final Position position;
     private Skin currentSkin;
+    private final Score score;
 
     /**
      * Costruisce una PlayerShip con posizione e skin iniziali.
@@ -26,6 +30,7 @@ public final class PlayerShip {
     public PlayerShip(final int startX, final int startY, final Skin defaultSkin) {
         this.position = new Position(startX, startY);
         this.currentSkin = defaultSkin;
+        this.score = new ScoreImpl();
     }
 
     /**
@@ -35,6 +40,15 @@ public final class PlayerShip {
      */
     public Position getPosition() {
         return new Position(this.position.getX(), this.position.getY());
+    }
+
+    /**
+     * Restituisce la rappresentazione del punteggio del giocatore.
+     * 
+     * @return l'oggetto Score associaot al giocatore
+     */
+    public Score getScore() {
+        return Objects.requireNonNull(this.score, "score ca not null");
     }
 
     /**

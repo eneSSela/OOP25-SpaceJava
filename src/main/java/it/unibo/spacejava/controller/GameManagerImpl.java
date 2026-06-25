@@ -8,7 +8,7 @@ import javax.swing.JPanel;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.spacejava.KeyHandler;
-import it.unibo.spacejava.api.GameManger;  //da correggere MANAGER NON MANGER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+import it.unibo.spacejava.api.GameManager;
 import it.unibo.spacejava.controller.menu.SkinController;
 import it.unibo.spacejava.controller.menu.StartMenuController;
 import it.unibo.spacejava.model.PlayerShip;
@@ -28,16 +28,15 @@ import it.unibo.spacejava.view.menu.StartMenuView;
     value = "UwF", 
     justification = "I campi dell'interfaccia grafica vengono inizializzati in modo sicuro nel metodo startGame()"
 )
-public final class GameManagerImpl implements GameManger, Runnable {
+public final class GameManagerImpl implements GameManager, Runnable {
 
-    //Costanti per il game loop e le dimensioni dello schermo 
+    //Costanti per il game loop e le dimensioni dello schermo
     private static final int FPS = 60;
     private static final double TIME_PER_FRAME = 1_000_000_000.0 / FPS;
-    private static final int TILESIZE = 48; 
+    private static final int TILESIZE = 48;
     private static final int SCREEN_WIDTH = TILESIZE * 16;
     private static final int SCREEN_HEIGTH = TILESIZE * 12;
     private static final String BACKGROUND_MUSIC_PATH = "/audio/background_music.wav";
-    private int score;
 
     //Componenti del gioco, tra cui il thread del gioco, il pannello di gioco, il gestore dei suoni, 
     // il gestore degli input da tastiera e il layout a schede per gestire le diverse schermate (menu, gioco, selezione skin)
@@ -53,11 +52,11 @@ public final class GameManagerImpl implements GameManger, Runnable {
     private StartMenuController startMenuController;
 
     //Componenti della schermata di selezione skin
-    private final ShopImpl skinModel;
+    private final ShopImpl shop;
     private SkinSelectionView skinSelectionView;
 
     //Compononenti dei nemici e del player
-    private final WaveManagerController waveManager;
+    private WaveManagerController waveManager;
     private final EnemyProjectileController projectileController = new EnemyProjectileController(SCREEN_HEIGTH);
     private PlayerController playerController;
     private BunkerController bunkerController;
@@ -66,10 +65,8 @@ public final class GameManagerImpl implements GameManger, Runnable {
      * Costruisce il GameManager inizializzando i punteggi e i controller.
      */
     public GameManagerImpl() {
-        this.score = 0;
-        this.skinModel = new ShopImpl(this);
-        this.waveManager = new WaveManagerController(SCREEN_WIDTH, SoundManagerImpl.getInstance(), 
-                                                    this, this.playerProjController);
+        //Score score = new ScoreImpl();
+        this.shop = new ShopImpl();
     }
 
     /**
@@ -87,6 +84,10 @@ public final class GameManagerImpl implements GameManger, Runnable {
 
         gamePanel.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGTH));
 
+        final int startX = (int) (SCREEN_WIDTH / 2.0) - 32;
+        final int startY = SCREEN_HEIGTH - 100;
+        final PlayerShip playerModel = new PlayerShip(startX, startY, shop.getSelectedSkin());
+
         //Iniziallizazione Controller e view del menu
         startMenuController = new StartMenuController(startMenuModel,
             () -> {
@@ -103,7 +104,7 @@ public final class GameManagerImpl implements GameManger, Runnable {
         startMenuView.addKeyListener(startMenuController);
 
         //Inizializzazione controller e view della schermata di selezione skin
-        final SkinController skinController = new SkinController(skinModel,
+        final SkinController skinController = new SkinController(shop, playerModel,
             () -> {
                 cardLayout.show(cards, "MENU");
                 startMenuView.requestFocusInWindow();
@@ -112,7 +113,7 @@ public final class GameManagerImpl implements GameManger, Runnable {
                 }
             }
         );
-        skinSelectionView = new SkinSelectionView(skinModel);
+        skinSelectionView = new SkinSelectionView(shop, skinController);
         skinSelectionView.setFocusable(true);
         skinSelectionView.addKeyListener(skinController);
 
@@ -121,11 +122,10 @@ public final class GameManagerImpl implements GameManger, Runnable {
         cards.add(gamePanel, "GAME");
         cards.add(skinSelectionView, "SKIN");
 
-        final int startX = (int) (SCREEN_WIDTH / 2.0) - 32;
-        final int startY = SCREEN_HEIGTH - 100;
-        final PlayerShip playerModel = new PlayerShip(startX, startY, skinModel.getSelectedSkin());
         playerController = new PlayerController(playerModel, gameKeyHandler,
                                                 playerProjController, SCREEN_WIDTH);
+        waveManager = new WaveManagerController(SCREEN_WIDTH, SoundManagerImpl.getInstance(), 
+                                                  playerModel.getScore(), this.playerProjController);
         bunkerController = new BunkerController(SCREEN_WIDTH, SCREEN_HEIGTH, 
                                                 this.playerProjController, this.projectileController);
 
@@ -169,9 +169,6 @@ public final class GameManagerImpl implements GameManger, Runnable {
                 if (startMenuView.isVisible()) {
                     startMenuView.repaint();
                 } else if (gamePanel.isVisible()) {
-                    if (!skinModel.getSelectedSkin().equals(playerController.getPlayerSkin())) {
-                        playerController.setPlayerSkin(skinModel.getSelectedSkin());
-                    }
                     waveManager.update(timePerFrame);
                     projectileController.update(timePerFrame);
                     playerController.update(timePerFrame);
@@ -179,7 +176,6 @@ public final class GameManagerImpl implements GameManger, Runnable {
                     playerController.checkEnemyCollision();
                     bunkerController.checkCollisions(playerProjController.getProjectileList(), 
                     EnemyProjectileController.getProjectileList());
-
                     gamePanel.render(waveManager.getEnemies(), playerController, 
                     playerProjController.getProjectileList(), bunkerController.getBunkers());
                 } else if (skinSelectionView.isVisible()) {
@@ -190,51 +186,12 @@ public final class GameManagerImpl implements GameManger, Runnable {
             }
 
             if (System.currentTimeMillis() - timer >= 1000) {
+                System.out.println("Punti del giocatore:" + playerController.getPlayerShip().getScore().getTotal()); //NOPMD
                 System.out.println("FPS: " + frames); //NOPMD
                 frames = 0;
                 timer += 1000;
             }
         }
-    }
-
-    /**
-     * Incrementa il punteggio attuale della partita.
-     * 
-     * @param points punti da aggiungere
-     */
-    @Override
-    public synchronized void addScore(final int points) {
-        if (points > 0) {
-            this.score += points;
-        }
-    }
-
-    /**
-     * Decrementa il punteggio (es. per l'acquisto di skin nello shop).
-     * 
-     * @param points punti da sottrarre
-     */
-    @Override
-    public synchronized void decreaseScore(final int points) {
-        if (points > 0 && this.score >= points) {
-            this.score -= points;
-        }
-    }
-
-    /**
-     * Restituisce il punteggio corrente.
-     */
-    @Override
-    public synchronized int getScore() {
-        return this.score;
-    }
-
-    /**
-     * Restituisce il punteggio all'inizio di una nuova partite.
-     */
-    @Override
-    public synchronized void resetScore() {
-        this.score = 0;
     }
 
     /**
@@ -244,7 +201,8 @@ public final class GameManagerImpl implements GameManger, Runnable {
         value = "DM_EXIT", 
         justification = "È l'azione voluta per il pulsante Esci del menu principale"
     )
-    private void stopGame() {
+    @Override
+    public void stopGame() {
         System.exit(0);
     }
 }

@@ -14,6 +14,7 @@ public final class BaseEnemy extends AbstractEnemy {
     private static final int DEFAULT_PROJECTILE_WIDTH = 40;
     private static final int DEFAULT_PROJECTILE_HEIGHT = 30;
     private static final int DEFAULT_DAMAGE = 1;
+    private static final int SCORE_BASE = 100;
 
     /**
      * Crea un BaseEnemy data una posizione iniziale.
@@ -31,5 +32,10 @@ public final class BaseEnemy extends AbstractEnemy {
             DEFAULT_PROJECTILE_HEIGHT, 
             DEFAULT_DAMAGE
         );
+    }
+
+    @Override
+    public int getPoints() {
+        return SCORE_BASE;
     }
 }

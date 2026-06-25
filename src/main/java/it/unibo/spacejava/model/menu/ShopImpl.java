@@ -3,17 +3,16 @@ package it.unibo.spacejava.model.menu;
 import java.util.List;
 import java.util.Objects;
 
-
 import it.unibo.spacejava.Skin;
 import it.unibo.spacejava.api.MenuObserver;
-import it.unibo.spacejava.api.GameManger;
+import it.unibo.spacejava.api.Score;
 import it.unibo.spacejava.api.Shop;
 
 /**
  * Classe che funge da model per la schermata di selezione delle skin,
  * gestendo tutta la logica per la selezione, l'acquisto e il mantenimento dello stato delle skin.
  */
-public final class ShopImpl implements Shop{
+public final class ShopImpl implements Shop {
 
     //variabili per test (potrebbe cambiare)
     private int selectedIndex;
@@ -22,27 +21,14 @@ public final class ShopImpl implements Shop{
     private final List<Skin> skins;
     private MenuObserver observer;
 
-    private final GameManger gameManager;
-
     /**
      * Costruttore per definire le due variabili (punti e l'idice di selezione della skin) a 0,
      * e inzializzo anche la lista delle skin.
      * 
-     * @param gameManager il gestore del gioco
      */
-    public ShopImpl(final GameManger gameManager) {
+    public ShopImpl() {
         this.skins = SkinFactory.createListOfSkins();
         this.selectedIndex = 0;
-        this.gameManager = Objects.requireNonNull(gameManager);
-    }
-
-    /**
-     * Getter per restituire i punti attuali del giocatore.
-     * 
-     * @return integer che identifica i punti attuali del giocatore, utilizzabili per sbloccare skins
-     */
-    public int getPoints() {
-        return gameManager.getScore();
     }
 
     /**
@@ -89,10 +75,10 @@ public final class ShopImpl implements Shop{
     }
 
     @Override
-    public boolean buySelectedSkin() {
+    public boolean buySelectedSkin(final Score score) {
         final Skin current = getSelectedSkin();
-        if (!current.isUnlock() && this.gameManager.getScore() >= current.getPrice()) {
-            this.gameManager.decreaseScore(current.getPrice()); // Scala i punti
+        if (!current.isUnlock() && score.getTotal() >= current.getPrice()) {
+            score.consumePoints(current.getPrice()); // Scala i punti
             current.unlock();                   // Sblocca la skin
             this.notifyListener();
             return true;

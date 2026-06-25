@@ -3,8 +3,8 @@ package it.unibo.spacejava.controller;
 import it.unibo.spacejava.Position;
 import it.unibo.spacejava.Utils;
 import it.unibo.spacejava.api.Enemy;
-import it.unibo.spacejava.api.GameManger;
 import it.unibo.spacejava.api.Projectile;
+import it.unibo.spacejava.api.Score;
 import it.unibo.spacejava.model.EnemyType;
 import it.unibo.spacejava.model.enemies.BossEnemy;
 import it.unibo.spacejava.model.enemies.EnemyFactory;
@@ -14,9 +14,9 @@ import it.unibo.spacejava.model.enemies.TankEnemy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.spacejava.model.sound.api.SoundManager;
 
 /**
@@ -24,10 +24,6 @@ import it.unibo.spacejava.model.sound.api.SoundManager;
  */
 public final class WaveManagerController {
 
-    private static final int SCORE_BASE = 100;
-    private static final int SCORE_TANK = 200;
-    private static final int SCORE_RED = 150;
-    private static final int SCORE_BOSS = 1000;
     private static final double SPEED_X = 60.0;
     private static final double DESCENT = 20.0; 
     private static final double COOLDOWN = 1.0; 
@@ -38,7 +34,7 @@ public final class WaveManagerController {
     private static final String HIT_SOUND_PATH = "/audio/hit.wav";
 
     private final SoundManager soundManager;
-    private final GameManger gameManager;
+    private final Score playerScore;
     private final PlayerProjectileController playerProjectileController;
     private boolean isMovingRight = true;
     private double timeSinceLastShot;
@@ -51,19 +47,18 @@ public final class WaveManagerController {
      * 
      * @param screenWidth larghezza dello schermo
      * @param soundManager gestore dei suoni per riprodurre effeti sonori come lo sparo e l'impatto dei proitettili
-     * @param gameManager gestore del punteggio
+     * @param playerScore gestore del punteggio
      * @param playerProjectileController controller dei proiettili
      */
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Dependency injection is intended here")
     public WaveManagerController(final double screenWidth, final SoundManager soundManager, 
-                                final GameManger gameManager, 
+                                final Score playerScore, 
                                 final PlayerProjectileController playerProjectileController) {
         this.screenWidth = screenWidth;
         this.enemies = new ArrayList<>();
         this.spawnWave();
         this.soundManager = soundManager;
-        this.gameManager = gameManager;
-        this.playerProjectileController = playerProjectileController;
+        this.playerScore = Objects.requireNonNull(playerScore, "Non può esser nullo");
+        this.playerProjectileController = Objects.requireNonNull(playerProjectileController, "Non può esser nullo");
     }
 
     /**
@@ -158,20 +153,7 @@ public final class WaveManagerController {
         // Prima di rimuoverli, controlliamo chi è morto e diamo i punti.
         for (final Enemy e : enemies) {
             if (e.isDead()) {
-                switch (e.getType()) {
-                    case BASE:
-                        this.gameManager.addScore(SCORE_BASE);
-                        break;
-                    case TANK:
-                        this.gameManager.addScore(SCORE_TANK);
-                        break;
-                    case RED:
-                        this.gameManager.addScore(SCORE_RED);
-                        break;
-                    case BOSS:
-                        this.gameManager.addScore(SCORE_BOSS);
-                        break;
-                }
+                playerScore.addPoints(e.getPoints());
             }
         }
 

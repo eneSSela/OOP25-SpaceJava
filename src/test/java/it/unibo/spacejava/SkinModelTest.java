@@ -6,8 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import it.unibo.spacejava.api.GameManger;
+import it.unibo.spacejava.controller.menu.SkinController;
+import it.unibo.spacejava.model.PlayerShip;
 import it.unibo.spacejava.model.menu.ShopImpl;
+import it.unibo.spacejava.model.menu.SkinFactory;
 import it.unibo.spacejava.view.menu.SkinSelectionView;
 
 /**
@@ -17,47 +19,20 @@ final class SkinModelTest {
 
     private static final int POINTS_TO_ADD = 5000;
     private ShopImpl model;
-    private GameManger fakeGameManager;
+    private PlayerShip player;
 
     @BeforeEach
     void setUp() {
-        //Creiamo un finto gestore per simulare i punti durante il test
-        fakeGameManager = new GameManger() {
-            private int score;
-            @Override
-            public void startGame() {
-            }
-
-            @Override
-            public void addScore(final int points) {
-                this.score += points;
-            }
-
-            @Override
-            public int getScore() {
-                return this.score;
-            }
-
-            @Override
-            public void decreaseScore(final int points) {
-                this.score -= points;
-            }
-
-            @Override
-            public void resetScore() {
-                this.score = 0;
-            }
-        };
-
-        model = new ShopImpl(fakeGameManager);
-        this.model.setObserver(new SkinSelectionView(model));
+        model = new ShopImpl();
+        player = new PlayerShip(0, 0, SkinFactory.createListOfSkins().get(0));
+        this.model.setObserver(new SkinSelectionView(model, new SkinController(model, player, () -> { })));
     }
 
     @Test
     void testInitialSkinIsUnlocked() {
         assertEquals("Default", model.getSelectedSkin().getName());
         assertTrue(model.getSelectedSkin().isUnlock(), "La skin di default deve essere sbloccata");
-        assertEquals(0, model.getPoints());
+        assertEquals(0, player.getScore().getTotal(), "Il punteggio iniziale del giocatore deve essere 0");
     }
 
     @Test
@@ -65,7 +40,7 @@ final class SkinModelTest {
         model.selectNext(); // Passa alla "ship2" (costa 100)
         assertFalse(model.getSelectedSkin().isUnlock(), "La ship2 dovrebbe essere bloccata all'inizio");
 
-        final boolean result = model.buySelectedSkin();
+        final boolean result = model.buySelectedSkin(player.getScore());
 
         assertFalse(result, "L'acquisto deve fallire perché i punti sono 0");
         assertFalse(model.getSelectedSkin().isUnlock(), "La skin deve rimanere bloccata");
@@ -74,15 +49,14 @@ final class SkinModelTest {
     @Test
     void testBuySkinWithSufficientPoints() {
         model.selectNext(); // Passa alla "ship2" (costa 100)
-        fakeGameManager.addScore(POINTS_TO_ADD); // Aggiungiamo punti (usando il metodo suggerito)
-
-        final boolean result = model.buySelectedSkin();
+        player.getScore().addPoints(POINTS_TO_ADD); // Aggiunge 5000 punti al giocatore
+        final boolean result = model.buySelectedSkin(player.getScore());
 
         assertTrue(result, "L'acquisto deve avere successo");
         assertTrue(model.getSelectedSkin().isUnlock(), "La skin deve risultare sbloccata dopo l'acquisto");
         assertEquals(
             POINTS_TO_ADD - model.getSelectedSkin().getPrice(),
-            fakeGameManager.getScore(),
+            player.getScore().getTotal(),
             "I punti devono essere stati scalati correttamente (5000 - 1000 = 4000)");
     }
 }

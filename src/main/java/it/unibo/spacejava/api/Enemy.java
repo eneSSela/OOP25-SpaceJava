@@ -62,4 +62,11 @@ public interface Enemy {
      * @return true if the enemy is dead, false otherwise
      */
     boolean isDead();
+
+    /**
+     * Restituisce i punti che il nemico fornisce quando viene sconfitto.
+     * 
+     * @return punti del nemico
+     */
+    int getPoints();
 }

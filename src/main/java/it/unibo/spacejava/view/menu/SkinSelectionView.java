@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 import it.unibo.spacejava.Skin;
 import it.unibo.spacejava.Utils;
 import it.unibo.spacejava.api.MenuObserver;
+import it.unibo.spacejava.controller.menu.SkinController;
 import it.unibo.spacejava.model.menu.ShopImpl;
 
 /**
@@ -68,16 +69,19 @@ public final class SkinSelectionView extends JPanel implements MenuObserver {
     private static final String TEXT_CAN_BUY = "Premi SPAZIO per comprare!";
     private static final String TEXT_CANNOT_BUY = "Punti insufficienti";
 
-    private final transient ShopImpl model;
+    private final transient ShopImpl shop;
+    private final transient SkinController controller;
 
     /**
      * Costruisce la view per la selezione delle skin.
      * 
-     * @param model del menu di selezione skin
+     * @param shop del menu di selezione skin
+     * @param controller della view
      */
-    public SkinSelectionView(final ShopImpl model) {
-        this.model = Objects.requireNonNull(model, "Il model non può essere nullo");
-        this.model.setObserver(this);
+    public SkinSelectionView(final ShopImpl shop, final SkinController controller) {
+        this.shop = Objects.requireNonNull(shop, "Il model non può essere nullo");
+        this.shop.setObserver(this);
+        this.controller = Objects.requireNonNull(controller, "Il controller non può essere nullo");
         setBackground(Color.BLACK);
         setFocusable(true);
     }
@@ -91,9 +95,9 @@ public final class SkinSelectionView extends JPanel implements MenuObserver {
         final int height = getHeight();
         final FontMetrics fm = g2.getFontMetrics(); 
 
-        final Skin currentSkin = model.getSelectedSkin();
+        final Skin currentSkin = shop.getSelectedSkin();
 
-        final String pointsText = TEXT_POINTS + model.getPoints();
+        final String pointsText = TEXT_POINTS + controller.getPlyerScore();
         final int pointsWidth = fm.stringWidth(pointsText);
         g2.setColor(COLOR_POINTS);
         g2.drawString(pointsText, width - pointsWidth - POINTS_PADDING_RIGHT, POINTS_MARGIN_TOP);
@@ -123,8 +127,8 @@ public final class SkinSelectionView extends JPanel implements MenuObserver {
 
         g2.setFont(new Font(Font.MONOSPACED, Font.BOLD, Math.max(MIN_DYNAMIC_FONT_SIZE, width / DYNAMIC_FONT_WIDTH_DIVISOR)));
 
-        final int totalSkins = model.getTotalSkins();
-        final int currentIndex = model.getSelectedIndex();
+        final int totalSkins = shop.getTotalSkins();
+        final int currentIndex = shop.getSelectedIndex();
         final int dotSize = DOT_SIZE;
         final int dotSpacing = DOT_SPACING;
         final int startDotsX = (width - ((totalSkins * dotSize) + ((totalSkins - 1) * dotSpacing))) / 2;
@@ -159,7 +163,7 @@ public final class SkinSelectionView extends JPanel implements MenuObserver {
             g2.drawString(lockedText, (width - lockedWidth) / 2, bottomY - LINE_SPACING);
 
             // Suggerimento di acquisto dinamico
-            if (model.getPoints() >= currentSkin.getPrice()) {
+            if (controller.getPlyerScore() >= currentSkin.getPrice()) {
                 final int buyWidth = fm.stringWidth(TEXT_CAN_BUY);
                 g2.setColor(COLOR_CAN_BUY);
                 g2.drawString(TEXT_CAN_BUY, (width - buyWidth) / 2, bottomY);
