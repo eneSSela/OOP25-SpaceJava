@@ -10,7 +10,10 @@ import it.unibo.spacejava.Position;
 import it.unibo.spacejava.api.Enemy;
 import it.unibo.spacejava.controller.EnemyProjectileController;
 import it.unibo.spacejava.model.EnemyType;
+import it.unibo.spacejava.model.enemies.BossEnemy;
 import it.unibo.spacejava.model.enemies.EnemyFactory;
+import it.unibo.spacejava.model.enemies.RedEnemy;
+import it.unibo.spacejava.model.enemies.TankEnemy;
 
 /**
  * Classe di test per i nemici.
@@ -89,5 +92,31 @@ final class EnemyTest {
         //Controllo che il proiettile venga generato sotto al corrispondente nemico.
         assertTrue(EnemyProjectileController.getProjectileList().get(0).getPosition().getY() > enemy.getPosition().getY());
         assertEquals(EnemyProjectileController.getProjectileList().get(0).getPosition().getX(), enemy.getPosition().getX() + 10);
+    }
+
+    /**
+     * Testa l'upgrade dei nemici.
+     */
+    @Test
+    void testEnemyUpgrade() {
+        final Position pos = new Position(0, 0);
+        //Controllo il miglioramento della vita del nemico tank. 
+        final Enemy unupgradedTank = EnemyFactory.createEnemy(EnemyType.TANK, pos);
+        TankEnemy.upgrade();
+        final Enemy upgradedTank = EnemyFactory.createEnemy(EnemyType.TANK, pos);
+        assertTrue(upgradedTank.getHealth() > unupgradedTank.getHealth());
+        //Controllo il miglioramento del danno del nemico red. 
+        final int unupgradedRedDmg = RedEnemy.getHUDDamage();
+        RedEnemy.upgrade();
+        final int upgradedRedDmg = RedEnemy.getHUDDamage();
+        assertTrue(upgradedRedDmg > unupgradedRedDmg);
+        //Controllo il miglioramento del danno e vita del nemico boss.
+        final Enemy unupgradedBoss = EnemyFactory.createEnemy(EnemyType.BOSS, pos);
+        final int unupgradedBossDmg = BossEnemy.getHUDDamage();
+        BossEnemy.upgrade();
+        final Enemy upgradedBoss = EnemyFactory.createEnemy(EnemyType.BOSS, pos);
+        final int upgradedBossDmg = BossEnemy.getHUDDamage();
+        assertTrue(upgradedBoss.getHealth() > unupgradedBoss.getHealth());
+        assertTrue(upgradedBossDmg > unupgradedBossDmg);
     }
 }
