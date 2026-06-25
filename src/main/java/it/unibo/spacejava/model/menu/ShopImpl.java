@@ -3,17 +3,17 @@ package it.unibo.spacejava.model.menu;
 import java.util.List;
 import java.util.Objects;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import it.unibo.spacejava.Skin;
 import it.unibo.spacejava.api.MenuObserver;
 import it.unibo.spacejava.api.GameManger;
+import it.unibo.spacejava.api.Shop;
 
 /**
  * Classe che funge da model per la schermata di selezione delle skin,
  * gestendo tutta la logica per la selezione, l'acquisto e il mantenimento dello stato delle skin.
  */
-public final class SkinModel {
+public final class ShopImpl implements Shop{
 
     //variabili per test (potrebbe cambiare)
     private int selectedIndex;
@@ -30,8 +30,7 @@ public final class SkinModel {
      * 
      * @param gameManager il gestore del gioco
      */
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Dependency injection is intended here")
-    public SkinModel(final GameManger gameManager) {
+    public ShopImpl(final GameManger gameManager) {
         this.skins = SkinFactory.createListOfSkins();
         this.selectedIndex = 0;
         this.gameManager = Objects.requireNonNull(gameManager);
@@ -89,12 +88,8 @@ public final class SkinModel {
         this.notifyListener();
     }
 
-    /**
-     * Tenta di comprare la skin attualmente selezionata.
-     * 
-     * @return true se l'acquisto va a buon fine, false altrimenti.
-     */
-    public boolean buyCurrentSkin() {
+    @Override
+    public boolean buySelectedSkin() {
         final Skin current = getSelectedSkin();
         if (!current.isUnlock() && this.gameManager.getScore() >= current.getPrice()) {
             this.gameManager.decreaseScore(current.getPrice()); // Scala i punti

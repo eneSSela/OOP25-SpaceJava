@@ -12,7 +12,7 @@ import it.unibo.spacejava.api.GameManger;  //da correggere MANAGER NON MANGER!!!
 import it.unibo.spacejava.controller.menu.SkinController;
 import it.unibo.spacejava.controller.menu.StartMenuController;
 import it.unibo.spacejava.model.PlayerShip;
-import it.unibo.spacejava.model.menu.SkinModel;
+import it.unibo.spacejava.model.menu.ShopImpl;
 import it.unibo.spacejava.model.menu.StartMenuModel;
 import it.unibo.spacejava.model.sound.SoundManagerImpl;
 import it.unibo.spacejava.view.game.GamePanel;
@@ -53,7 +53,7 @@ public final class GameManagerImpl implements GameManger, Runnable {
     private StartMenuController startMenuController;
 
     //Componenti della schermata di selezione skin
-    private final SkinModel skinModel;
+    private final ShopImpl skinModel;
     private SkinSelectionView skinSelectionView;
 
     //Compononenti dei nemici e del player
@@ -67,7 +67,7 @@ public final class GameManagerImpl implements GameManger, Runnable {
      */
     public GameManagerImpl() {
         this.score = 0;
-        this.skinModel = new SkinModel(this);
+        this.skinModel = new ShopImpl(this);
         this.waveManager = new WaveManagerController(SCREEN_WIDTH, SoundManagerImpl.getInstance(), 
                                                     this, this.playerProjController);
     }

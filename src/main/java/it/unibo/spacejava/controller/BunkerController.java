@@ -74,11 +74,11 @@ public final class BunkerController {
             .filter(p -> isColliding(b, p))
             .forEach(p -> {
                 b.takeDamage(p.getDamage());
-                this.enemyProjController.removeProjectile(p);
+               this.enemyProjController.removeProjectile(p);
             });
         }
 
-        bunkers.removeIf(Bunker::isDestroyed);
+        bunkers.removeIf(bunker -> bunker != null && bunker.isDestroyed());
     }
 
     private boolean isColliding(final Bunker b, final Projectile p) {

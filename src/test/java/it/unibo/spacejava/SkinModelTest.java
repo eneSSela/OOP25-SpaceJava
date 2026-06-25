@@ -7,7 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import it.unibo.spacejava.api.GameManger;
-import it.unibo.spacejava.model.menu.SkinModel;
+import it.unibo.spacejava.model.menu.ShopImpl;
 import it.unibo.spacejava.view.menu.SkinSelectionView;
 
 /**
@@ -16,7 +16,7 @@ import it.unibo.spacejava.view.menu.SkinSelectionView;
 final class SkinModelTest {
 
     private static final int POINTS_TO_ADD = 5000;
-    private SkinModel model;
+    private ShopImpl model;
     private GameManger fakeGameManager;
 
     @BeforeEach
@@ -49,7 +49,7 @@ final class SkinModelTest {
             }
         };
 
-        model = new SkinModel(fakeGameManager);
+        model = new ShopImpl(fakeGameManager);
         this.model.setObserver(new SkinSelectionView(model));
     }
 
@@ -65,7 +65,7 @@ final class SkinModelTest {
         model.selectNext(); // Passa alla "ship2" (costa 100)
         assertFalse(model.getSelectedSkin().isUnlock(), "La ship2 dovrebbe essere bloccata all'inizio");
 
-        final boolean result = model.buyCurrentSkin();
+        final boolean result = model.buySelectedSkin();
 
         assertFalse(result, "L'acquisto deve fallire perché i punti sono 0");
         assertFalse(model.getSelectedSkin().isUnlock(), "La skin deve rimanere bloccata");
@@ -76,7 +76,7 @@ final class SkinModelTest {
         model.selectNext(); // Passa alla "ship2" (costa 100)
         fakeGameManager.addScore(POINTS_TO_ADD); // Aggiungiamo punti (usando il metodo suggerito)
 
-        final boolean result = model.buyCurrentSkin();
+        final boolean result = model.buySelectedSkin();
 
         assertTrue(result, "L'acquisto deve avere successo");
         assertTrue(model.getSelectedSkin().isUnlock(), "La skin deve risultare sbloccata dopo l'acquisto");

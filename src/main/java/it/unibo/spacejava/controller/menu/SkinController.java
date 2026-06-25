@@ -4,7 +4,7 @@ import java.awt.event.KeyEvent;
 import java.util.Objects;
 
 import it.unibo.spacejava.KeyHandler;
-import it.unibo.spacejava.model.menu.SkinModel;
+import it.unibo.spacejava.model.menu.ShopImpl;
 import it.unibo.spacejava.Skin;
 import it.unibo.spacejava.api.Command;
 
@@ -14,7 +14,7 @@ import it.unibo.spacejava.api.Command;
  */
 public final class SkinController extends KeyHandler {
 
-    private final SkinModel model;
+    private final ShopImpl model;
     private final Command onBack;
 
     /**
@@ -24,7 +24,7 @@ public final class SkinController extends KeyHandler {
      * @param model è il model che contiene tutta la logica per la selezione delle skin.
      * @param onBack l'azione che viene eseguita quando l'utente decide di tornare indietro.
      */
-    public SkinController(final SkinModel model, final Command onBack) {
+    public SkinController(final ShopImpl model, final Command onBack) {
         this.model = Objects.requireNonNull(model, "Il model non poò essere nullo");
         this.onBack = onBack;
     }

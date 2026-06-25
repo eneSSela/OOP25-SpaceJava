@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import it.unibo.spacejava.Skin;
 import it.unibo.spacejava.Utils;
 import it.unibo.spacejava.api.MenuObserver;
-import it.unibo.spacejava.model.menu.SkinModel;
+import it.unibo.spacejava.model.menu.ShopImpl;
 
 /**
  * View dedicata alla rappresetazione della schermata per poter comprare o selezionare le skin disponibili per il giocatore.
@@ -68,14 +68,14 @@ public final class SkinSelectionView extends JPanel implements MenuObserver {
     private static final String TEXT_CAN_BUY = "Premi SPAZIO per comprare!";
     private static final String TEXT_CANNOT_BUY = "Punti insufficienti";
 
-    private final transient SkinModel model;
+    private final transient ShopImpl model;
 
     /**
      * Costruisce la view per la selezione delle skin.
      * 
      * @param model del menu di selezione skin
      */
-    public SkinSelectionView(final SkinModel model) {
+    public SkinSelectionView(final ShopImpl model) {
         this.model = Objects.requireNonNull(model, "Il model non può essere nullo");
         this.model.setObserver(this);
         setBackground(Color.BLACK);
