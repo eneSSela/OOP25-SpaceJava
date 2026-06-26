@@ -58,7 +58,7 @@ public final class GameManagerImpl implements GameManger, Runnable {
 
     //Compononenti dei nemici e del player
     private final WaveManagerController waveManager;
-    private final EnemyProjectileController projectileController = new EnemyProjectileController(SCREEN_HEIGTH);
+    private final EnemyProjectileController enemyProjectileController = new EnemyProjectileController(SCREEN_HEIGTH);
     private PlayerController playerController;
     private BunkerController bunkerController;
 
@@ -69,7 +69,7 @@ public final class GameManagerImpl implements GameManger, Runnable {
         this.score = 0;
         this.skinModel = new SkinModel(this);
         this.waveManager = new WaveManagerController(SCREEN_WIDTH, SoundManagerImpl.getInstance(), 
-                                                    this, this.playerProjController);
+                                                    this, this.playerProjController, enemyProjectileController);
     }
 
     /**
@@ -125,9 +125,9 @@ public final class GameManagerImpl implements GameManger, Runnable {
         final int startY = SCREEN_HEIGTH - 100;
         final PlayerShip playerModel = new PlayerShip(startX, startY, skinModel.getSelectedSkin());
         playerController = new PlayerController(playerModel, gameKeyHandler,
-                                                playerProjController, SCREEN_WIDTH);
+                                                playerProjController, SCREEN_WIDTH, enemyProjectileController);
         bunkerController = new BunkerController(SCREEN_WIDTH, SCREEN_HEIGTH, 
-                                                this.playerProjController, this.projectileController);
+                                                this.playerProjController, this.enemyProjectileController);
 
         gamePanel.addKeyListener(gameKeyHandler);
         startMenuView.setFocusable(true);
@@ -173,15 +173,18 @@ public final class GameManagerImpl implements GameManger, Runnable {
                         playerController.setPlayerSkin(skinModel.getSelectedSkin());
                     }
                     waveManager.update(timePerFrame);
-                    projectileController.update(timePerFrame);
+                    enemyProjectileController.update(timePerFrame);
                     playerController.update(timePerFrame);
                     playerProjController.update(timePerFrame);
                     playerController.checkEnemyCollision();
                     bunkerController.checkCollisions(playerProjController.getProjectileList(), 
-                    EnemyProjectileController.getProjectileList());
+                    enemyProjectileController.getProjectileList());
 
-                    gamePanel.render(waveManager.getEnemies(), playerController, 
-                    playerProjController.getProjectileList(), bunkerController.getBunkers());
+                    gamePanel.render(waveManager.getEnemies(),
+                    playerController, 
+                    playerProjController.getProjectileList(),
+                    enemyProjectileController.getProjectileList(),
+                    bunkerController.getBunkers());
                 } else if (skinSelectionView.isVisible()) {
                     skinSelectionView.repaint();
                 }

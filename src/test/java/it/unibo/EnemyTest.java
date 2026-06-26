@@ -16,24 +16,56 @@ import it.unibo.spacejava.model.enemies.RedEnemy;
 import it.unibo.spacejava.model.enemies.TankEnemy;
 
 /**
- * Classe di test per i nemici.
+ * Classe di test per i nemici e EnemyFactory.
  */
 final class EnemyTest {
     private static final int MAXDMG = 999;
+    private static final int SCREEN_HEIGTH = 576;
 
-    //Verifica che l'inizializzazione dei nemici sia corretta, testando EnemyFactory e i metodi di AbstractEnemy.
+
+    //Verifica che l'inizializzazione dei nemici sia corretta, testando EnemyFactory e dei metodi getter di AbstractEnemy.
     @Test
     void testInitialization() {
         final Position startingPosition = new Position(100, 100);
-        final Enemy basEnemy = EnemyFactory.createEnemy(EnemyType.BASE, startingPosition);
+        final Enemy baseEnemy = EnemyFactory.createEnemy(EnemyType.BASE, startingPosition);
 
         //Controllo che la posizione sia stata assegnata correttamente.
-        assertEquals(startingPosition, basEnemy.getPosition());
+        assertEquals(startingPosition, baseEnemy.getPosition());
         //Controllo che le statistiche abbiano senso.
-        assertEquals(basEnemy.getType(), EnemyType.BASE);
-        assertTrue(basEnemy.getHealth() > 0);
-        assertTrue(basEnemy.getHeight() > 0);
-        assertTrue(basEnemy.getWidth() > 0);
+        assertEquals(baseEnemy.getType(), EnemyType.BASE);
+        assertTrue(baseEnemy.getHealth() > 0);
+        assertTrue(baseEnemy.getHeight() > 0);
+        assertTrue(baseEnemy.getWidth() > 0);
+
+        final Enemy tankEnemy = EnemyFactory.createEnemy(EnemyType.TANK, startingPosition);
+
+        //Controllo che la posizione sia stata assegnata correttamente.
+        assertEquals(startingPosition, tankEnemy.getPosition());
+        //Controllo che le statistiche abbiano senso.
+        assertEquals(tankEnemy.getType(), EnemyType.TANK);
+        assertTrue(tankEnemy.getHealth() > 0);
+        assertTrue(tankEnemy.getHeight() > 0);
+        assertTrue(tankEnemy.getWidth() > 0);
+
+        final Enemy bossEnemy = EnemyFactory.createEnemy(EnemyType.BOSS, startingPosition);
+
+        //Controllo che la posizione sia stata assegnata correttamente.
+        assertEquals(startingPosition, bossEnemy.getPosition());
+        //Controllo che le statistiche abbiano senso.
+        assertEquals(bossEnemy.getType(), EnemyType.BOSS);
+        assertTrue(bossEnemy.getHealth() > 0);
+        assertTrue(bossEnemy.getHeight() > 0);
+        assertTrue(bossEnemy.getWidth() > 0);
+
+        final Enemy redEnemy = EnemyFactory.createEnemy(EnemyType.RED, startingPosition);
+
+        //Controllo che la posizione sia stata assegnata correttamente.
+        assertEquals(startingPosition, redEnemy.getPosition());
+        //Controllo che le statistiche abbiano senso.
+        assertEquals(redEnemy.getType(), EnemyType.RED);
+        assertTrue(redEnemy.getHealth() > 0);
+        assertTrue(redEnemy.getHeight() > 0);
+        assertTrue(redEnemy.getWidth() > 0);
     }
 
     /**
@@ -84,14 +116,15 @@ final class EnemyTest {
      */
     @Test
     void testProjectileGeneration() {
+        final EnemyProjectileController projectileController = new EnemyProjectileController(SCREEN_HEIGTH);
         final Position startingPosition = new Position(100, 100);
         final Enemy enemy = EnemyFactory.createEnemy(EnemyType.BASE, startingPosition);
-        enemy.attack();
+        enemy.attack(projectileController);
         //Controllo se un proiettile è stato effettivamente aggiunto alla lista dei proiettili nemici.
-        assertFalse(EnemyProjectileController.getProjectileList().isEmpty());
+        assertFalse(projectileController.getProjectileList().isEmpty());
         //Controllo che il proiettile venga generato sotto al corrispondente nemico.
-        assertTrue(EnemyProjectileController.getProjectileList().get(0).getPosition().getY() > enemy.getPosition().getY());
-        assertEquals(EnemyProjectileController.getProjectileList().get(0).getPosition().getX(), enemy.getPosition().getX() + 10);
+        assertTrue(projectileController.getProjectileList().get(0).getPosition().getY() > enemy.getPosition().getY());
+        assertEquals(projectileController.getProjectileList().get(0).getPosition().getX(), enemy.getPosition().getX() + 10);
     }
 
     /**

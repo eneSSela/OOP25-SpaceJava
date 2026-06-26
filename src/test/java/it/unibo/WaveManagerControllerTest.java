@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import it.unibo.spacejava.api.Enemy;
 import it.unibo.spacejava.api.GameManger;
+import it.unibo.spacejava.controller.EnemyProjectileController;
 import it.unibo.spacejava.controller.PlayerProjectileController;
 import it.unibo.spacejava.controller.WaveManagerController;
 import it.unibo.spacejava.model.sound.api.SoundManager;
@@ -19,6 +20,7 @@ import it.unibo.spacejava.model.sound.api.SoundManager;
  */
 final class WaveManagerControllerTest {
     private static final int SCREEN_WIDTH = 768;
+    private static final int SCREEN_HEIGTH = 576;
     private static final double FRAME = 0.016;
     private static final int FATAL_DAMAGE = 999;
 
@@ -65,8 +67,9 @@ final class WaveManagerControllerTest {
         };
 
         final PlayerProjectileController projCtrl = new PlayerProjectileController();
+        final EnemyProjectileController eProjCrtl = new EnemyProjectileController(SCREEN_HEIGTH);
 
-        waveManager = new WaveManagerController(SCREEN_WIDTH, fakeSound, fakeGameManager, projCtrl);
+        waveManager = new WaveManagerController(SCREEN_WIDTH, fakeSound, fakeGameManager, projCtrl, eProjCrtl);
     }
 
     //Verifico che inizialmente ci siano già nemici caricati.

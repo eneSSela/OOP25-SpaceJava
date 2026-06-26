@@ -40,6 +40,7 @@ public final class WaveManagerController {
     private final SoundManager soundManager;
     private final GameManger gameManager;
     private final PlayerProjectileController playerProjectileController;
+    private final EnemyProjectileController enemyProjectileController;
     private boolean isMovingRight = true;
     private double timeSinceLastShot;
     private final List<Enemy> enemies;
@@ -52,18 +53,21 @@ public final class WaveManagerController {
      * @param screenWidth larghezza dello schermo
      * @param soundManager gestore dei suoni per riprodurre effeti sonori come lo sparo e l'impatto dei proitettili
      * @param gameManager gestore del punteggio
-     * @param playerProjectileController controller dei proiettili
+     * @param playerProjectileController controller dei proiettili del giocatore
+     * @param enemyProjectileController controller dei proiettili nemici
      */
     @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Dependency injection is intended here")
     public WaveManagerController(final double screenWidth, final SoundManager soundManager, 
                                 final GameManger gameManager, 
-                                final PlayerProjectileController playerProjectileController) {
+                                final PlayerProjectileController playerProjectileController,
+                                final EnemyProjectileController enemyProjectileController) {
         this.screenWidth = screenWidth;
         this.enemies = new ArrayList<>();
         this.spawnWave();
         this.soundManager = soundManager;
         this.gameManager = gameManager;
         this.playerProjectileController = playerProjectileController;
+        this.enemyProjectileController = enemyProjectileController;
     }
 
     /**
@@ -234,7 +238,7 @@ public final class WaveManagerController {
     private void shoot() {
         soundManager.playSound(SHOOT_SOUND_PATH);
         final int randomIndex = (int) (Math.random() * enemies.size());
-        enemies.get(randomIndex).attack();
+        enemies.get(randomIndex).attack(enemyProjectileController);
     }
 
     /**
