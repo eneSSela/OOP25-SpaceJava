@@ -9,10 +9,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import it.unibo.spacejava.api.Enemy;
-import it.unibo.spacejava.api.GameManger;
+import it.unibo.spacejava.api.Score;
 import it.unibo.spacejava.controller.EnemyProjectileController;
 import it.unibo.spacejava.controller.PlayerProjectileController;
 import it.unibo.spacejava.controller.WaveManagerController;
+import it.unibo.spacejava.model.ScoreImpl;
 import it.unibo.spacejava.model.sound.api.SoundManager;
 
 /**
@@ -29,28 +30,6 @@ final class WaveManagerControllerTest {
     @BeforeEach
     void setUp() {
         // Creiamo istanze finte per far funzionare il costruttore in isolamento
-        final GameManger fakeGameManager = new GameManger() {
-            @Override 
-            public void startGame() {
-            }
-
-            @Override 
-            public void addScore(final int points) {
-            }
-
-            @Override 
-            public int getScore() {
-                return 0;
-            }
-
-            @Override 
-            public void decreaseScore(final int points) {
-            }
-
-            @Override 
-            public void resetScore() {
-            }
-        };
 
         final SoundManager fakeSound = new SoundManager() {
             @Override 
@@ -67,9 +46,9 @@ final class WaveManagerControllerTest {
         };
 
         final PlayerProjectileController projCtrl = new PlayerProjectileController();
-        final EnemyProjectileController eProjCrtl = new EnemyProjectileController(SCREEN_HEIGTH);
-
-        waveManager = new WaveManagerController(SCREEN_WIDTH, fakeSound, fakeGameManager, projCtrl, eProjCrtl);
+        final Score fakePlayerScore = new ScoreImpl();
+        final EnemyProjectileController enemyProjCtrl = new EnemyProjectileController(SCREEN_HEIGTH);
+        waveManager = new WaveManagerController(SCREEN_WIDTH, fakeSound, fakePlayerScore, projCtrl, enemyProjCtrl);
     }
 
     //Verifico che inizialmente ci siano già nemici caricati.

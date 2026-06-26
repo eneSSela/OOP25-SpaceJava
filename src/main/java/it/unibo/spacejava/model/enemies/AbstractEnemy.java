@@ -148,4 +148,12 @@ public abstract class AbstractEnemy implements Enemy {
     public final boolean isDead() {
         return this.health <= 0;
     }
+
+    /**
+     * Restituisce i punti che il nemico fornisce quando viene sconfitto.
+     * 
+     * @return punti del nemico
+     */
+    @Override
+    public abstract int getPoints();
 }

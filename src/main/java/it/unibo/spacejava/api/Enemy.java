@@ -65,4 +65,11 @@ public interface Enemy {
      * @return true se la vita del nemico ha raggiunto o è sotto allo zero
      */
     boolean isDead();
+
+    /**
+     * Restituisce i punti che il nemico fornisce quando viene sconfitto.
+     * 
+     * @return punti del nemico
+     */
+    int getPoints();
 }

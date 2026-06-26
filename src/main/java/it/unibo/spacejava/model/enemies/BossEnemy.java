@@ -16,6 +16,7 @@ public final class BossEnemy extends AbstractEnemy {
     private static final int HEALTH_UPGRADE = 5;
     private static final int DEFAULT_HEALTH = 20;
     private static final int DEFAULT_DAMAGE = 2;
+    private static final int SCORE_BOSS = 1000;
 
     private static int health = DEFAULT_HEALTH;
     private static int damage = DEFAULT_DAMAGE;
@@ -62,5 +63,10 @@ public final class BossEnemy extends AbstractEnemy {
      */
     public static int getHUDDamage() {
         return damage;
+    }
+
+    @Override
+    public int getPoints() {
+        return SCORE_BOSS;
     }
 }

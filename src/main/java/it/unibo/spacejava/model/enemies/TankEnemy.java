@@ -15,6 +15,7 @@ public final class TankEnemy extends AbstractEnemy {
     private static final int DEFAULT_PROJECTILE_HEIGHT = 30;
     private static final int DEFAULT_DAMAGE = 1;
     private static final int DEFAULT_HEALTH = 3;
+    private static final int SCORE_TANK = 200;
 
     private static int health = DEFAULT_HEALTH;
 
@@ -50,5 +51,10 @@ public final class TankEnemy extends AbstractEnemy {
      */
     public static int getHUDHealth() {
         return health;
+    }
+
+    @Override
+    public int getPoints() {
+        return SCORE_TANK;
     }
 }

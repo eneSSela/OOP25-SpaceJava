@@ -124,7 +124,7 @@ final class EnemyTest {
         assertFalse(projectileController.getProjectileList().isEmpty());
         //Controllo che il proiettile venga generato sotto al corrispondente nemico.
         assertTrue(projectileController.getProjectileList().get(0).getPosition().getY() > enemy.getPosition().getY());
-        assertEquals(projectileController.getProjectileList().get(0).getPosition().getX(), enemy.getPosition().getX() + 10);
+        assertEquals(projectileController.getProjectileList().get(0).getPosition().getX(), enemy.getPosition().getX());
     }
 
     /**

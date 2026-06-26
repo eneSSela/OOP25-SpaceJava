@@ -15,6 +15,7 @@ public final class RedEnemy extends AbstractEnemy {
     private static final int DEFAULT_PROJECTILE_WIDTH = 40;
     private static final int DEFAULT_PROJECTILE_HEIGHT = 30;
     private static final int DEFAULT_DAMAGE = 2;
+    private static final int SCORE_RED = 150;
 
     private static int damage = DEFAULT_DAMAGE;
 
@@ -50,5 +51,10 @@ public final class RedEnemy extends AbstractEnemy {
      */
     public static int getHUDDamage() {
         return damage;
+    }
+
+    @Override
+    public int getPoints() {
+       return SCORE_RED;
     }
 }
