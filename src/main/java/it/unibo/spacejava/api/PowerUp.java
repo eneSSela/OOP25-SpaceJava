@@ -15,14 +15,21 @@ public interface PowerUp {
     void applayEffect(PlayerShip player);
 
     /**
-     *  retrun the type of powerUp.
+     * Return the type of powerUp.
      * 
      *  @return the name of powerUp
      */
     String getType();
 
     /**
-     * this method return the multipler of powerUp.
+     * Return a short description of the power-up's effect.
+     * 
+     * @return a string containing a short description of the power-up's effect
+     */
+    String getDescription();
+
+    /**
+     * This method return the multipler of powerUp.
      * 
      * @return multipler
      */
