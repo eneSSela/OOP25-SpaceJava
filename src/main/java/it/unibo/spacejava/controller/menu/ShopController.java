@@ -14,7 +14,7 @@ import it.unibo.spacejava.api.Score;
  * Classe che funge come controller per la shermnata della selezione delle skins, 
  * gestendo l'input del utente interagendo con il model.
  */
-public final class SkinController extends KeyHandler {
+public final class ShopController extends KeyHandler {
 
     private final ShopImpl model;
     private final PlayerShip player;
@@ -28,7 +28,7 @@ public final class SkinController extends KeyHandler {
      * @param player è il giocatore che possiede le skin e il punteggio.
      * @param onBack l'azione che viene eseguita quando l'utente decide di tornare indietro.
      */
-    public SkinController(final ShopImpl model, final PlayerShip player, final Command onBack) {
+    public ShopController(final ShopImpl model, final PlayerShip player, final Command onBack) {
         this.model = Objects.requireNonNull(model, "Il model non poò essere nullo");
         this.player = Objects.requireNonNull(player, "Il player non può essere nullo");
         this.onBack = onBack;

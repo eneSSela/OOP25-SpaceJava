@@ -9,14 +9,14 @@ import javax.swing.JPanel;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.spacejava.KeyHandler;
 import it.unibo.spacejava.api.GameManager;
-import it.unibo.spacejava.controller.menu.SkinController;
+import it.unibo.spacejava.controller.menu.ShopController;
 import it.unibo.spacejava.controller.menu.StartMenuController;
 import it.unibo.spacejava.model.PlayerShip;
 import it.unibo.spacejava.model.menu.ShopImpl;
 import it.unibo.spacejava.model.menu.StartMenuModel;
 import it.unibo.spacejava.model.sound.SoundManagerImpl;
 import it.unibo.spacejava.view.game.GamePanel;
-import it.unibo.spacejava.view.menu.SkinSelectionView;
+import it.unibo.spacejava.view.menu.ShopView;
 import it.unibo.spacejava.view.menu.StartMenuView;
 
 /**
@@ -53,7 +53,7 @@ public final class GameManagerImpl implements GameManager, Runnable {
 
     //Componenti della schermata di selezione skin
     private final ShopImpl shop;
-    private SkinSelectionView skinSelectionView;
+    private ShopView skinSelectionView;
 
     //Compononenti dei nemici e del player
     private WaveManagerController waveManager;
@@ -104,7 +104,7 @@ public final class GameManagerImpl implements GameManager, Runnable {
         startMenuView.addKeyListener(startMenuController);
 
         //Inizializzazione controller e view della schermata di selezione skin
-        final SkinController skinController = new SkinController(shop, playerModel,
+        final ShopController skinController = new ShopController(shop, playerModel,
             () -> {
                 cardLayout.show(cards, "MENU");
                 startMenuView.requestFocusInWindow();
@@ -113,7 +113,7 @@ public final class GameManagerImpl implements GameManager, Runnable {
                 }
             }
         );
-        skinSelectionView = new SkinSelectionView(shop, playerModel);
+        skinSelectionView = new ShopView(shop, playerModel);
         skinSelectionView.setFocusable(true);
         skinSelectionView.addKeyListener(skinController);
 

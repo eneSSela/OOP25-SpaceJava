@@ -18,7 +18,7 @@ import it.unibo.spacejava.model.menu.ShopImpl;
 /**
  * View dedicata alla rappresetazione della schermata per poter comprare o selezionare le skin disponibili per il giocatore.
  */
-public final class SkinSelectionView extends JPanel implements MenuObserver {
+public final class ShopView extends JPanel implements MenuObserver {
 
     private static final long serialVersionUID = 1L;
 
@@ -78,7 +78,7 @@ public final class SkinSelectionView extends JPanel implements MenuObserver {
      * @param shop del menu di selezione skin
      * @param controller della view
      */
-    public SkinSelectionView(final ShopImpl shop, final PlayerShip player) {
+    public ShopView(final ShopImpl shop, final PlayerShip player) {
         this.shop = Objects.requireNonNull(shop, "Il model non può essere nullo");
         this.shop.setObserver(this);
         this.player = Objects.requireNonNull(player, "Il giocatore non può essere nullo");

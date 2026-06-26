@@ -1,4 +1,4 @@
-package it.unibo.spacejava;
+package it.unibo.spacejava.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -6,15 +6,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import it.unibo.spacejava.model.PlayerShip;
+
 import it.unibo.spacejava.model.menu.ShopImpl;
 import it.unibo.spacejava.model.menu.SkinFactory;
-import it.unibo.spacejava.view.menu.SkinSelectionView;
+import it.unibo.spacejava.view.menu.ShopView;
 
 /**
  * Classe che permette di testare il model dello skin model.
  */
-final class SkinModelTest {
+final class SkinShopTest {
 
     private static final int POINTS_TO_ADD = 5000;
     private ShopImpl model;
@@ -24,7 +24,7 @@ final class SkinModelTest {
     void setUp() {
         model = new ShopImpl();
         player = new PlayerShip(0, 0, SkinFactory.createListOfSkins().get(0));
-        this.model.setObserver(new SkinSelectionView(model, player));
+        this.model.setObserver(new ShopView(model, player));
     }
 
     @Test
