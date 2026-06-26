@@ -12,4 +12,29 @@ public interface GameManger {
      */
     void startGame();
 
+    /**
+     * Add points to the score.
+     * 
+     * @param points to add
+     */
+    void addScore(int points);
+
+    /**
+     * Return the score.
+     * 
+     * @return the current score
+     */
+    int getScore();
+
+    /**
+     * Decrease points from the score.
+     * 
+     * @param points to subtract
+     */
+    void decreaseScore(int points);
+
+    /**
+     * Reset the score.
+     */
+    void resetScore();
 }

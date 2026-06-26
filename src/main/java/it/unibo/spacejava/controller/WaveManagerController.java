@@ -3,6 +3,7 @@ package it.unibo.spacejava.controller;
 import it.unibo.spacejava.Position;
 import it.unibo.spacejava.Utils;
 import it.unibo.spacejava.api.Enemy;
+import it.unibo.spacejava.api.GameManger;
 import it.unibo.spacejava.api.Projectile;
 import it.unibo.spacejava.model.EnemyType;
 import it.unibo.spacejava.model.enemies.BossEnemy;
@@ -15,12 +16,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.spacejava.model.sound.api.SoundManager;
 
 /**
  * Classe che gestisce la ondata di nemici, il loro movimento e i loro attachi.
  */
 public final class WaveManagerController {
+
+    private static final int SCORE_BASE = 100;
+    private static final int SCORE_RED = 150;
+    private static final int SCORE_TANK = 200;
+    private static final int SCORE_BOSS = 1000;
 
     private static final double SPEED_X = 60.0;
     private static final double DESCENT = 20.0; 
@@ -31,12 +38,21 @@ public final class WaveManagerController {
     private static final String SHOOT_SOUND_PATH = "/audio/shoot.wav";
     private static final String HIT_SOUND_PATH = "/audio/hit.wav";
 
+    private double dynamicSpeedX = SPEED_X;
+    private double dynamicDescent = DESCENT;
+
     private final SoundManager soundManager;
+    private final GameManger gameManager;
+    private final PlayerProjectileController playerProjectileController;
+
     private boolean isMovingRight = true;
     private double timeSinceLastShot;
     private final List<Enemy> enemies;
     private final double screenWidth;
     private int waveNum = 1;
+    private boolean waveCleared;
+
+    private double fractionalMovementX;
 
     /**
      * Costruisce una nuova ondata di nemici, in base alla larghezza dello schermo.
@@ -44,11 +60,46 @@ public final class WaveManagerController {
      * @param screenWidth larghezza dello schermo
      * @param soundManager gestore dei suoni per riprodurre effeti sonori come lo sparo e l'impatto dei proitettili
      */
-    public WaveManagerController(final double screenWidth, final SoundManager soundManager) {
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Dependency injection is intended here")
+    public WaveManagerController(
+            final double screenWidth, 
+            final SoundManager soundManager, 
+            final GameManger gameManager, 
+            final PlayerProjectileController playerProjectileController) {
         this.screenWidth = screenWidth;
         this.enemies = new ArrayList<>();
-        this.spawnWave();
         this.soundManager = soundManager;
+        this.gameManager = gameManager;
+        this.playerProjectileController = playerProjectileController;
+        this.spawnWave();
+    }
+
+    /**
+     * @return true if the current wave is completed.
+     */
+    public boolean isWaveCleared() {
+        return this.waveCleared;
+    }
+
+    /**
+     * Advances the wave counter and generates the new wave.
+     * To be called after the player has chosen the power-up.
+    */
+    public void startNextWave() {
+        this.waveCleared = false;
+        this.waveNum++;
+        this.spawnWave();
+    }
+
+    /**
+     * Multiply the speed of the horde and projectiles to slow or speed them up.
+     * 
+     * @param factor the multiplier
+     */
+    public void multiplyEnemySpeed(final float factor) {
+        this.dynamicSpeedX *= factor;
+        this.dynamicDescent *= factor;
+        EnemyProjectileController.multiplySpeed(factor);
     }
 
     /**
@@ -68,8 +119,7 @@ public final class WaveManagerController {
                     for (int col = 0; col < cols; col++) {
                         final int x = startX + (col * spacingX);
                         final int y = startY + (row * spacingY);
-                        final Position enemyPos = new Position(x, y);
-                        enemies.add(EnemyFactory.createEnemy(EnemyType.BASE, enemyPos));
+                        enemies.add(EnemyFactory.createEnemy(EnemyType.BASE, new Position(x, y)));
                     }
                 }
                 break;
@@ -78,25 +128,22 @@ public final class WaveManagerController {
                     for (int col = 0; col < cols; col++) {
                         final int x = startX + (col * spacingX);
                         final int y = startY + (row * spacingY);
-                        final Position enemyPos = new Position(x, y);
                         if (row == 0) {
-                            enemies.add(EnemyFactory.createEnemy(EnemyType.BASE, enemyPos));
+                            enemies.add(EnemyFactory.createEnemy(EnemyType.BASE, new Position(x, y)));
                         } else {
-                            enemies.add(EnemyFactory.createEnemy(EnemyType.TANK, enemyPos));
+                            enemies.add(EnemyFactory.createEnemy(EnemyType.TANK, new Position(x, y)));
                         }
                     }
                 }
                 break;
             case BOSS_WAVE_NUM:
-                final Position enemyPos = new Position(startX, startY);
-                enemies.add(EnemyFactory.createEnemy(EnemyType.BOSS, enemyPos));
+                enemies.add(EnemyFactory.createEnemy(EnemyType.BOSS, new Position(startX, startY)));
                 break;
             default:
                 // Aumenta la difficoltà ogni roud dopo i primi tre.
                 increaseDifficulty();
                 if (waveNum % BOSS_WAVE_NUM == 0) {
-                    final Position ePos = new Position(startX, startY);
-                    enemies.add(EnemyFactory.createEnemy(EnemyType.BOSS, ePos));
+                    enemies.add(EnemyFactory.createEnemy(EnemyType.BOSS, new Position(startX, startY)));
                 } else {
                     // Crea un'ondata con nemici casuali.
                     for (int row = 0; row < rows; row++) {
@@ -134,16 +181,36 @@ public final class WaveManagerController {
 
         // Controlla se l'ondata è stata sconfitta
         if (enemies.isEmpty()) {
-            ++waveNum;
-            spawnWave();
+            this.waveCleared = true;
+            return;
         }
 
         checkhitEnemies();
 
-        enemies.removeIf(Enemy::isDead);
+        for (final Enemy e : enemies) {
+            if (e.isDead()) {
+                switch (e.getType()) {
+                    case BASE:
+                        this.gameManager.addScore(SCORE_BASE);
+                        break;
+                    case TANK:
+                        this.gameManager.addScore(SCORE_TANK);
+                        break;
+                    case RED:
+                        this.gameManager.addScore(SCORE_RED);
+                        break;
+                    case BOSS:
+                        this.gameManager.addScore(SCORE_BOSS);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
 
+        enemies.removeIf(Enemy::isDead);
+        
         boolean hitEdge = false;
-        // Controlla se un nemico tocca il bordo
         for (final Enemy e : enemies) {
             final int enemyRightEdge = e.getPosition().getX() + (int) e.getWidth();
             final int enemyLeftEdge = e.getPosition().getX();
@@ -160,21 +227,25 @@ public final class WaveManagerController {
         if (hitEdge) {
             isMovingRight = !isMovingRight;
             for (final Enemy e : enemies) {
-                e.getPosition().setY((int) (e.getPosition().getY() + DESCENT));
+                e.getPosition().setY((int) (e.getPosition().getY() + dynamicDescent));
             }
         }
 
-        // Sposta l'orda in orizzontale
-        double movement = SPEED_X * delta;
+        double exactMovement = dynamicSpeedX * delta;
         if (!isMovingRight) {
-            movement = -movement;
+            exactMovement = -exactMovement;
         }
 
-        for (final Enemy e : enemies) {
-            e.getPosition().setX((int) (e.getPosition().getX() + movement));
+        fractionalMovementX += exactMovement;
+        final int movePixels = (int) fractionalMovementX;
+
+        if (movePixels != 0) {
+            fractionalMovementX -= movePixels;
+            for (final Enemy e : enemies) {
+                e.getPosition().setX(e.getPosition().getX() + movePixels);
+            }
         }
 
-        // Decide se un nemico spara
         timeSinceLastShot += delta;
         if (!enemies.isEmpty() && timeSinceLastShot >= COOLDOWN) {
             if (Math.random() < SHOOT_PROBABILITY) {
@@ -198,7 +269,7 @@ public final class WaveManagerController {
      */
     private void shoot() {
         soundManager.playSound(SHOOT_SOUND_PATH);
-        final int randomIndex = (int) (Math.random() * enemies.size());
+        final int randomIndex = RANDOM_ENEMY.nextInt(enemies.size());
         enemies.get(randomIndex).attack();
     }
 
@@ -206,27 +277,27 @@ public final class WaveManagerController {
      * Controlla se un nemico viene colpito.
      */
     private void checkhitEnemies() {
-        final List<Projectile> playerProjectiles = PlayerProjectileController.getProjectileList();
+        final List<Projectile> playerProjectiles = this.playerProjectileController.getProjectileList();
         final List<Projectile> projectilesToRemove = new ArrayList<>();
         Boolean hit = false;
         // Controlla se un nemico è colpito
         for (final Enemy e : enemies) {
             for (final Projectile p : playerProjectiles) {
-                if (Utils
-                    .isColliding(e.getPosition(), e.getWidth(), e.getHeight(), p.getPosition(), p.getWidth(), p.getLenght())) {
+                if (Utils.isColliding(e.getPosition(), e.getWidth(), e.getHeight(), 
+                                      p.getPosition(), p.getWidth(), p.getLenght())) {
                     e.takeDamage(p.getDamage());
                     projectilesToRemove.add(p);
                     hit = true;
                 }
             }
         }
-        //Fa partire un suono quando colpisci un nemico.
+
         if (hit) {
             soundManager.playSound(HIT_SOUND_PATH);
         }
-        //Rimuove i proiettili che hanno colpito un nemico.
+
         for (final Projectile p : projectilesToRemove) {
-            PlayerProjectileController.removeProjectile(p);
+            this.playerProjectileController.removeProjectile(p);
         }
     }
 
@@ -249,5 +320,4 @@ public final class WaveManagerController {
                 break;
         }
     }
-
 }

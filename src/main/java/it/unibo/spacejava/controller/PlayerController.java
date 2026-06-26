@@ -9,6 +9,7 @@ import it.unibo.spacejava.KeyHandler;
 import it.unibo.spacejava.Position;
 import it.unibo.spacejava.Skin;
 import it.unibo.spacejava.model.PlayerShip;
+import it.unibo.spacejava.model.ProjectileImpl;
 import it.unibo.spacejava.model.sound.SoundManagerImpl;
 
 /**
@@ -22,9 +23,15 @@ public class PlayerController {
     private static final String SHOOT_SOUND_PATH = "/audio/shoot.wav";
     private static final String HIT_SOUND_PATH = "/audio/hit.wav";
 
+    private static final int PROJECTILE_WIDTH = 10;
+    private static final int PROJECTILE_LENGTH = 40;
+    private static final int DAMAGE = 1;
+
     private final PlayerShip playerShip;
     private final KeyHandler keyHandler;
     private final double screenWidth;
+
+    private final PlayerProjectileController projectileController;
 
     private double timeSinceLastShot = SHOOT_COOL_DOWN;
 
@@ -38,9 +45,11 @@ public class PlayerController {
     public PlayerController(
         final PlayerShip playerShip,
         final KeyHandler keyHandler,
+        final PlayerProjectileController projectileController,
         final double screenWidth) {
         this.playerShip = Objects.requireNonNull(playerShip, "Non può esser nullo");
         this.keyHandler = Objects.requireNonNull(keyHandler, "Non puo esser nullo");
+        this.projectileController = Objects.requireNonNull(projectileController);
         this.screenWidth = screenWidth;
     }
 
@@ -61,10 +70,23 @@ public class PlayerController {
         //Gestione sparo
         timeSinceLastShot += delta;
         if (keyHandler.isSpacePressed() && timeSinceLastShot >= SHOOT_COOL_DOWN) {
-            playerShip.shoot();
+            handleShooting();
             timeSinceLastShot = 0;
-            SoundManagerImpl.getInstance().playSound(SHOOT_SOUND_PATH);
         }
+    }
+
+    /**
+     * Firing logic managed by the controller. Calculate the position and create the projectile
+     */
+    private void handleShooting() {
+        final int startX = playerShip.getPosition().getX() + (int) (playerShip.getWidth() / 2) - (int) (PROJECTILE_WIDTH / 2);
+        final int startY = playerShip.getPosition().getY();
+
+        final ProjectileImpl newProjectile = new ProjectileImpl(
+            new Position(startX, startY), PROJECTILE_LENGTH, PROJECTILE_WIDTH, DAMAGE);
+        projectileController.addProjectile(newProjectile);
+
+        SoundManagerImpl.getInstance().playSound(SHOOT_SOUND_PATH);
     }
 
     /**

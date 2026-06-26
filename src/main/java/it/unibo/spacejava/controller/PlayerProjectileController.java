@@ -22,7 +22,7 @@ public final class PlayerProjectileController {
      * 
      * @return la lista dei proiettili attivi del giocatore
      */
-    public static List<Projectile> getProjectileList() {
+    public List<Projectile> getProjectileList() {
         synchronized (PROJECTILE_LIST) {
             return Collections.unmodifiableList(PROJECTILE_LIST);
         }
@@ -51,7 +51,7 @@ public final class PlayerProjectileController {
      * 
      * @param projectileImpl il proiettile da aggiungere alla lista dei proiettili attivi del giocatore
      */
-    public static void addProjectile(final Projectile projectileImpl) {
+    public void addProjectile(final Projectile projectileImpl) {
         synchronized (PROJECTILE_LIST) {
             PROJECTILE_LIST.add(projectileImpl);
         }
@@ -62,7 +62,7 @@ public final class PlayerProjectileController {
      * 
      * @param projectileImpl il proiettile da rimuovere dalla lista dei proiettili attivi del giocatore
      */
-    public static void removeProjectile(final Projectile projectileImpl) {
+    public void removeProjectile(final Projectile projectileImpl) {
         synchronized (PROJECTILE_LIST) {
             PROJECTILE_LIST.remove(projectileImpl);
         }
