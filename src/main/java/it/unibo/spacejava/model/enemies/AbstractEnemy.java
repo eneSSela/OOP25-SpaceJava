@@ -114,15 +114,17 @@ public abstract class AbstractEnemy implements Enemy {
 
     /**
      * Attacca creando un proiettile sotto di sé.
+     * 
+     * @param projectileController controller dei proiettili nemici dove il nemico aggiunge il proprio proiettile. 
      */
     @Override
-    public void attack() {
+    public void attack(final EnemyProjectileController projectileController) {
         final int startX = position.getX() + (int) (width / 2 - ATTACK_OFFSET);
         final int startY = position.getY() + (int) height;
 
         final Position projectilePos = new Position(startX, startY);
 
-        EnemyProjectileController.addProjectile(
+        projectileController.addProjectile(
             new ProjectileImpl(projectilePos, projectileWidth, projectileHeight, damage)
         );
     }

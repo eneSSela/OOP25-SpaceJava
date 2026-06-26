@@ -47,7 +47,7 @@ public final class EnemyProjectileController {
      * 
      * @return la lista dei proiettili
      */
-    public static List<Projectile> getProjectileList() {
+    public List<Projectile> getProjectileList() {
         synchronized (PROJECTILES_LIST) {
             return Collections.unmodifiableList(new ArrayList<>(PROJECTILES_LIST));
         }
@@ -58,7 +58,7 @@ public final class EnemyProjectileController {
      * 
      * @param projectileImpl il proiettile da aggiungere
      */
-    public static void addProjectile(final Projectile projectileImpl) {
+    public void addProjectile(final Projectile projectileImpl) {
         synchronized (PROJECTILES_LIST) {
             PROJECTILES_LIST.add(projectileImpl);
         }
@@ -69,7 +69,7 @@ public final class EnemyProjectileController {
      * 
      * @param projectileToRemove il proiettile da rimuovere
      */
-    public static void removeProjectile(final Projectile projectileToRemove) {
+    public void removeProjectile(final Projectile projectileToRemove) {
         synchronized (PROJECTILES_LIST) {
             PROJECTILES_LIST.remove(projectileToRemove);
         }

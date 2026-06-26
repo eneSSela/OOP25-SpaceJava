@@ -34,6 +34,7 @@ public class PlayerController {
     private final double screenWidth;
 
     private final PlayerProjectileController projectileController;
+    private final EnemyProjectileController enemyProjectileController;
 
     private double timeSinceLastShot = SHOOT_COOL_DOWN;
 
@@ -43,18 +44,21 @@ public class PlayerController {
      * @param playerShip model del giocatore
      * @param keyHandler gestore degli input da tastiera
      * @param screenWidth larghezza delllo shermo per limitare il movimento del giocatore
-     * @param projectileController il controller dei proiettili
+     * @param projectileController il controller dei proiettili utente.
+     * @param enemyProjectileController il controller dei proiettili nemici.
      */
     @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Dependency injection is intended here")
     public PlayerController(
         final PlayerShip playerShip,
         final KeyHandler keyHandler,
         final PlayerProjectileController projectileController,
-        final double screenWidth) {
+        final double screenWidth,
+        final EnemyProjectileController enemyProjectileController) {
         this.playerShip = Objects.requireNonNull(playerShip, "Non può esser nullo");
         this.keyHandler = Objects.requireNonNull(keyHandler, "Non puo esser nullo");
         this.projectileController = Objects.requireNonNull(projectileController);
         this.screenWidth = screenWidth;
+        this.enemyProjectileController = enemyProjectileController;
     }
 
     /**
@@ -127,14 +131,14 @@ public class PlayerController {
      */
     public void checkEnemyCollision() {
         //Recuperiamo la lista dei proiettili nemici
-        final List<Projectile> enemyProjectiles = new ArrayList<>(EnemyProjectileController.getProjectileList());
+        final List<Projectile> enemyProjectiles = new ArrayList<>(enemyProjectileController.getProjectileList());
 
         for (final Projectile p : enemyProjectiles) {
             //Controlla se il rettangolo del player si sovrappone a quello del proiettile
             if (isColliding(playerShip.getPosition(), playerShip.getWidth(), playerShip.getHeight(), 
                             p.getPosition(), p.getWidth(), p.getLenght())) {
                 playerShip.takeDamage(p.getDamage()); //Rimuove un punto vita
-                EnemyProjectileController.removeProjectile(p); //Rimuove il proiettile che ha colpito il giocatore
+                enemyProjectileController.removeProjectile(p); //Rimuove il proiettile che ha colpito il giocatore
                 System.out.println("Sei stato colpito! Vita rimanente: " + playerShip.getHealth()); //NOPMD
 
                 SoundManagerImpl.getInstance().playSound(HIT_SOUND_PATH);

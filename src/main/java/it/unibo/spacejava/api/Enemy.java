@@ -1,6 +1,7 @@
 package it.unibo.spacejava.api;
 
 import it.unibo.spacejava.Position;
+import it.unibo.spacejava.controller.EnemyProjectileController;
 import it.unibo.spacejava.model.EnemyType;
 
 /**
@@ -10,56 +11,58 @@ import it.unibo.spacejava.model.EnemyType;
 public interface Enemy {
 
     /**
-     * Getter method that return the position of the enemy.
+     * Restituisce la posizione attuale del nemico.
      * 
-     * @return the position of the enemy
+     * @return la posizione corrente del nemico
      */
     Position getPosition();
 
     /**
-     * Getter method that return the width of the enemy.
+     * Restituisce la larghezza del nemico.
      * 
-     * @return the width of the enemy
+     * @return la larghezza del nemico
      */
     double getWidth();
 
     /**
-     * Method that return the height of the enemy.
+     * Restituisce l'altezza del nemico.
      * 
-     * @return the height of the enemy
+     * @return la altezza del nemico
      */
     double getHeight();
 
     /**
-     * Method that return the health of the enemy.
+     * Restituisce la vita attuale del nemico.
      * 
-     * @return the healt of the enemy
+     * @return la vita attuale del nemico
      */
     int getHealth();
 
     /**
-     * Method used to decide the appearence for the enemy.
+     * Restituisce il tipo di nemico.
      * 
-     * @return type of the enemy
+     * @return il tipo di nemico
      */
     EnemyType getType();
 
     /**
-     * Method that decrease the health of the enemy when it is hit by a projectile. 
-     * 
-     * @param damage the amount of damege to inflict on the enemy
-     */ 
-    void takeDamage(int damage);
-
-    /**
-     * Mtehod that make the enemy attack the player by shhoting a projectile.
+     * Riduce la vita del nemico in base al danno ricevuto.
+     *
+     * @param damageReceived danno ricevuto
      */
-    void attack();
+    void takeDamage(int damageReceived);
 
     /**
-     * Method that chek if the enmy is dead or not.
+     * Attacca creando un proiettile sotto di sé.
      * 
-     * @return true if the enemy is dead, false otherwise
+     * @param projectileController controller dei proiettili nemici dove il nemico aggiunge il proprio proiettile. 
+     */
+    void attack(EnemyProjectileController projectileController);
+
+    /**
+     * Controlla se il nemico è vivo.
+     * 
+     * @return true se la vita del nemico ha raggiunto o è sotto allo zero
      */
     boolean isDead();
 }

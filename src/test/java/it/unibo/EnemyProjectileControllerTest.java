@@ -3,9 +3,6 @@ package it.unibo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -26,16 +23,16 @@ final class EnemyProjectileControllerTest {
     private static final double FRAME = 0.016;
     private static final int SOME_TIME = 999;
 
-    private EnemyProjectileController projectileCotroller;
+    private EnemyProjectileController projectileController;
 
     @BeforeEach
     void setUp() {
         //Svuoto la lista di proiettili e inizializzo il controller.
-        final List<Projectile> projectilesToRemove = new ArrayList<>(EnemyProjectileController.getProjectileList());
-        for (final Projectile p : projectilesToRemove) {
-            EnemyProjectileController.removeProjectile(p);
-        }
-        projectileCotroller = new EnemyProjectileController(SCREEN_HEIGTH);
+        //final List<Projectile> projectilesToRemove = new ArrayList<>(EnemyProjectileController.getProjectileList());
+        //for (final Projectile p : projectilesToRemove) {
+        //    EnemyProjectileController.removeProjectile(p);
+        //}
+        projectileController = new EnemyProjectileController(SCREEN_HEIGTH);
     }
 
     /**
@@ -45,8 +42,8 @@ final class EnemyProjectileControllerTest {
     void testProjectileMovement() {
         final Position startPos = new Position(STARTING_COORD, STARTING_COORD);
         final Projectile projectile = new ProjectileImpl(startPos, DEFAULT_PROJECTILE_HEIGHT, DEFAULT_PROJECTILE_WIDTH, 1);
-        EnemyProjectileController.addProjectile(projectile);
-        projectileCotroller.update(FRAME);
+        projectileController.addProjectile(projectile);
+        projectileController.update(FRAME);
         assertTrue(projectile.getPosition().getY() > STARTING_COORD);
         assertEquals(projectile.getPosition().getX(), STARTING_COORD);
     }
@@ -58,9 +55,9 @@ final class EnemyProjectileControllerTest {
     void testProjectileOutOfScreenRemoval() {
         final Position startPos = new Position(STARTING_COORD, STARTING_COORD);
         final Projectile projectile = new ProjectileImpl(startPos, DEFAULT_PROJECTILE_HEIGHT, DEFAULT_PROJECTILE_WIDTH, 1);
-        EnemyProjectileController.addProjectile(projectile);
-        assertEquals(EnemyProjectileController.getProjectileList().size(), 1);
-        projectileCotroller.update(FRAME * SOME_TIME);
-        assertEquals(EnemyProjectileController.getProjectileList().size(), 0);
+        projectileController.addProjectile(projectile);
+        assertEquals(projectileController.getProjectileList().size(), 1);
+        projectileController.update(FRAME * SOME_TIME);
+        assertEquals(projectileController.getProjectileList().size(), 0);
     }
 }
