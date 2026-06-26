@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import it.unibo.spacejava.Skin;
 import it.unibo.spacejava.Utils;
 import it.unibo.spacejava.api.MenuObserver;
-import it.unibo.spacejava.controller.menu.SkinController;
+import it.unibo.spacejava.model.PlayerShip;
 import it.unibo.spacejava.model.menu.ShopImpl;
 
 /**
@@ -64,13 +64,13 @@ public final class SkinSelectionView extends JPanel implements MenuObserver {
 
     // --- TESTI FISSI ---
     private static final String TEXT_POINTS = "Punti: ";
-    private static final String TEXT_UNLOCKED = "SBLOCCATA - Premi INVIO per usare";
+    private static final String TEXT_UNLOCKED = "SBLOCCATA";
     private static final String TEXT_LOCKED_PREFIX = "BLOCCATA - Costo: ";
-    private static final String TEXT_CAN_BUY = "Premi SPAZIO per comprare!";
+    private static final String TEXT_CAN_BUY = "Premi [SPAZIO] per Comprare!";
     private static final String TEXT_CANNOT_BUY = "Punti insufficienti";
 
     private final transient ShopImpl shop;
-    private final transient SkinController controller;
+    private final transient PlayerShip player;
 
     /**
      * Costruisce la view per la selezione delle skin.
@@ -78,10 +78,10 @@ public final class SkinSelectionView extends JPanel implements MenuObserver {
      * @param shop del menu di selezione skin
      * @param controller della view
      */
-    public SkinSelectionView(final ShopImpl shop, final SkinController controller) {
+    public SkinSelectionView(final ShopImpl shop, final PlayerShip player) {
         this.shop = Objects.requireNonNull(shop, "Il model non può essere nullo");
         this.shop.setObserver(this);
-        this.controller = Objects.requireNonNull(controller, "Il controller non può essere nullo");
+        this.player = Objects.requireNonNull(player, "Il giocatore non può essere nullo");
         setBackground(Color.BLACK);
         setFocusable(true);
     }
@@ -97,7 +97,7 @@ public final class SkinSelectionView extends JPanel implements MenuObserver {
 
         final Skin currentSkin = shop.getSelectedSkin();
 
-        final String pointsText = TEXT_POINTS + controller.getPlyerScore();
+        final String pointsText = TEXT_POINTS + player.getScore().getTotal();
         final int pointsWidth = fm.stringWidth(pointsText);
         g2.setColor(COLOR_POINTS);
         g2.drawString(pointsText, width - pointsWidth - POINTS_PADDING_RIGHT, POINTS_MARGIN_TOP);
@@ -163,13 +163,13 @@ public final class SkinSelectionView extends JPanel implements MenuObserver {
             g2.drawString(lockedText, (width - lockedWidth) / 2, bottomY - LINE_SPACING);
 
             // Suggerimento di acquisto dinamico
-            if (controller.getPlyerScore() >= currentSkin.getPrice()) {
+            if (player.getScore().getTotal() >= currentSkin.getPrice()) {
                 final int buyWidth = fm.stringWidth(TEXT_CAN_BUY);
                 g2.setColor(COLOR_CAN_BUY);
-                g2.drawString(TEXT_CAN_BUY, (width - buyWidth) / 2, bottomY);
-                g2.setColor(Color.YELLOW);
-                final String promptBuy = "[SPAZIO] per Comprare";
-                g2.drawString(promptBuy, (width - fm.stringWidth(promptBuy)) / 2, bottomY + PROMPT_BUY_OFFSET);
+                //g2.drawString(TEXT_CAN_BUY, (width - buyWidth) / 2, bottomY);
+                //g2.setColor(Color.YELLOW);
+                //final String promptBuy = "[SPAZIO] per Comprare";
+                g2.drawString(TEXT_CAN_BUY, (width - buyWidth) / 2, bottomY + PROMPT_BUY_OFFSET);
             } else {
                 final int cannotBuyWidth = fm.stringWidth(TEXT_CANNOT_BUY);
                 g2.setColor(COLOR_CANNOT_BUY);

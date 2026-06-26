@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import it.unibo.spacejava.controller.menu.SkinController;
 import it.unibo.spacejava.model.PlayerShip;
 import it.unibo.spacejava.model.menu.ShopImpl;
 import it.unibo.spacejava.model.menu.SkinFactory;
@@ -25,7 +24,7 @@ final class SkinModelTest {
     void setUp() {
         model = new ShopImpl();
         player = new PlayerShip(0, 0, SkinFactory.createListOfSkins().get(0));
-        this.model.setObserver(new SkinSelectionView(model, new SkinController(model, player, () -> { })));
+        this.model.setObserver(new SkinSelectionView(model, player));
     }
 
     @Test

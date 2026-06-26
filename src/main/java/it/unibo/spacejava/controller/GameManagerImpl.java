@@ -113,7 +113,7 @@ public final class GameManagerImpl implements GameManager, Runnable {
                 }
             }
         );
-        skinSelectionView = new SkinSelectionView(shop, skinController);
+        skinSelectionView = new SkinSelectionView(shop, playerModel);
         skinSelectionView.setFocusable(true);
         skinSelectionView.addKeyListener(skinController);
 
