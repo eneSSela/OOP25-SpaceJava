@@ -34,6 +34,9 @@ public final class WaveManagerController {
     private static final String HIT_SOUND_PATH = "/audio/hit.wav";
     private static final String NULL_PARAM_MESSAGE = "Non può esser nullo";
 
+    private double dynamicSpeedX = SPEED_X;
+    private double dynamicDescent = DESCENT;
+
     private final SoundManager soundManager;
     private final Score playerScore;
     private final PlayerProjectileController playerProjectileController;
@@ -43,6 +46,9 @@ public final class WaveManagerController {
     private final List<Enemy> enemies;
     private final double screenWidth;
     private int waveNum = 1;
+    private boolean waveCleared;
+
+    private double fractionalMovementX;
 
     /**
      * Costruisce una nuova ondata di nemici, in base alla larghezza dello schermo.
@@ -59,11 +65,39 @@ public final class WaveManagerController {
                                 final EnemyProjectileController enemyProjectileController) {
         this.screenWidth = screenWidth;
         this.enemies = new ArrayList<>();
-        this.spawnWave();
         this.soundManager = soundManager;
         this.playerScore = Objects.requireNonNull(playerScore, NULL_PARAM_MESSAGE);
         this.playerProjectileController = Objects.requireNonNull(playerProjectileController, NULL_PARAM_MESSAGE);
         this.enemyProjectileController = Objects.requireNonNull(enemyProjectileController, NULL_PARAM_MESSAGE);
+        this.spawnWave();
+    }
+
+    /**
+     * @return true if the current wave is completed.
+     */
+    public boolean isWaveCleared() {
+        return this.waveCleared;
+    }
+
+    /**
+     * Advances the wave counter and generates the new wave.
+     * To be called after the player has chosen the power-up.
+     */
+    public void startNextWave() {
+        this.waveCleared = false;
+        this.waveNum++;
+        this.spawnWave();
+    }
+
+    /**
+     * Multiply the speed of the horde and projectiles to slow or speed them up.
+     * 
+     * @param factor the multiplier
+     */
+    public void multiplyEnemySpeed(final float factor) {
+        this.dynamicSpeedX *= factor;
+        this.dynamicDescent *= factor;
+        EnemyProjectileController.multiplySpeed(factor);
     }
 
     /**
@@ -83,8 +117,7 @@ public final class WaveManagerController {
                     for (int col = 0; col < cols; col++) {
                         final int x = startX + (col * spacingX);
                         final int y = startY + (row * spacingY);
-                        final Position enemyPos = new Position(x, y);
-                        enemies.add(EnemyFactory.createEnemy(EnemyType.BASE, enemyPos));
+                        enemies.add(EnemyFactory.createEnemy(EnemyType.BASE, new Position(x, y)));
                     }
                 }
                 break;
@@ -93,25 +126,22 @@ public final class WaveManagerController {
                     for (int col = 0; col < cols; col++) {
                         final int x = startX + (col * spacingX);
                         final int y = startY + (row * spacingY);
-                        final Position enemyPos = new Position(x, y);
                         if (row == 0) {
-                            enemies.add(EnemyFactory.createEnemy(EnemyType.BASE, enemyPos));
+                            enemies.add(EnemyFactory.createEnemy(EnemyType.BASE, new Position(x, y)));
                         } else {
-                            enemies.add(EnemyFactory.createEnemy(EnemyType.TANK, enemyPos));
+                            enemies.add(EnemyFactory.createEnemy(EnemyType.TANK, new Position(x, y)));
                         }
                     }
                 }
                 break;
             case BOSS_WAVE_NUM:
-                final Position enemyPos = new Position(startX, startY);
-                enemies.add(EnemyFactory.createEnemy(EnemyType.BOSS, enemyPos));
+                enemies.add(EnemyFactory.createEnemy(EnemyType.BOSS, new Position(startX, startY)));
                 break;
             default:
                 // Aumenta la difficoltà ogni roud dopo i primi tre.
                 increaseDifficulty();
                 if (waveNum % BOSS_WAVE_NUM == 0) {
-                    final Position ePos = new Position(startX, startY);
-                    enemies.add(EnemyFactory.createEnemy(EnemyType.BOSS, ePos));
+                    enemies.add(EnemyFactory.createEnemy(EnemyType.BOSS, new Position(startX, startY)));
                 } else {
                     // Crea un'ondata con nemici casuali.
                     for (int row = 0; row < rows; row++) {
@@ -149,8 +179,8 @@ public final class WaveManagerController {
 
         // Controlla se l'ondata è stata sconfitta
         if (enemies.isEmpty()) {
-            ++waveNum;
-            spawnWave();
+            this.waveCleared = true;
+            return;
         }
 
         checkhitEnemies();
@@ -162,10 +192,9 @@ public final class WaveManagerController {
             }
         }
 
-        enemies.removeIf(Enemy::isDead);
+        enemies.removeIf(e -> e != null && e.isDead());
 
         boolean hitEdge = false;
-        // Controlla se un nemico tocca il bordo
         for (final Enemy e : enemies) {
             final int enemyRightEdge = e.getPosition().getX() + (int) e.getWidth();
             final int enemyLeftEdge = e.getPosition().getX();
@@ -182,21 +211,25 @@ public final class WaveManagerController {
         if (hitEdge) {
             isMovingRight = !isMovingRight;
             for (final Enemy e : enemies) {
-                e.getPosition().setY((int) (e.getPosition().getY() + DESCENT));
+                e.getPosition().setY((int) (e.getPosition().getY() + dynamicDescent));
             }
         }
 
-        // Sposta l'orda in orizzontale
-        double movement = SPEED_X * delta;
+        double exactMovement = dynamicSpeedX * delta;
         if (!isMovingRight) {
-            movement = -movement;
+            exactMovement = -exactMovement;
         }
 
-        for (final Enemy e : enemies) {
-            e.getPosition().setX((int) (e.getPosition().getX() + movement));
+        fractionalMovementX += exactMovement;
+        final int movePixels = (int) fractionalMovementX;
+
+        if (movePixels != 0) {
+            fractionalMovementX -= movePixels;
+            for (final Enemy e : enemies) {
+                e.getPosition().setX(e.getPosition().getX() + movePixels);
+            }
         }
 
-        // Decide se un nemico spara
         timeSinceLastShot += delta;
         if (!enemies.isEmpty() && timeSinceLastShot >= COOLDOWN) {
             if (Math.random() < SHOOT_PROBABILITY) {
@@ -234,19 +267,19 @@ public final class WaveManagerController {
         // Controlla se un nemico è colpito
         for (final Enemy e : enemies) {
             for (final Projectile p : playerProjectiles) {
-                if (Utils
-                    .isColliding(e.getPosition(), e.getWidth(), e.getHeight(), p.getPosition(), p.getWidth(), p.getLenght())) {
+                if (Utils.isColliding(e.getPosition(), e.getWidth(), e.getHeight(), 
+                                      p.getPosition(), p.getWidth(), p.getLenght())) {
                     e.takeDamage(p.getDamage());
                     projectilesToRemove.add(p);
                     hit = true;
                 }
             }
         }
-        //Fa partire un suono quando colpisci un nemico.
+
         if (hit) {
             soundManager.playSound(HIT_SOUND_PATH);
         }
-        //Rimuove i proiettili che hanno colpito un nemico.
+
         for (final Projectile p : projectilesToRemove) {
             this.playerProjectileController.removeProjectile(p);
         }
@@ -271,5 +304,4 @@ public final class WaveManagerController {
                 break;
         }
     }
-
 }

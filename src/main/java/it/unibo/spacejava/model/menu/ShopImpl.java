@@ -37,7 +37,7 @@ public final class ShopImpl implements Shop {
      * @return un oggetto Skin che rappresenta la skin attalmente selezionata
      */
     public Skin getSelectedSkin() {
-        return skins.get(selectedIndex);
+        return this.skins.get(selectedIndex);
     }
 
     /**

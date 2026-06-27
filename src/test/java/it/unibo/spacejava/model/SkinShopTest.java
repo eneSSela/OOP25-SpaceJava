@@ -15,7 +15,7 @@ import it.unibo.spacejava.view.menu.ShopView;
  */
 final class SkinShopTest {
 
-    private static final int POINTS_TO_ADD = 5000;
+    private static final int POINTS_TO_ADD = 15_000;
     private ShopImpl model;
     private PlayerShip player;
 
@@ -35,7 +35,7 @@ final class SkinShopTest {
 
     @Test
     void testBuySkinWithInsufficientPoints() {
-        model.selectNext(); // Passa alla "ship2" (costa 100)
+        model.selectNext(); // Passa alla "ship2" (costa 10_000)
         assertFalse(model.getSelectedSkin().isUnlock(), "La ship2 dovrebbe essere bloccata all'inizio");
 
         final boolean result = model.buySelectedSkin(player.getScore());

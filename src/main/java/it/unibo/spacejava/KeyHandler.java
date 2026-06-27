@@ -76,8 +76,28 @@ public class KeyHandler implements KeyListener {
         }
     }
 
+    /**
+     * Manage the key typed.
+     * 
+     * @param e the event of the key
+     */
     @Override
-    public void keyTyped(final KeyEvent e) { }
+    public void keyTyped(final KeyEvent e) {
+        // Intentionally ignored event
+    }
+
+    /**
+     * Reset brutally the state of all keys.
+     * Useful when the panel loses focus (changing screens)
+     */
+    public final void resetState() {
+        this.upPressed = false;
+        this.downPressed = false;
+        this.leftPressed = false;
+        this.rightPressed = false;
+        this.spacePressed = false;
+        this.enterPressed = false;
+    }
 
     /**
      * Verifica se il tasto Su (o W) è attualmente premuto.
