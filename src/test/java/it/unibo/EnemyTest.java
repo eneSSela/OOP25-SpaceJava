@@ -1,7 +1,6 @@
 package it.unibo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -10,7 +9,10 @@ import it.unibo.spacejava.Position;
 import it.unibo.spacejava.api.Enemy;
 import it.unibo.spacejava.controller.EnemyProjectileController;
 import it.unibo.spacejava.model.EnemyType;
+import it.unibo.spacejava.model.enemies.BossEnemy;
 import it.unibo.spacejava.model.enemies.EnemyFactory;
+import it.unibo.spacejava.model.enemies.RedEnemy;
+import it.unibo.spacejava.model.enemies.TankEnemy;
 
 /**
  * Classe di test per i nemici.
@@ -83,11 +85,42 @@ final class EnemyTest {
     void testProjectileGeneration() {
         final Position startingPosition = new Position(100, 100);
         final Enemy enemy = EnemyFactory.createEnemy(EnemyType.BASE, startingPosition);
+
+        final int initialSize = EnemyProjectileController.getProjectileList().size();
         enemy.attack();
-        //Controllo se un proiettile è stato effettivamente aggiunto alla lista dei proiettili nemici.
-        assertFalse(EnemyProjectileController.getProjectileList().isEmpty());
+        final int newSize = EnemyProjectileController.getProjectileList().size();
+
+        assertTrue(newSize > initialSize, "Un proiettile deve essere stato aggiunto");
+        final int lastIndex = newSize - 1;
+        final Position projPos = EnemyProjectileController.getProjectileList().get(lastIndex).getPosition();
         //Controllo che il proiettile venga generato sotto al corrispondente nemico.
-        assertTrue(EnemyProjectileController.getProjectileList().get(0).getPosition().getY() > enemy.getPosition().getY());
-        assertEquals(EnemyProjectileController.getProjectileList().get(0).getPosition().getX(), enemy.getPosition().getX() + 10);
+        assertTrue(projPos.getY() > enemy.getPosition().getY());
+        assertEquals(enemy.getPosition().getX() + 10, projPos.getX());
+    }
+
+    /**
+     * Test the upgrade of the enemies.
+     */
+    @Test
+    void testEnemyUpgrade() {
+        final Position pos = new Position(0, 0);
+        // Checking the tank enemy's life upgrade
+        final Enemy unupgradeTank = EnemyFactory.createEnemy(EnemyType.TANK, pos);
+        TankEnemy.upgrade();
+        final Enemy upgradeTank = EnemyFactory.createEnemy(EnemyType.TANK, pos);
+        assertTrue(upgradeTank.getHealth() > unupgradeTank.getHealth());
+        // Checking the red enemy's damage
+        final int unupgradedRedDamage = RedEnemy.getHUDDamage();
+        RedEnemy.upgrade();
+        final int upgradedRedDamage = RedEnemy.getHUDDamage();
+        assertTrue(upgradedRedDamage > unupgradedRedDamage);
+        // Checking the boss life + damage upgrade
+        final Enemy unupgradedBoss = EnemyFactory.createEnemy(EnemyType.BOSS, pos);
+        final int unupgradedBossDamage = BossEnemy.getHUDDamage();
+        BossEnemy.upgrade();
+        final Enemy upgradedBoss = EnemyFactory.createEnemy(EnemyType.BOSS, pos);
+        final int upgradedBossDamage = BossEnemy.getHUDDamage();
+        assertTrue(upgradedBoss.getHealth() > unupgradedBoss.getHealth());
+        assertTrue(upgradedBossDamage > unupgradedBossDamage);
     }
 }

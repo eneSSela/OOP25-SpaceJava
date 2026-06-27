@@ -27,7 +27,7 @@ public final class SkinModel {
      * Costruttore per definire le due variabili (punti e l'idice di selezione della skin) a 0,
      * e inzializzo anche la lista delle skin.
      * 
-     * @return gameManager il gestore del gioco
+     * @param gameManager manager of the game
      */
     @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Dependency injection is intended here")
     public SkinModel(final GameManger gameManager) {

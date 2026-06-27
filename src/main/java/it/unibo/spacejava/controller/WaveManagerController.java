@@ -59,6 +59,8 @@ public final class WaveManagerController {
      * 
      * @param screenWidth larghezza dello schermo
      * @param soundManager gestore dei suoni per riprodurre effeti sonori come lo sparo e l'impatto dei proitettili
+     * @param gameManager manager of the score
+     * @param playerProjectileController projectile controller of the player
      */
     @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Dependency injection is intended here")
     public WaveManagerController(
@@ -84,7 +86,7 @@ public final class WaveManagerController {
     /**
      * Advances the wave counter and generates the new wave.
      * To be called after the player has chosen the power-up.
-    */
+     */
     public void startNextWave() {
         this.waveCleared = false;
         this.waveNum++;
@@ -202,14 +204,12 @@ public final class WaveManagerController {
                     case BOSS:
                         this.gameManager.addScore(SCORE_BOSS);
                         break;
-                    default:
-                        break;
                 }
             }
         }
 
-        enemies.removeIf(Enemy::isDead);
-        
+        enemies.removeIf(e -> e != null && e.isDead());
+
         boolean hitEdge = false;
         for (final Enemy e : enemies) {
             final int enemyRightEdge = e.getPosition().getX() + (int) e.getWidth();

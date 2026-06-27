@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.spacejava.api.Projectile;
 import it.unibo.spacejava.KeyHandler;
 import it.unibo.spacejava.Position;
@@ -40,8 +41,10 @@ public class PlayerController {
      * 
      * @param playerShip model del giocatore
      * @param keyHandler gestore degli input da tastiera
+     * @param projectileController the controller of the projectile
      * @param screenWidth larghezza delllo shermo per limitare il movimento delgiocaore
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Dependency injection is intended here")
     public PlayerController(
         final PlayerShip playerShip,
         final KeyHandler keyHandler,
@@ -79,7 +82,7 @@ public class PlayerController {
      * Firing logic managed by the controller. Calculate the position and create the projectile
      */
     private void handleShooting() {
-        final int startX = playerShip.getPosition().getX() + (int) (playerShip.getWidth() / 2) - (int) (PROJECTILE_WIDTH / 2);
+        final int startX = playerShip.getPosition().getX() + (int) (playerShip.getWidth() / 2) - (PROJECTILE_WIDTH / 2);
         final int startY = playerShip.getPosition().getY();
 
         final ProjectileImpl newProjectile = new ProjectileImpl(

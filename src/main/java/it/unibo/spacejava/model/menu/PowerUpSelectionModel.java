@@ -10,9 +10,11 @@ import it.unibo.spacejava.api.PowerUp;
 import it.unibo.spacejava.controller.WaveManagerController;
 import it.unibo.spacejava.model.PlayerShip;
 
-
+/**
+ * Model for the power-up screen.
+ * Manages a power pool and selects 3 random powers at each wave.
+ */
 public final class PowerUpSelectionModel {
-
     private static final float SHIELD_MULT = 2.0f;
     private static final float TIME_MULT = 0.7f;
     private static final float FIRE_MULT = 0.4f;

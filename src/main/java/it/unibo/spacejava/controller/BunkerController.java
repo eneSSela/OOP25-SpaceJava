@@ -20,22 +20,20 @@ public final class BunkerController {
     private final List<Bunker> bunkers = new ArrayList<>();
 
     private final PlayerProjectileController playerProjController;
-    private final EnemyProjectileController enemyProjController;
 
     /**
      * Costruisce i 4 bunker posizionati equidistantemente tra loto e sopra il palyer.
      * 
      * @param screenWidth la larghezza dello schermo, usata per posizionare i bunker equidistantemente
      * @param screenHeight l'altezza dello schermo, usata per posizionare i bunker sopra il giocatore
+     * @param playerProjController projectile controller of the player
      */
     @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Dependency injection is intended here")
     public BunkerController(
             final int screenWidth, 
             final int screenHeight,
-            final PlayerProjectileController playerProjController,
-            final EnemyProjectileController enemyProjectileController) {
+            final PlayerProjectileController playerProjController) {
         this.playerProjController = playerProjController;
-        this.enemyProjController = enemyProjectileController;
 
         // Generiamo 4 bunker distanziati equamente
         final int spacing = screenWidth / 5; 
@@ -76,11 +74,11 @@ public final class BunkerController {
                 .filter(p -> isColliding(b, p))
                 .forEach(p -> {
                     b.takeDamage(p.getDamage());
-                    this.enemyProjController.removeProjectile(p);
+                    EnemyProjectileController.removeProjectile(p);
                 });
         }
 
-        bunkers.removeIf(Bunker::isDestroyed);
+        bunkers.removeIf(b -> b != null && b.isDestroyed());
     }
 
     private boolean isColliding(final Bunker b, final Projectile p) {

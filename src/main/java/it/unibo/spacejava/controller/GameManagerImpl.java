@@ -6,8 +6,6 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import org.apache.http.cookie.CookieAttributeHandler;
-
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.spacejava.KeyHandler;
 import it.unibo.spacejava.api.GameManger;
@@ -21,6 +19,7 @@ import it.unibo.spacejava.model.menu.SkinModel;
 import it.unibo.spacejava.model.menu.StartMenuModel;
 import it.unibo.spacejava.model.sound.SoundManagerImpl;
 import it.unibo.spacejava.view.game.GamePanel;
+import it.unibo.spacejava.view.menu.PowerUpSelectionView;
 import it.unibo.spacejava.view.menu.SkinSelectionView;
 import it.unibo.spacejava.view.menu.StartMenuView;
 
@@ -65,7 +64,7 @@ public final class GameManagerImpl implements GameManger, Runnable {
     private StartMenuController startMenuController;
 
     //Componenti della schermata di selezione skin
-    private final SkinModel skinModel = new SkinModel();
+    private final SkinModel skinModel;
     private SkinSelectionView skinSelectionView;
     private PowerUpSelectionView powerUpView;
 
@@ -77,6 +76,9 @@ public final class GameManagerImpl implements GameManger, Runnable {
 
     private boolean justResumed;
 
+    /**
+     * Builds the GameManager initializing the score and the controller.
+     */
     public GameManagerImpl() {
         this.score = 0;
         this.skinModel = new SkinModel(this);
@@ -135,8 +137,8 @@ public final class GameManagerImpl implements GameManger, Runnable {
         final PlayerShip playerModel = new PlayerShip(startX, startY, skinModel.getSelectedSkin());
         playerController = new PlayerController(playerModel, gameKeyHandler, 
                                                 this.playerProjController, SCREEN_WIDTH);
-        bunkerController = new BunkerController(SCREEN_WIDTH, SCREEN_HEIGTH
-                                                this.playerProjController, this.projectileController);
+        bunkerController = new BunkerController(SCREEN_WIDTH, SCREEN_HEIGTH,
+                                                this.playerProjController);
 
         gamePanel.addKeyListener(gameKeyHandler);
         startMenuView.setFocusable(true);
@@ -165,7 +167,6 @@ public final class GameManagerImpl implements GameManger, Runnable {
         double delta = 0;
         long lastTime = System.nanoTime();
         long timer = System.currentTimeMillis();
-        int frames = 0;
 
         final double timePerFrame = 1.0 / FPS;
 
@@ -266,7 +267,6 @@ public final class GameManagerImpl implements GameManger, Runnable {
 
     /**
      * Return the current score.
-     * @return 
      * 
      * @return the actual score
      */

@@ -9,7 +9,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import it.unibo.spacejava.api.Enemy;
+import it.unibo.spacejava.api.GameManger;
+import it.unibo.spacejava.controller.PlayerProjectileController;
 import it.unibo.spacejava.controller.WaveManagerController;
+import it.unibo.spacejava.model.sound.api.SoundManager;
 
 /**
  * Classe di test per WaveMangareController.
@@ -23,7 +26,48 @@ final class WaveManagerControllerTest {
 
     @BeforeEach
     void setUp() {
-        waveManager = new WaveManagerController(SCREEN_WIDTH, null);
+        final GameManger fakGameManager = new GameManger() {
+
+            @Override
+            public void startGame() {
+                // Method intentionally void
+            }
+
+            @Override
+            public void addScore(final int points) {
+            }
+
+            @Override
+            public int getScore() {
+                return 0;
+            }
+
+            @Override
+            public void decreaseScore(final int points) {
+            }
+
+            @Override
+            public void resetScore() {
+            }
+        };
+
+        final SoundManager fakeSound = new SoundManager() {
+
+            @Override
+            public void playSound(final String soundName) {
+            }
+
+            @Override
+            public void playBackgroundMusic(final String musicName) {
+            }
+
+            @Override
+            public void stopBackgroundMusic() {
+            }
+        };
+
+        final PlayerProjectileController projController = new PlayerProjectileController();
+        waveManager = new WaveManagerController(SCREEN_WIDTH, fakeSound, fakGameManager, projController);
     }
 
     //Verifico che inizialmente ci siano già nemici caricati.
