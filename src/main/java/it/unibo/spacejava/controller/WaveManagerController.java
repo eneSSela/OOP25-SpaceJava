@@ -6,6 +6,7 @@ import it.unibo.spacejava.api.Enemy;
 import it.unibo.spacejava.api.Projectile;
 import it.unibo.spacejava.api.Score;
 import it.unibo.spacejava.model.EnemyType;
+import it.unibo.spacejava.model.PlayerShip;
 import it.unibo.spacejava.model.enemies.BossEnemy;
 import it.unibo.spacejava.model.enemies.EnemyFactory;
 import it.unibo.spacejava.model.enemies.RedEnemy;
@@ -38,7 +39,7 @@ public final class WaveManagerController {
     private double dynamicDescent = DESCENT;
 
     private final SoundManager soundManager;
-    private final Score playerScore;
+    private final PlayerShip playerShip;
     private final PlayerProjectileController playerProjectileController;
     private final EnemyProjectileController enemyProjectileController;
     private boolean isMovingRight = true;
@@ -60,13 +61,13 @@ public final class WaveManagerController {
      * @param enemyProjectileController controller dei proiettili nemici
      */
     public WaveManagerController(final double screenWidth, final SoundManager soundManager, 
-                                final Score playerScore, 
+                                final PlayerShip playerShip, 
                                 final PlayerProjectileController playerProjectileController,
                                 final EnemyProjectileController enemyProjectileController) {
         this.screenWidth = screenWidth;
         this.enemies = new ArrayList<>();
         this.soundManager = soundManager;
-        this.playerScore = Objects.requireNonNull(playerScore, NULL_PARAM_MESSAGE);
+        this.playerShip = Objects.requireNonNull(playerShip, NULL_PARAM_MESSAGE);
         this.playerProjectileController = Objects.requireNonNull(playerProjectileController, NULL_PARAM_MESSAGE);
         this.enemyProjectileController = Objects.requireNonNull(enemyProjectileController, NULL_PARAM_MESSAGE);
         this.spawnWave();
@@ -168,6 +169,9 @@ public final class WaveManagerController {
                 }
                 break;
         }
+        if (waveNum % BOSS_WAVE_NUM == 0 &&playerShip.getSkin().hasBossShield()) {
+            playerShip.addShieldCharges(3);
+        }
     }
 
     /**
@@ -188,7 +192,9 @@ public final class WaveManagerController {
         // Prima di rimuoverli, controlliamo chi è morto e diamo i punti.
         for (final Enemy e : enemies) {
             if (e.isDead()) {
-                playerScore.addPoints(e.getPoints());
+                final double multiplier = playerShip.getSkin().getScoreMultiplier();
+                final int finalPoints = (int) (e.getPoints() * multiplier);
+                playerShip.getScore().addPoints(finalPoints);
             }
         }
 

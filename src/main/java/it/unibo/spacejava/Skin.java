@@ -12,6 +12,9 @@ public final class Skin {
     private final int price;
     private boolean isUnlocked;
 
+    private final double scoreMultiplier;
+    private final boolean hasBossShield;
+
     /**
      * Costruttore della classe Skin.
      * 
@@ -20,11 +23,14 @@ public final class Skin {
      * @param price prezzo della skin
      * @param isUnlocked boolean che indica se la skin e sbloccata o bloccata
      */
-    public Skin(final String name, final String imagePath, final int price, final boolean isUnlocked) {
+    public Skin(final String name, final String imagePath, final int price, final boolean isUnlocked,
+                final double scoreMultiplier, final boolean hasBossShield) {
         this.name = name;
         this.imagePath = imagePath;
         this.price = price;
         this.isUnlocked = isUnlocked;
+        this.scoreMultiplier = scoreMultiplier;
+        this.hasBossShield = hasBossShield;
     }
 
     /**
@@ -68,5 +74,23 @@ public final class Skin {
      */
     public void unlock() {
         this.isUnlocked = true;
+    }
+
+    /**
+     * Retrives the score multiplier provided by this skin.
+     * 
+     * @return the score multiplier value
+     */
+    public double getScoreMultiplier() {
+        return this.scoreMultiplier;
+    }
+
+    /**
+     * Checks wheter this skin includes a boss shield.
+     * 
+     * @return true if the skin provides a boss shield, false otherwise
+     */
+    public boolean hasBossShield() {
+        return this.hasBossShield;
     }
 }

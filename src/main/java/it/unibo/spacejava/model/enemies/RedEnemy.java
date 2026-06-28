@@ -53,6 +53,18 @@ public final class RedEnemy extends AbstractEnemy {
         return damage;
     }
 
+    /**
+     * Resets the red enemy's damage stat to its default value.
+     */
+    public static void resetStats() {
+        damage = DEFAULT_DAMAGE;
+    }
+
+    /**
+     * Gets the base points awarded for defeating this red enemy.
+     * 
+     * @return the score value of the red enemy
+     */
     @Override
     public int getPoints() {
        return SCORE_RED;

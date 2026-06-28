@@ -123,7 +123,7 @@ public final class PowerUpSelectionModel {
 
             @Override
             public String getType() {
-                return "Riparazione Scafo";
+                return "Riparazione Navicella";
             }
 
             @Override
