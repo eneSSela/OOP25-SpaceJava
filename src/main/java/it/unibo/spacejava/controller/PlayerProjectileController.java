@@ -15,8 +15,7 @@ public final class PlayerProjectileController {
     private final List<Projectile> projectileList;
 
     /**
-     * Restituisce la lista dei proiettili.
-     * * @return la lista dei proiettili attivi
+     * Return the list of the projectile.
      */
     public PlayerProjectileController() {
         this.projectileList = new ArrayList<>();

@@ -20,6 +20,12 @@ public final class PlayerShip {
     private Skin currentSkin;
     private final Score score;
 
+    private double dynamicSpeed = SPEED;
+    private double shootCooldownMultiplier = 1.0;
+    private int dynamicDamage = 1;
+    private int projectileWidthDynamic = 10;
+    private int shieldCharges; 
+
     /**
      * Costruisce una PlayerShip con posizione e skin iniziali.
      *
@@ -94,7 +100,7 @@ public final class PlayerShip {
      * @param limit il limite sinistro
      */
     public void moveLeft(final double delta, final double limit) {
-        final int newX = position.getX() - (int) (SPEED * delta);
+        final int newX = position.getX() - (int) (dynamicSpeed * delta);
         position.setX(Math.max(newX, (int) limit));
     }
 
@@ -105,7 +111,7 @@ public final class PlayerShip {
      * @param limit il limite destro
      */
     public void moveRight(final double delta, final double limit) {
-        final int newX = position.getX() + (int) (SPEED * delta);
+        final int newX = position.getX() + (int) (dynamicSpeed * delta);
         position.setX(Math.min(newX, (int) (limit - WIDTH)));
     }
 
@@ -136,4 +142,93 @@ public final class PlayerShip {
         return this.health <= 0;
     }
 
+    /**
+     * Add max health.
+     * 
+     * @param amount the quantity to add
+     */
+    public void addMaxHealth(final int amount) {
+        this.health += amount;
+    }
+
+    /**
+     * Multiply the movement speed.
+     * 
+     * @param factor the multiplier
+     */
+    public void multiplySpeed(final float factor) {
+        this.dynamicSpeed *= factor;
+    }
+
+    /**
+     * Reduce the time of cooldown of the shots.
+     * 
+     * @param factor the multiplier
+     */
+    public void multiplyShootCooldown(final float factor) {
+        this.shootCooldownMultiplier *= factor;
+    }
+
+    /**
+     * Return the cooldown multiplier.
+     * 
+     * @return the multiplier
+     */
+    public double getShootCooldownMultiplier() {
+        return this.shootCooldownMultiplier;
+    }
+
+    /**
+     * Increase the damage caused.
+     * 
+     * @param amount the quantity of damage to add
+     */
+    public void addDamage(final int amount) {
+        this.dynamicDamage += amount;
+    }
+
+    /**
+     * Return the current damage.
+     * 
+     * @return the dynamic damage
+     */
+    public int getDynamicDamage() {
+        return this.dynamicDamage;
+    }
+
+    /**
+     * Multiply the width of the projectiles.
+     * 
+     * @param factor the multiplier
+     */
+    public void multiplyProjectileWidth(final float factor) {
+        this.projectileWidthDynamic = (int) (this.projectileWidthDynamic * factor);
+    }
+
+    /**
+     * Return the width of the current projectile.
+     * 
+     * @return the width of the projectile
+     */
+    public int getProjectileWidthDynamic() {
+        return this.projectileWidthDynamic;
+    }
+
+    /**
+     * Add charges to the shield.
+     * 
+     * @param amount number of charges
+     */
+    public void addShieldCharges(final int amount) {
+        this.shieldCharges += amount;
+    }
+
+    /**
+     * Return the active charges of the shield.
+     * 
+     * @return the number of charges
+     */
+    public int getShieldCharges() {
+        return this.shieldCharges;
+    }
 }

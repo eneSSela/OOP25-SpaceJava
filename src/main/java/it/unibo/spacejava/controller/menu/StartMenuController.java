@@ -38,10 +38,10 @@ public class StartMenuController extends KeyHandler {
      * @param onExit il callback da eseguire quando l'utente seleziona "Esci"
      */
     public StartMenuController(
-        final StartMenuModel model, 
-        final Command onPlay, 
-        final Command onSkinSelection, 
-        final Command onExit) {
+            final StartMenuModel model, 
+            final Command onPlay, 
+            final Command onSkinSelection, 
+            final Command onExit) {
         this.model = Objects.requireNonNull(model, "Non può essere nullo");
         this.onPlay = Objects.requireNonNull(onPlay);
         this.onSkinSelection = Objects.requireNonNull(onSkinSelection);

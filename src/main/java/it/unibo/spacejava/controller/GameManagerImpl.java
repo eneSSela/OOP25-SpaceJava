@@ -9,13 +9,17 @@ import javax.swing.JPanel;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.spacejava.KeyHandler;
 import it.unibo.spacejava.api.GameManager;
+import it.unibo.spacejava.api.PowerUp;
+import it.unibo.spacejava.controller.menu.PowerUpController;
 import it.unibo.spacejava.controller.menu.ShopController;
 import it.unibo.spacejava.controller.menu.StartMenuController;
 import it.unibo.spacejava.model.PlayerShip;
+import it.unibo.spacejava.model.menu.PowerUpSelectionModel;
 import it.unibo.spacejava.model.menu.ShopImpl;
 import it.unibo.spacejava.model.menu.StartMenuModel;
 import it.unibo.spacejava.model.sound.SoundManagerImpl;
 import it.unibo.spacejava.view.game.GamePanel;
+import it.unibo.spacejava.view.menu.PowerUpSelectionView;
 import it.unibo.spacejava.view.menu.ShopView;
 import it.unibo.spacejava.view.menu.StartMenuView;
 
@@ -24,10 +28,6 @@ import it.unibo.spacejava.view.menu.StartMenuView;
  * al game loop che associato ad un thread, che si occupoa di aggiornare lo stato del gioco e renderizzare a schermo l'ui,
  * ad un costante di frequnza(FPS) pari a 60.
  */
-@SuppressFBWarnings(
-    value = "UwF", 
-    justification = "I campi dell'interfaccia grafica vengono inizializzati in modo sicuro nel metodo startGame()"
-)
 public final class GameManagerImpl implements GameManager, Runnable {
 
     //Costanti per il game loop e le dimensioni dello schermo
@@ -39,12 +39,19 @@ public final class GameManagerImpl implements GameManager, Runnable {
     private static final String BACKGROUND_MUSIC_PATH = "/audio/background_music.wav";
 
     //Componenti del gioco, tra cui il thread del gioco, il pannello di gioco, il gestore dei suoni, 
+    private static final String CARD_GAME = "GAME";
+    private static final String CARD_MENU = "MENU";
+    private static final String CARD_SKIN = "SKIN";
+    private static final String CARD_POWERUP = "POWERUP";
+
+    //Comonenti del gioco, tra cui il thread del gioco, il pannello di gioco, il gestore dei suoni, 
     // il gestore degli input da tastiera e il layout a schede per gestire le diverse schermate (menu, gioco, selezione skin)
     private Thread gameThread;
     private final GamePanel gamePanel = new GamePanel(SCREEN_WIDTH, SCREEN_HEIGTH);
     private final KeyHandler gameKeyHandler = new KeyHandler();
     private final PlayerProjectileController playerProjController = new PlayerProjectileController();
     private final CardLayout cardLayout = new CardLayout();
+    private final JPanel cards = new JPanel(cardLayout);
 
     //Componenti del menu
     private final StartMenuModel startMenuModel = new StartMenuModel();
@@ -60,6 +67,8 @@ public final class GameManagerImpl implements GameManager, Runnable {
     private WaveManagerController waveManager;
     private PlayerController playerController;
     private BunkerController bunkerController;
+    private PowerUpSelectionView powerUpView;
+    private boolean justResumed;
 
     /**
      * Costruisce il GameManager inizializzando i punteggi e i controller.
@@ -75,12 +84,9 @@ public final class GameManagerImpl implements GameManager, Runnable {
      */
     @Override
     public void startGame() {
-
         final JFrame window = new JFrame("SpaceJava");
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
-
-        final JPanel cards = new JPanel(cardLayout);
 
         gamePanel.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGTH));
 
@@ -91,11 +97,11 @@ public final class GameManagerImpl implements GameManager, Runnable {
         //Iniziallizazione Controller e view del menu
         startMenuController = new StartMenuController(startMenuModel,
             () -> {
-                cardLayout.show(cards, "GAME");
+                cardLayout.show(cards, CARD_GAME);
                 gamePanel.requestFocusInWindow();
             },
             () -> {
-                cardLayout.show(cards, "SKIN");
+                cardLayout.show(cards, CARD_SKIN);
                 skinSelectionView.requestFocusInWindow();
             },
             this::stopGame
@@ -106,7 +112,7 @@ public final class GameManagerImpl implements GameManager, Runnable {
         //Inizializzazione controller e view della schermata di selezione skin
         final ShopController skinController = new ShopController(shop, playerModel,
             () -> {
-                cardLayout.show(cards, "MENU");
+                cardLayout.show(cards, CARD_MENU);
                 startMenuView.requestFocusInWindow();
                 if (startMenuController != null) {
                     startMenuController.start();
@@ -118,9 +124,9 @@ public final class GameManagerImpl implements GameManager, Runnable {
         skinSelectionView.addKeyListener(skinController);
 
         startMenuView.setFocusable(true);
-        cards.add(startMenuView, "MENU");
-        cards.add(gamePanel, "GAME");
-        cards.add(skinSelectionView, "SKIN");
+        cards.add(startMenuView, CARD_MENU);
+        cards.add(gamePanel, CARD_GAME);
+        cards.add(skinSelectionView, CARD_SKIN);
 
         playerController = new PlayerController(playerModel, gameKeyHandler,
                                                 playerProjController, SCREEN_WIDTH, enemyProjectileController);
@@ -163,6 +169,11 @@ public final class GameManagerImpl implements GameManager, Runnable {
         final double timePerFrame = 1.0 / FPS;
 
         while (gameThread != null) {
+            if (justResumed) {
+                lastTime = System.nanoTime();
+                justResumed = false;
+            }
+
             final long currentTime = System.nanoTime();
             delta += (currentTime - lastTime) / TIME_PER_FRAME;
             lastTime = currentTime;
@@ -171,6 +182,9 @@ public final class GameManagerImpl implements GameManager, Runnable {
                 if (startMenuView.isVisible()) {
                     startMenuView.repaint();
                 } else if (gamePanel.isVisible()) {
+                    if (waveManager.isWaveCleared()) {
+                        triggerPowerUpScreen();
+                    }
                     final var enemyProjectiles = enemyProjectileController.getProjectileList();
                     final var playerProjectiles = playerProjController.getProjectileList();
                     waveManager.update(timePerFrame);
@@ -187,8 +201,9 @@ public final class GameManagerImpl implements GameManager, Runnable {
                     bunkerController.getBunkers());
                 } else if (skinSelectionView.isVisible()) {
                     skinSelectionView.repaint();
+                } else if (powerUpView != null && powerUpView.isVisible()) {
+                    powerUpView.repaint();
                 }
-                frames++;
                 delta--;
             }
 
@@ -199,6 +214,31 @@ public final class GameManagerImpl implements GameManager, Runnable {
                 timer += 1000;
             }
         }
+    }
+
+    private void triggerPowerUpScreen() {
+        gameKeyHandler.resetState();
+
+        final PowerUpSelectionModel puModel = new PowerUpSelectionModel(waveManager);
+        powerUpView = new PowerUpSelectionView(puModel);
+
+        final PowerUpController puController = new PowerUpController(puModel, () -> {
+            final PowerUp scelta = puModel.getSelectedPowerUp();
+            scelta.applayEffect(playerController.getPlayerShip());
+            waveManager.startNextWave();
+
+            cardLayout.show(cards, CARD_GAME);
+            cards.remove(powerUpView);
+            powerUpView = null;
+            justResumed = true;
+            gamePanel.requestFocusInWindow();
+        });
+
+        powerUpView.addKeyListener(puController);
+
+        cards.add(powerUpView, CARD_POWERUP);
+        cardLayout.show(cards, CARD_POWERUP);
+        powerUpView.requestFocusInWindow();
     }
 
     /**

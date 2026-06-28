@@ -84,10 +84,10 @@ public class PlayerController {
     }
 
     /**
-     * Logica di sparo gestita dal controller. Calcola la posizione e crea il proiettile.
+     * Firing logic managed by the controller. Calculate the position and create the projectile
      */
     private void handleShooting() {
-        final int startX = playerShip.getPosition().getX() + (int) (playerShip.getWidth() / 2) - (int) (PROJECTILE_WIDTH / 2.0);
+        final int startX = playerShip.getPosition().getX() + (int) (playerShip.getWidth() / 2) - (PROJECTILE_WIDTH / 2);
         final int startY = playerShip.getPosition().getY();
 
         final ProjectileImpl newProjectile = new ProjectileImpl(

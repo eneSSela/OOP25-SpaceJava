@@ -56,7 +56,7 @@ public final class BunkerController {
     }
 
     /**
-     * Verifica le collsiosi tra i proiettili (sia del giocatore che nemici) e i bunker, 
+     * Verifica le collisioni tra i proiettili (sia del giocatore che nemici) e i bunker, 
      * applicando danno ai bunker e rimuovendo i proiettili che colpiscono un bunker.
      * 
      * @param playerProjectiles lista dei proiettili del giocatore
