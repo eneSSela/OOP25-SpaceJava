@@ -1,4 +1,4 @@
-package it.unibo;
+package it.unibo.spacejava.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import it.unibo.spacejava.Position;
 import it.unibo.spacejava.api.Enemy;
 import it.unibo.spacejava.controller.EnemyProjectileController;
-import it.unibo.spacejava.model.EnemyType;
 import it.unibo.spacejava.model.enemies.BossEnemy;
 import it.unibo.spacejava.model.enemies.EnemyFactory;
 import it.unibo.spacejava.model.enemies.RedEnemy;
@@ -21,6 +20,7 @@ import it.unibo.spacejava.model.enemies.TankEnemy;
 final class EnemyTest {
     private static final int MAXDMG = 999;
     private static final int SCREEN_HEIGTH = 576;
+    private static final double DEFAULT_ATTACK_OFFSET = 15.0;
 
 
     //Verifica che l'inizializzazione dei nemici sia corretta, testando EnemyFactory e dei metodi getter di AbstractEnemy.
@@ -124,7 +124,8 @@ final class EnemyTest {
         assertFalse(projectileController.getProjectileList().isEmpty());
         //Controllo che il proiettile venga generato sotto al corrispondente nemico.
         assertTrue(projectileController.getProjectileList().get(0).getPosition().getY() > enemy.getPosition().getY());
-        assertEquals(projectileController.getProjectileList().get(0).getPosition().getX(), enemy.getPosition().getX());
+        assertEquals(enemy.getPosition().getX() + (int) (enemy.getWidth() / 2 - DEFAULT_ATTACK_OFFSET),
+            projectileController.getProjectileList().get(0).getPosition().getX());
     }
 
     /**

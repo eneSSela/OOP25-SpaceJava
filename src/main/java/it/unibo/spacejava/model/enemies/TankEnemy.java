@@ -14,6 +14,7 @@ public final class TankEnemy extends AbstractEnemy {
     private static final int DEFAULT_PROJECTILE_WIDTH = 40;
     private static final int DEFAULT_PROJECTILE_HEIGHT = 30;
     private static final int DEFAULT_DAMAGE = 1;
+    private static final double DEAFAULT_ATTACK_OFFSET = 15.0;
     private static final int DEFAULT_HEALTH = 3;
     private static final int SCORE_TANK = 200;
 
@@ -33,7 +34,8 @@ public final class TankEnemy extends AbstractEnemy {
             EnemyType.TANK,
             DEFAULT_PROJECTILE_WIDTH,
             DEFAULT_PROJECTILE_HEIGHT,
-            DEFAULT_DAMAGE
+            DEFAULT_DAMAGE,
+            DEAFAULT_ATTACK_OFFSET
         );
     }
 

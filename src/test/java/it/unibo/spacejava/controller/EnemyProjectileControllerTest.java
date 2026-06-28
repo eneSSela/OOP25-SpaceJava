@@ -1,4 +1,4 @@
-package it.unibo;
+package it.unibo.spacejava.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 
 import it.unibo.spacejava.Position;
 import it.unibo.spacejava.api.Projectile;
-import it.unibo.spacejava.controller.EnemyProjectileController;
 import it.unibo.spacejava.model.ProjectileImpl;
 
 /**
@@ -27,11 +26,7 @@ final class EnemyProjectileControllerTest {
 
     @BeforeEach
     void setUp() {
-        //Svuoto la lista di proiettili e inizializzo il controller.
-        //final List<Projectile> projectilesToRemove = new ArrayList<>(EnemyProjectileController.getProjectileList());
-        //for (final Projectile p : projectilesToRemove) {
-        //    EnemyProjectileController.removeProjectile(p);
-        //}
+        //Inizializzo un nuovo controller.
         projectileController = new EnemyProjectileController(SCREEN_HEIGTH);
     }
 
@@ -56,8 +51,8 @@ final class EnemyProjectileControllerTest {
         final Position startPos = new Position(STARTING_COORD, STARTING_COORD);
         final Projectile projectile = new ProjectileImpl(startPos, DEFAULT_PROJECTILE_HEIGHT, DEFAULT_PROJECTILE_WIDTH, 1);
         projectileController.addProjectile(projectile);
-        assertEquals(projectileController.getProjectileList().size(), 1);
+        assertEquals(1, projectileController.getProjectileList().size());
         projectileController.update(FRAME * SOME_TIME);
-        assertEquals(projectileController.getProjectileList().size(), 0);
+        assertEquals(0, projectileController.getProjectileList().size());
     }
 }

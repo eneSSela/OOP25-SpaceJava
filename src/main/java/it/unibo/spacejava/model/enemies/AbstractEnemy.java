@@ -12,7 +12,7 @@ import it.unibo.spacejava.model.ProjectileImpl;
  */
 public abstract class AbstractEnemy implements Enemy {
 
-    private static final double ATTACK_OFFSET = 10.0;
+    private final double attackOffset;
     private final Position position;
     private final double width;
     private final double height;
@@ -33,6 +33,7 @@ public abstract class AbstractEnemy implements Enemy {
      * @param projectileWidth larghezza proiettile.
      * @param projectileHeight altezza proiettile.
      * @param damage danno.
+     * @param attackOffset offset per centrare il proiettile sotto il nemico.
      */
     @SuppressFBWarnings(
         value = "EI_EXPOSE_REP2", 
@@ -46,7 +47,8 @@ public abstract class AbstractEnemy implements Enemy {
         final EnemyType type,
         final int projectileWidth,
         final int projectileHeight,
-        final int damage
+        final int damage,
+        final double attackOffset
     ) {
         this.position = position;
         this.health = health;
@@ -56,6 +58,7 @@ public abstract class AbstractEnemy implements Enemy {
         this.projectileWidth = projectileWidth;
         this.projectileHeight = projectileHeight;
         this.damage = damage;
+        this.attackOffset = attackOffset;
     }
 
     /**
@@ -119,7 +122,7 @@ public abstract class AbstractEnemy implements Enemy {
      */
     @Override
     public void attack(final EnemyProjectileController projectileController) {
-        final int startX = position.getX() + (int) (width / 2 - ATTACK_OFFSET);
+        final int startX = position.getX() + (int) (width / 2 - attackOffset);
         final int startY = position.getY() + (int) height;
 
         final Position projectilePos = new Position(startX, startY);
