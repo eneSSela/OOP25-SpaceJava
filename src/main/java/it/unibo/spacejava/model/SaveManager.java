@@ -11,8 +11,8 @@ import java.util.Properties;
 /**
  * SaveManager classe di util per poter salvere il punteggio totale e il punteggio più alto del giocatore in un file di proprietà.
  */
-public class SaveManager {
-    
+public final class SaveManager {
+
     private static final String SAVE_FILE = System.getProperty("user.home") + File.separator + ".spacejava_save.properties";
     private static final String KEY_TOTAL_SCORE = "totalScore";
     private static final String KEY_HIGH_SCORE = "highScore";
@@ -32,8 +32,8 @@ public class SaveManager {
 
         try (OutputStream out = new FileOutputStream(SAVE_FILE)) {
             props.store(out, "Salvataggio di Space Java");
-        } catch (IOException e) {
-            System.err.println("Errore durante il salvataggio: " + e.getMessage());//NOPMD
+        } catch (final IOException e) {
+            System.err.println("Errore durante il salvataggio: " + e.getMessage()); //NOPMD
         }
     }
 
@@ -62,8 +62,8 @@ public class SaveManager {
             try (InputStream in = new FileInputStream(file)) {
                 props.load(in);
                 return Integer.parseInt(props.getProperty(key, String.valueOf(defaultValue)));
-            } catch (IOException | NumberFormatException e) {
-                System.err.println("Errore durante il caricamento: " + e.getMessage());//NOPMD
+            } catch (final IOException | NumberFormatException e) {
+                System.err.println("Errore durante il caricamento: " + e.getMessage()); //NOPMD
             }
         }
         return defaultValue;
