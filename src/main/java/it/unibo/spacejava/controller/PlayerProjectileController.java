@@ -41,10 +41,10 @@ public final class PlayerProjectileController {
     public void update(final double delta) {
         // I proiettili del player si muovono verso l'alto (Y diminuisce)
         synchronized (projectileList) {
-            for (final Projectile p : projectileList) {
+            projectileList.forEach(p -> {
                 final int newY = p.getPosition().getY() - (int) (PROJECTILE_SPEED * delta);
                 p.setPosition(new Position(p.getPosition().getX(), newY));
-            }
+            });
 
             // Rimuove automaticamente i proiettili quando superano il bordo superiore (Y < 0)
             projectileList.removeIf(p -> p.getPosition().getY() < 0);
