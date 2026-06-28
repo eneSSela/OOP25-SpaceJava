@@ -204,6 +204,7 @@ public final class GameManagerImpl implements GameManager, Runnable {
                 } else if (powerUpView != null && powerUpView.isVisible()) {
                     powerUpView.repaint();
                 }
+                frames++;
                 delta--;
             }
 
