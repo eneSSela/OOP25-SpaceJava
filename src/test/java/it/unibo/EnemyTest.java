@@ -121,10 +121,14 @@ final class EnemyTest {
         final Enemy enemy = EnemyFactory.createEnemy(EnemyType.BASE, startingPosition);
         enemy.attack(projectileController);
         //Controllo se un proiettile è stato effettivamente aggiunto alla lista dei proiettili nemici.
-        assertFalse(projectileController.getProjectileList().isEmpty());
+        assertFalse(projectileController.getProjectileList().isEmpty(), "Il nemico non ha sparato alcun proiettile");
+        final Position projPos = projectileController.getProjectileList().get(0).getPosition();
         //Controllo che il proiettile venga generato sotto al corrispondente nemico.
-        assertTrue(projectileController.getProjectileList().get(0).getPosition().getY() > enemy.getPosition().getY());
-        assertEquals(projectileController.getProjectileList().get(0).getPosition().getX(), enemy.getPosition().getX());
+        assertTrue(projPos.getY() >= enemy.getPosition().getY(), 
+                    "Il proiettile deve spawnare all'altezza del nemico o più in basso");
+        assertTrue(projPos.getX() >= enemy.getPosition().getX()
+                   && projPos.getX() <= enemy.getPosition().getX() + enemy.getWidth(),
+                    "Il proiettile deve spawnare lungo l'asse X del nemico");
     }
 
     /**

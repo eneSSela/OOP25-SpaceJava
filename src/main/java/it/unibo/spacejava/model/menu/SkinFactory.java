@@ -29,7 +29,7 @@ public final class SkinFactory {
      */
     public static List<Skin> createListOfSkins() {
         return List.of(
-            new Skin("Default", "/skins/spaceShips_001.png", DEFAULT_SKIN_PRICE, true, DEFAULT_MULTIPLIER, false), // Skin di default, già sbloccata
+            new Skin("Default", "/skins/spaceShips_001.png", DEFAULT_SKIN_PRICE, true, DEFAULT_MULTIPLIER, false),
             new Skin("ship2", "/skins/spaceShips_002.png", SHIP2_SKIN_PRICE, false, SHIP2_MULTIPLIER, false), 
             new Skin("ship3", "/skins/spaceShips_003.png", SHIP3_SKIN_PRICE, false, SHIP3_MULTIPLIER, true)
         ); 

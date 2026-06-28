@@ -22,6 +22,8 @@ public final class Skin {
      * @param imagePath percorse della risorsa dell'immagine della skin
      * @param price prezzo della skin
      * @param isUnlocked boolean che indica se la skin e sbloccata o bloccata
+     * @param scoreMultiplier moltiplicatore punteggio
+     * @param hasBossShield scudo del boss 
      */
     public Skin(final String name, final String imagePath, final int price, final boolean isUnlocked,
                 final double scoreMultiplier, final boolean hasBossShield) {

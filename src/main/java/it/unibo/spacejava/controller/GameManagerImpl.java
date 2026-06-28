@@ -26,6 +26,7 @@ import it.unibo.spacejava.model.menu.ShopImpl;
 import it.unibo.spacejava.model.menu.StartMenuModel;
 import it.unibo.spacejava.model.sound.SoundManagerImpl;
 import it.unibo.spacejava.view.game.GamePanel;
+import it.unibo.spacejava.view.menu.GameOverView;
 import it.unibo.spacejava.view.menu.PowerUpSelectionView;
 import it.unibo.spacejava.view.menu.ShopView;
 import it.unibo.spacejava.view.menu.StartMenuView;
@@ -74,13 +75,13 @@ public final class GameManagerImpl implements GameManager, Runnable {
     private GameOverView gameOverView;
 
     //Compononenti dei nemici e del player
-    private final EnemyProjectileController enemyProjectileController;
-    private final PlayerProjectileController playerProjController;
+    private EnemyProjectileController enemyProjectileController;
+    private PlayerProjectileController playerProjController;
     private WaveManagerController waveManager;
     private PlayerController playerController;
     private BunkerController bunkerController;
     private PowerUpSelectionView powerUpView;
-    
+
     private final Score persistentScore = new ScoreImpl();
     private volatile boolean justResumed;
 
@@ -173,8 +174,8 @@ public final class GameManagerImpl implements GameManager, Runnable {
         RedEnemy.resetStats();
         BossEnemy.resetStats();
 
-        this.playerProjController = new PlayerProjectileController();
-        this.enemyProjectileController = new EnemyProjectileController(SCREEN_HEIGTH);
+        playerProjController = new PlayerProjectileController();
+        enemyProjectileController = new EnemyProjectileController(SCREEN_HEIGTH);
 
         final int startX = (int) (SCREEN_WIDTH / 2.0) - 32;
         final int startY = SCREEN_HEIGTH - 100;
@@ -208,8 +209,6 @@ public final class GameManagerImpl implements GameManager, Runnable {
     public void run() {
         double delta = 0;
         long lastTime = System.nanoTime();
-        long timer = System.currentTimeMillis();
-        int frames = 0;
 
         final double timePerFrame = 1.0 / FPS;
 

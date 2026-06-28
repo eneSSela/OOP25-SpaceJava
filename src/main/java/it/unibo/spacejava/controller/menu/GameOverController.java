@@ -4,6 +4,7 @@ import java.awt.event.KeyEvent;
 import java.util.Objects;
 import javax.swing.Timer;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.spacejava.KeyHandler;
 import it.unibo.spacejava.api.Command;
 import it.unibo.spacejava.model.menu.GameOverModel;
@@ -14,7 +15,7 @@ import it.unibo.spacejava.model.sound.SoundManagerImpl;
  * Listen directly to the event code to avoid "ghost input".
  */
 public final class GameOverController extends KeyHandler {
-    
+
     private static final String SELECTION_SOUND_PATH = "/audio/selection.mav";
     private static final String ENTER_SOUND_PATH = "/audio/enter.mav";
     private static final int BLINK_INTERVAL = 500;
@@ -31,6 +32,7 @@ public final class GameOverController extends KeyHandler {
      * @param onRestart the command to execute when the restart option is selected
      * @param onMainMenu the command to execute when the main menu option is selected
      */
+    @SuppressFBWarnings(value = "EI2", justification = "Il Model deve essere condiviso con il Controller")
     public GameOverController(final GameOverModel model, final Command onRestart, final Command onMainMenu) {
         this.model = Objects.requireNonNull(model);
         this.onRestart = Objects.requireNonNull(onRestart);

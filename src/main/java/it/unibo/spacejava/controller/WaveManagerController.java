@@ -4,7 +4,6 @@ import it.unibo.spacejava.Position;
 import it.unibo.spacejava.Utils;
 import it.unibo.spacejava.api.Enemy;
 import it.unibo.spacejava.api.Projectile;
-import it.unibo.spacejava.api.Score;
 import it.unibo.spacejava.model.EnemyType;
 import it.unibo.spacejava.model.PlayerShip;
 import it.unibo.spacejava.model.enemies.BossEnemy;
@@ -56,7 +55,7 @@ public final class WaveManagerController {
      * 
      * @param screenWidth larghezza dello schermo
      * @param soundManager gestore dei suoni per riprodurre effeti sonori come lo sparo e l'impatto dei proitettili
-     * @param playerScore gestore del punteggio
+     * @param playerShip nave del giocatore
      * @param playerProjectileController controller dei proiettili
      * @param enemyProjectileController controller dei proiettili nemici
      */
@@ -169,7 +168,7 @@ public final class WaveManagerController {
                 }
                 break;
         }
-        if (waveNum % BOSS_WAVE_NUM == 0 &&playerShip.getSkin().hasBossShield()) {
+        if (waveNum % BOSS_WAVE_NUM == 0 && playerShip.getSkin().hasBossShield()) {
             playerShip.addShieldCharges(3);
         }
     }

@@ -22,7 +22,8 @@ final class SkinShopTest {
     @BeforeEach
     void setUp() {
         model = new ShopImpl();
-        player = new PlayerShip(0, 0, SkinFactory.createListOfSkins().get(0));
+        player = new PlayerShip(0, 0, SkinFactory.createListOfSkins().get(0), 
+                                new ScoreImpl());
         this.model.setObserver(new ShopView(model, player));
     }
 
