@@ -156,15 +156,6 @@ public class PlayerController {
     }
 
     /**
-     * Metodo per impostare la nuova skin, il giocatoer ha selezionato.
-     * 
-     * @param newSkin la nuova skin sekezioanta da poter impstarla 
-     */
-    public void setPlayerSkin(final Skin newSkin) {
-        this.playerShip.setSkin(newSkin);
-    }
-
-    /**
      * Getter per il model del gicoatore, utile per accedere a informazioni come la posizone, lav vita, ecc.
      * 
      * @return il model del giocatore
