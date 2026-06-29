@@ -1,5 +1,6 @@
 package it.unibo.spacejava;
 
+import it.unibo.spacejava.api.GameManager;
 import it.unibo.spacejava.controller.GameManagerImpl;
 
 /**
@@ -17,7 +18,7 @@ public final class App {
      * @param args arguments from command line, not used
      */
     public static void main(final String... args) {
-        final GameManagerImpl gameManager = new GameManagerImpl();
+        final GameManager gameManager = new GameManagerImpl();
         gameManager.startGame();
     }
 }
