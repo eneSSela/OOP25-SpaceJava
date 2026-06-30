@@ -69,7 +69,7 @@ public final class GameOverView extends JPanel implements MenuObserver {
 
         g2.setFont(new Font(FONT_NAME, Font.BOLD, SCORE_FONT_SIZE));
         g2.setColor(Color.YELLOW);
-        final String scoreText = "Punteggio Finale :" + model.getFinalScore();
+        final String scoreText = "Punteggio Finale : " + model.getFinalScore();
         g2.drawString(scoreText, (width - g2.getFontMetrics().stringWidth(scoreText)) / 2, (height / 2) - SCORE_Y_OFFSET);
 
         final int startY = (height / 2) + MENU_START_Y_OFFSET;
