@@ -5,7 +5,7 @@ import it.unibo.spacejava.controller.EnemyProjectileController;
 import it.unibo.spacejava.model.EnemyType;
 
 /**
- * This is a intarface that describe the method of a enemy.
+ * Interfaccia che modella un nemico all'interno del gioco.
  */
 
 public interface Enemy {

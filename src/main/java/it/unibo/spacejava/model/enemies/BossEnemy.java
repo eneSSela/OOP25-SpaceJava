@@ -4,7 +4,7 @@ import it.unibo.spacejava.Position;
 import it.unibo.spacejava.model.EnemyType;
 
 /**
- * BossEnemy è una estenzione della classe astratta AbstractEnemy.
+ * BossEnemy è una estensione della classe astratta AbstractEnemy.
  * Rappresenta una entità nemica boss con la propria posizione, vita e capacità di attacco.
  * Questo nemico è caratterizzato da dimensioni maggiori, danno maggiore e vita maggiore.
  */
@@ -13,7 +13,7 @@ public final class BossEnemy extends AbstractEnemy {
     private static final double DEFAULT_HEIGHT = 120.0;
     private static final int DEFAULT_PROJECTILE_WIDTH = 80;
     private static final int DEFAULT_PROJECTILE_HEIGHT = 60;
-    private static final double DEAFAULT_ATTACK_OFFSET = 30.0;
+    private static final double DEFAULT_ATTACK_OFFSET = 30.0;
     private static final int SCORE_BOSS = 1000;
 
     /**
@@ -33,7 +33,7 @@ public final class BossEnemy extends AbstractEnemy {
             DEFAULT_PROJECTILE_WIDTH,
             DEFAULT_PROJECTILE_HEIGHT,
             damage,
-            DEAFAULT_ATTACK_OFFSET
+            DEFAULT_ATTACK_OFFSET
         );
     }
 

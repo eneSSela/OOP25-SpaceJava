@@ -4,7 +4,7 @@ import it.unibo.spacejava.Position;
 import it.unibo.spacejava.model.EnemyType;
 
 /**
- * BaseEnemy è una estenzione della classe astratta AbstractEnemy.
+ * BaseEnemy è una estensione della classe astratta AbstractEnemy.
  * Rappresenta una entità nemica base con la propria posizione, vita e capacità di attacco.
  */
 public final class BaseEnemy extends AbstractEnemy {

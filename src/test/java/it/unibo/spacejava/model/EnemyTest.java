@@ -170,7 +170,7 @@ final class EnemyTest {
         final Position pos = new Position(0, 0);
         EnemyProjectileController projController = new EnemyProjectileController(SCREEN_HEIGTH);
 
-        //Controllo il miglioramento del danno e vita del nemico boss.
+        //Controllo il miglioramento del danno e vita del nemico base.
         final Enemy unupgradedBase = EnemyFactory.createEnemy(EnemyType.BASE,
             pos,
             DEFAULT_BASE_HEALTH,
