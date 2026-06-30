@@ -225,25 +225,6 @@ public final class GameManagerImpl implements GameManager, Runnable {
             if (delta >= 1) {
                 if (startMenuView.isVisible()) {
                     startMenuView.repaint();
-                } else if (gamePanel.isVisible()) {
-                    if (waveManager.isWaveCleared()) {
-                        triggerPowerUpScreen();
-                    }
-                    waveManager.update(timePerFrame);
-                    enemyProjectileController.update(timePerFrame);
-                    playerController.update(timePerFrame);
-                    playerProjController.update(timePerFrame);
-                    playerController.checkEnemyCollision();
-
-                    final var enemyProjectiles = enemyProjectileController.getProjectileList();
-                    final var playerProjectiles = playerProjController.getProjectileList();
-                    bunkerController.checkCollisions(playerProjectiles, enemyProjectiles);
-
-                    gamePanel.render(waveManager.getEnemies(),
-                    playerController,
-                    playerProjectiles,
-                    enemyProjectiles,
-                    bunkerController.getBunkers());
                 } else if (skinSelectionView.isVisible()) {
                     skinSelectionView.repaint();
                 } else if (gameOverView.isVisible()) {
