@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Properties;
 
 /**
@@ -13,11 +15,18 @@ import java.util.Properties;
  */
 public final class SaveManager {
 
-    private static final String SAVE_FILE = System.getProperty("user.home") + File.separator + ".spacejava_save.properties";
     private static final String KEY_TOTAL_SCORE = "totalScore";
     private static final String KEY_HIGH_SCORE = "highScore";
 
     private SaveManager() { }
+
+    private static String resolveSaveFilePath() {
+        final String overridePath = System.getProperty("spacejava.saveFile");
+        if (overridePath != null && !overridePath.isBlank()) {
+            return overridePath;
+        }
+        return Path.of(System.getProperty("user.home"), ".spacejava_save.properties").toString();
+    }
 
     /**
      * Salva i puteggi sul file properties.
@@ -30,7 +39,18 @@ public final class SaveManager {
         props.setProperty(KEY_TOTAL_SCORE, String.valueOf(totalScore));
         props.setProperty(KEY_HIGH_SCORE, String.valueOf(highScore));
 
-        try (OutputStream out = new FileOutputStream(SAVE_FILE)) {
+        final Path savePath = Path.of(resolveSaveFilePath());
+        final Path parent = savePath.getParent();
+        if (parent != null) {
+            try {
+                Files.createDirectories(parent);
+            } catch (final IOException e) {
+                System.err.println("Errore durante la creazione della directory di salvataggio: " + e.getMessage()); //NOPMD
+                return;
+            }
+        }
+
+        try (OutputStream out = new FileOutputStream(savePath.toFile())) {
             props.store(out, "Salvataggio di Space Java");
         } catch (final IOException e) {
             System.err.println("Errore durante il salvataggio: " + e.getMessage()); //NOPMD
@@ -56,7 +76,7 @@ public final class SaveManager {
     }
 
     private static int loadInt(final String key, final int defaultValue) {
-        final File file = new File(SAVE_FILE);
+        final File file = new File(resolveSaveFilePath());
         if (file.exists()) {
             final Properties props = new Properties();
             try (InputStream in = new FileInputStream(file)) {

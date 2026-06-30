@@ -1,6 +1,8 @@
 package it.unibo.spacejava.model.sound;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Objects;
 
 import javax.sound.sampled.AudioInputStream;
@@ -46,8 +48,7 @@ public final class SoundManagerImpl implements SoundManager {
             throw new IllegalArgumentException("Il precorso del file non può essere null o vuoto");
         }
 
-        try {
-            final AudioInputStream audioIn = AudioSystem.getAudioInputStream(getClass().getResourceAsStream(soundName));
+        try (AudioInputStream audioIn = openAudioStream(soundName)) {
             final Clip clip = AudioSystem.getClip();
             //Qusto listener serve per risolvere il memory leak
             clip.addLineListener(e -> {
@@ -70,8 +71,7 @@ public final class SoundManagerImpl implements SoundManager {
         }
         this.stopBackgroundMusic(); // Ferma la musica di sottofondo precedente, se presente
 
-        try {
-            final AudioInputStream audioIn = AudioSystem.getAudioInputStream(getClass().getResourceAsStream(musicName));
+        try (AudioInputStream audioIn = openAudioStream(musicName)) {
             backgroundMusicClip = AudioSystem.getClip();
             backgroundMusicClip.open(audioIn);
             backgroundMusicClip.loop(Clip.LOOP_CONTINUOUSLY);
@@ -79,6 +79,16 @@ public final class SoundManagerImpl implements SoundManager {
             System.err.println("Errore durante la riproduzione del suono: " + musicName); //NOPMD
             e.printStackTrace(); //NOPMD
         }
+    }
+
+    static AudioInputStream openAudioStream(final String resourceName)
+            throws IOException, UnsupportedAudioFileException {
+        final InputStream resourceStream = SoundManagerImpl.class.getResourceAsStream(resourceName);
+        if (resourceStream == null) {
+            throw new IOException("Resource non trovata: " + resourceName);
+        }
+        final BufferedInputStream bufferedStream = new BufferedInputStream(resourceStream);
+        return AudioSystem.getAudioInputStream(bufferedStream);
     }
 
     @Override

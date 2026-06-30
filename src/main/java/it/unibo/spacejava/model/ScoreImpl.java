@@ -29,6 +29,7 @@ public final class ScoreImpl implements Score {
         if (points > 0) {
             this.currentRunScore += points;
             this.totalPoints += points;
+            SaveManager.saveScores(this.totalPoints, this.highScore);
         }
     }
 
@@ -42,6 +43,7 @@ public final class ScoreImpl implements Score {
     public boolean consumePoints(final int points) {
         if (this.totalPoints >= points) {
             this.totalPoints -= points;
+            SaveManager.saveScores(this.totalPoints, this.highScore);
             return true;
         }
         return false;
