@@ -8,8 +8,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import it.unibo.spacejava.Skin;
 import it.unibo.spacejava.api.Enemy;
 import it.unibo.spacejava.api.Score;
+import it.unibo.spacejava.model.PlayerShip;
 import it.unibo.spacejava.model.ScoreImpl;
 import it.unibo.spacejava.model.sound.api.SoundManager;
 
@@ -45,7 +47,9 @@ final class WaveManagerControllerTest {
         final PlayerProjectileController projCtrl = new PlayerProjectileController();
         final Score fakePlayerScore = new ScoreImpl();
         final EnemyProjectileController enemyProjCtrl = new EnemyProjectileController(SCREEN_HEIGTH);
-        waveManager = new WaveManagerController(SCREEN_WIDTH, fakeSound, fakePlayerScore, projCtrl, enemyProjCtrl);
+        final Skin fakeSkin = new Skin("Fake", "path", 0, true, 1.0, false);
+        final PlayerShip fakeShip = new PlayerShip(0, 0, fakeSkin, fakePlayerScore);
+        waveManager = new WaveManagerController(SCREEN_WIDTH, fakeSound, fakeShip, projCtrl, enemyProjCtrl);
     }
 
     //Verifico che inizialmente ci siano già nemici caricati.

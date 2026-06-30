@@ -14,8 +14,8 @@ public final class EnemyProjectileController {
 
     private static final double SPEED = 150.0;
     private static double dynamicSpeed = SPEED;
-    private final List<Projectile> projectilesList = new ArrayList<>();
     private final int screenHeight;
+    private final List<Projectile> projectileList;
 
     /**
      * Construtte del controller.
@@ -24,6 +24,7 @@ public final class EnemyProjectileController {
      */
     public EnemyProjectileController(final int screenHeight) {
         this.screenHeight = screenHeight;
+        this.projectileList = new ArrayList<>();
     } 
 
     /**
@@ -34,11 +35,11 @@ public final class EnemyProjectileController {
     public void update(final double delta) {
         final double currentSpeed = getDynamicSpeed();
         final int movement = Math.max(1, (int) Math.round(currentSpeed * delta));
-        synchronized (projectilesList) {
-            for (final Projectile p : projectilesList) {
+        synchronized (this.projectileList) {
+            for (final Projectile p : this.projectileList) {
                 p.setPosition(new Position(p.getPosition().getX(), p.getPosition().getY() + movement));
             }
-            projectilesList.removeIf(p -> p.getPosition().getY() >= screenHeight);
+            this.projectileList.removeIf(p -> p.getPosition().getY() >= screenHeight);
         }
     }
 
@@ -48,8 +49,8 @@ public final class EnemyProjectileController {
      * @return la lista dei proiettili
      */
     public List<Projectile> getProjectileList() {
-        synchronized (projectilesList) {
-            return Collections.unmodifiableList(new ArrayList<>(projectilesList));
+        synchronized (this.projectileList) {
+            return Collections.unmodifiableList(new ArrayList<>(this.projectileList));
         }
     }
 
@@ -59,8 +60,8 @@ public final class EnemyProjectileController {
      * @param projectileImpl il proiettile da aggiungere
      */
     public void addProjectile(final Projectile projectileImpl) {
-        synchronized (projectilesList) {
-            projectilesList.add(projectileImpl);
+        synchronized (this.projectileList) {
+            this.projectileList.add(projectileImpl);
         }
     }
 
@@ -70,8 +71,8 @@ public final class EnemyProjectileController {
      * @param projectileToRemove il proiettile da rimuovere
      */
     public void removeProjectile(final Projectile projectileToRemove) {
-        synchronized (projectilesList) {
-            projectilesList.remove(projectileToRemove);
+        synchronized (this.projectileList) {
+            this.projectileList.remove(projectileToRemove);
         }
     }
 

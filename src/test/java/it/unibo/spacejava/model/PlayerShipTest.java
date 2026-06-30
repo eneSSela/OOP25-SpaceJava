@@ -24,8 +24,9 @@ final class PlayerShipTest {
     @BeforeEach
     void setUp() {
         //Creiamo una Skin fittizia solo per il test
-        final Skin dummySkin = new Skin("TestSkin", "path/dummy.png", 0, true);
-        player = new PlayerShip(START_X, START_Y, dummySkin);
+        final Skin dummySkin = new Skin("TestSkin", "path/dummy.png", 0, true,
+                                        1.0, false);
+        player = new PlayerShip(START_X, START_Y, dummySkin, new ScoreImpl());
     }
 
     @Test

@@ -67,6 +67,19 @@ public final class BossEnemy extends AbstractEnemy {
         return damage;
     }
 
+    /**
+     * Resets the boss enemy's health and damage stats to their default values. 
+     */
+    public static void resetStats() {
+        health = DEFAULT_HEALTH;
+        damage = DEFAULT_DAMAGE;
+    }
+
+    /**
+     * Gets the base points awarded for defeating this boss enemy.
+     * 
+     * @return the score value of the boss
+     */
     @Override
     public int getPoints() {
         return SCORE_BOSS;

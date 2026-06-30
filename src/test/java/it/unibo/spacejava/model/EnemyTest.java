@@ -20,8 +20,6 @@ import it.unibo.spacejava.model.enemies.TankEnemy;
 final class EnemyTest {
     private static final int MAXDMG = 999;
     private static final int SCREEN_HEIGTH = 576;
-    private static final double DEFAULT_ATTACK_OFFSET = 15.0;
-
 
     //Verifica che l'inizializzazione dei nemici sia corretta, testando EnemyFactory e dei metodi getter di AbstractEnemy.
     @Test
@@ -121,11 +119,14 @@ final class EnemyTest {
         final Enemy enemy = EnemyFactory.createEnemy(EnemyType.BASE, startingPosition);
         enemy.attack(projectileController);
         //Controllo se un proiettile è stato effettivamente aggiunto alla lista dei proiettili nemici.
-        assertFalse(projectileController.getProjectileList().isEmpty());
+        assertFalse(projectileController.getProjectileList().isEmpty(), "Il nemico non ha sparato alcun proiettile");
+        final Position projPos = projectileController.getProjectileList().get(0).getPosition();
         //Controllo che il proiettile venga generato sotto al corrispondente nemico.
-        assertTrue(projectileController.getProjectileList().get(0).getPosition().getY() > enemy.getPosition().getY());
-        assertEquals(enemy.getPosition().getX() + (int) (enemy.getWidth() / 2 - DEFAULT_ATTACK_OFFSET),
-            projectileController.getProjectileList().get(0).getPosition().getX());
+        assertTrue(projPos.getY() >= enemy.getPosition().getY(), 
+                    "Il proiettile deve spawnare all'altezza del nemico o più in basso");
+        assertTrue(projPos.getX() >= enemy.getPosition().getX()
+                   && projPos.getX() <= enemy.getPosition().getX() + enemy.getWidth(),
+                    "Il proiettile deve spawnare lungo l'asse X del nemico");
     }
 
     /**

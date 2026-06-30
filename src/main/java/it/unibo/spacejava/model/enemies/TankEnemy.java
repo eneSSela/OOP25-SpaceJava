@@ -55,6 +55,18 @@ public final class TankEnemy extends AbstractEnemy {
         return health;
     }
 
+    /**
+     * Resets the tank enemy's health stat to its default value.
+     */
+    public static void resetStats() {
+        health = DEFAULT_HEALTH;
+    }
+
+    /**
+     * Gets the base points awarded for defeating this tank enemy.
+     * 
+     * @return the score value of the tank enemy
+     */
     @Override
     public int getPoints() {
         return SCORE_TANK;

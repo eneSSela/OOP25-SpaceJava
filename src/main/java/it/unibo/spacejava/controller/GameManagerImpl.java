@@ -10,15 +10,23 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.spacejava.KeyHandler;
 import it.unibo.spacejava.api.GameManager;
 import it.unibo.spacejava.api.PowerUp;
+import it.unibo.spacejava.api.Score;
+import it.unibo.spacejava.controller.menu.GameOverController;
 import it.unibo.spacejava.controller.menu.PowerUpController;
 import it.unibo.spacejava.controller.menu.ShopController;
 import it.unibo.spacejava.controller.menu.StartMenuController;
 import it.unibo.spacejava.model.PlayerShip;
+import it.unibo.spacejava.model.ScoreImpl;
+import it.unibo.spacejava.model.enemies.BossEnemy;
+import it.unibo.spacejava.model.enemies.RedEnemy;
+import it.unibo.spacejava.model.enemies.TankEnemy;
+import it.unibo.spacejava.model.menu.GameOverModel;
 import it.unibo.spacejava.model.menu.PowerUpSelectionModel;
 import it.unibo.spacejava.model.menu.ShopImpl;
 import it.unibo.spacejava.model.menu.StartMenuModel;
 import it.unibo.spacejava.model.sound.SoundManagerImpl;
 import it.unibo.spacejava.view.game.GamePanel;
+import it.unibo.spacejava.view.menu.GameOverView;
 import it.unibo.spacejava.view.menu.PowerUpSelectionView;
 import it.unibo.spacejava.view.menu.ShopView;
 import it.unibo.spacejava.view.menu.StartMenuView;
@@ -43,13 +51,13 @@ public final class GameManagerImpl implements GameManager, Runnable {
     private static final String CARD_MENU = "MENU";
     private static final String CARD_SKIN = "SKIN";
     private static final String CARD_POWERUP = "POWERUP";
+    private static final String CARD_GAMEOVER = "GAMEOVER";
 
     //Comonenti del gioco, tra cui il thread del gioco, il pannello di gioco, il gestore dei suoni, 
     // il gestore degli input da tastiera e il layout a schede per gestire le diverse schermate (menu, gioco, selezione skin)
     private Thread gameThread;
     private final GamePanel gamePanel = new GamePanel(SCREEN_WIDTH, SCREEN_HEIGTH);
     private final KeyHandler gameKeyHandler = new KeyHandler();
-    private final PlayerProjectileController playerProjController = new PlayerProjectileController();
     private final CardLayout cardLayout = new CardLayout();
     private final JPanel cards = new JPanel(cardLayout);
 
@@ -62,19 +70,25 @@ public final class GameManagerImpl implements GameManager, Runnable {
     private final ShopImpl shop;
     private ShopView skinSelectionView;
 
+    private GameOverModel gameOverModel;
+    private GameOverController gameOverController;
+    private GameOverView gameOverView;
+
     //Compononenti dei nemici e del player
-    private final EnemyProjectileController enemyProjectileController = new EnemyProjectileController(SCREEN_HEIGTH);
+    private EnemyProjectileController enemyProjectileController;
+    private PlayerProjectileController playerProjController;
     private WaveManagerController waveManager;
     private PlayerController playerController;
     private BunkerController bunkerController;
     private PowerUpSelectionView powerUpView;
-    private boolean justResumed;
+
+    private final Score persistentScore = new ScoreImpl();
+    private volatile boolean justResumed;
 
     /**
      * Costruisce il GameManager inizializzando i punteggi e i controller.
      */
     public GameManagerImpl() {
-        //Score score = new ScoreImpl();
         this.shop = new ShopImpl();
     }
 
@@ -87,20 +101,17 @@ public final class GameManagerImpl implements GameManager, Runnable {
         final JFrame window = new JFrame("SpaceJava");
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
-
         gamePanel.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGTH));
-
-        final int startX = (int) (SCREEN_WIDTH / 2.0) - 32;
-        final int startY = SCREEN_HEIGTH - 100;
-        final PlayerShip playerModel = new PlayerShip(startX, startY, shop.getSelectedSkin());
 
         //Iniziallizazione Controller e view del menu
         startMenuController = new StartMenuController(startMenuModel,
             () -> {
+                resetGameState();
                 cardLayout.show(cards, CARD_GAME);
                 gamePanel.requestFocusInWindow();
             },
             () -> {
+                resetGameState();
                 cardLayout.show(cards, CARD_SKIN);
                 skinSelectionView.requestFocusInWindow();
             },
@@ -108,9 +119,10 @@ public final class GameManagerImpl implements GameManager, Runnable {
         );
         startMenuView = new StartMenuView(startMenuModel);
         startMenuView.addKeyListener(startMenuController);
+        resetGameState();
 
         //Inizializzazione controller e view della schermata di selezione skin
-        final ShopController skinController = new ShopController(shop, playerModel,
+        final ShopController skinController = new ShopController(shop, playerController.getPlayerShip(),
             () -> {
                 cardLayout.show(cards, CARD_MENU);
                 startMenuView.requestFocusInWindow();
@@ -119,32 +131,66 @@ public final class GameManagerImpl implements GameManager, Runnable {
                 }
             }
         );
-        skinSelectionView = new ShopView(shop, playerModel);
+        skinSelectionView = new ShopView(shop, playerController.getPlayerShip());
         skinSelectionView.setFocusable(true);
         skinSelectionView.addKeyListener(skinController);
 
-        startMenuView.setFocusable(true);
+        gameOverModel = new GameOverModel();
+        gameOverView = new GameOverView(gameOverModel);
+        gameOverController = new GameOverController(gameOverModel,
+            () -> {
+                resetGameState();
+                cardLayout.show(cards, CARD_GAME);
+                gamePanel.requestFocusInWindow();
+            },
+            () -> {
+                cardLayout.show(cards, CARD_MENU);
+                startMenuView.requestFocusInWindow();
+                startMenuController.start();
+            }
+        );
+        gameOverView.addKeyListener(gameOverController);
+
         cards.add(startMenuView, CARD_MENU);
         cards.add(gamePanel, CARD_GAME);
         cards.add(skinSelectionView, CARD_SKIN);
-
-        playerController = new PlayerController(playerModel, gameKeyHandler,
-                                                playerProjController, SCREEN_WIDTH, enemyProjectileController);
-        waveManager = new WaveManagerController(SCREEN_WIDTH, SoundManagerImpl.getInstance(), 
-                                                playerModel.getScore(), 
-                                                this.playerProjController,
-                                                this.enemyProjectileController);
-        bunkerController = new BunkerController(SCREEN_WIDTH, SCREEN_HEIGTH, 
-                                                this.playerProjController, this.enemyProjectileController);
+        cards.add(gameOverView, CARD_GAMEOVER);
 
         gamePanel.addKeyListener(gameKeyHandler);
         startMenuView.setFocusable(true);
         startMenuView.requestFocusInWindow();
+
         window.setContentPane(cards);
         window.pack();
         window.setLocationRelativeTo(null);
         window.setVisible(true);
         this.startThreadGame();
+    }
+
+    private void resetGameState() {
+        gameKeyHandler.resetState();
+
+        TankEnemy.resetStats();
+        RedEnemy.resetStats();
+        BossEnemy.resetStats();
+
+        playerProjController = new PlayerProjectileController();
+        enemyProjectileController = new EnemyProjectileController(SCREEN_HEIGTH);
+
+        final int startX = (int) (SCREEN_WIDTH / 2.0) - 32;
+        final int startY = SCREEN_HEIGTH - 100;
+
+        final PlayerShip playerModel = new PlayerShip(startX, startY, shop.getSelectedSkin(), this.persistentScore);
+
+        playerController = new PlayerController(playerModel, gameKeyHandler,
+                                                playerProjController, SCREEN_WIDTH, enemyProjectileController);
+
+        waveManager = new WaveManagerController(SCREEN_WIDTH, SoundManagerImpl.getInstance(),
+                                                playerModel, playerProjController, enemyProjectileController);
+
+        bunkerController = new BunkerController(SCREEN_WIDTH, SCREEN_HEIGTH, 
+                                                playerProjController, enemyProjectileController);
+        this.justResumed = true;
     }
 
     private void startThreadGame() {
@@ -163,8 +209,6 @@ public final class GameManagerImpl implements GameManager, Runnable {
     public void run() {
         double delta = 0;
         long lastTime = System.nanoTime();
-        long timer = System.currentTimeMillis();
-        int frames = 0;
 
         final double timePerFrame = 1.0 / FPS;
 
@@ -202,20 +246,43 @@ public final class GameManagerImpl implements GameManager, Runnable {
                     bunkerController.getBunkers());
                 } else if (skinSelectionView.isVisible()) {
                     skinSelectionView.repaint();
+                } else if (gameOverView.isVisible()) {
+                    gameOverView.repaint();
                 } else if (powerUpView != null && powerUpView.isVisible()) {
                     powerUpView.repaint();
+                } else if (gamePanel.isVisible()) {
+
+                    if (playerController.getPlayerShip().isDead()) {
+                        triggerGameOverScreen();
+                    } else {
+                        if (waveManager.isWaveCleared()) {
+                            triggerPowerUpScreen();
+                        }
+
+                        final var enemyProjectiles = enemyProjectileController.getProjectileList();
+                        final var playerProjectiles = playerProjController.getProjectileList();
+                        waveManager.update(timePerFrame);
+                        enemyProjectileController.update(timePerFrame);
+                        playerProjController.update(timePerFrame);
+                        playerController.update(timePerFrame);
+                        playerController.checkEnemyCollision();
+                        bunkerController.checkCollisions(playerProjectiles, enemyProjectiles);
+
+                        gamePanel.render(waveManager.getEnemies(), playerController, playerProjectiles,
+                                        enemyProjectiles, bunkerController.getBunkers());
+                    }
                 }
-                frames++;
                 delta--;
             }
-
-            if (System.currentTimeMillis() - timer >= 1000) {
-                System.out.println("Punti del giocatore:" + playerController.getPlayerShip().getScore().getTotal()); //NOPMD
-                System.out.println("FPS: " + frames); //NOPMD
-                frames = 0;
-                timer += 1000;
-            }
         }
+    }
+
+    private void triggerGameOverScreen() {
+        gameKeyHandler.resetState();
+        gameOverModel.setFinalScore(playerController.getPlayerShip().getScore().getTotal());
+        gameOverController.start();
+        cardLayout.show(cards, CARD_GAMEOVER);
+        gameOverView.requestFocusInWindow();
     }
 
     private void triggerPowerUpScreen() {

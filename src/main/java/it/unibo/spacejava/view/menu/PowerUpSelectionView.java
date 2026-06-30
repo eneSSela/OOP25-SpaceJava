@@ -144,7 +144,7 @@ public final class PowerUpSelectionView extends JPanel implements MenuObserver {
             g2.drawImage(this.timeIconImage, iconX, iconY, ICON_BOX_SIZE, ICON_BOX_SIZE, null);
         } else if ("Mitragliatrice".equals(pu.getType()) && this.machinegunIconImage != null) {
             g2.drawImage(this.machinegunIconImage, iconX, iconY, ICON_BOX_SIZE, ICON_BOX_SIZE, null);
-        } else if ("Riparazione Scafo".equals(pu.getType()) && this.repairIconImage != null) {
+        } else if ("Riparazione Navicella".equals(pu.getType()) && this.repairIconImage != null) {
             g2.drawImage(this.repairIconImage, iconX, iconY, ICON_BOX_SIZE, ICON_BOX_SIZE, null);
         } else if ("Iper-Propulsori".equals(pu.getType()) && this.speedIconImage != null) {
             g2.drawImage(this.speedIconImage, iconX, iconY, ICON_BOX_SIZE, ICON_BOX_SIZE, null);

@@ -2,6 +2,7 @@ package it.unibo.spacejava.model;
 
 import java.util.Objects;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.spacejava.Position;
 import it.unibo.spacejava.Skin;
 import it.unibo.spacejava.api.Score;
@@ -32,11 +33,13 @@ public final class PlayerShip {
      * @param startX la coordinata iniziale X
      * @param startY la coordinata iniziale Y
      * @param defaultSkin la skin di default
+     * @param sharedScore the shared score
      */
-    public PlayerShip(final int startX, final int startY, final Skin defaultSkin) {
+    @SuppressFBWarnings(value = "EI2", justification = "The score is shared intentionally")
+    public PlayerShip(final int startX, final int startY, final Skin defaultSkin, final Score sharedScore) {
         this.position = new Position(startX, startY);
         this.currentSkin = defaultSkin;
-        this.score = new ScoreImpl();
+        this.score = sharedScore;
     }
 
     /**
@@ -130,7 +133,11 @@ public final class PlayerShip {
      * @param damage il danno ricevuto
      */
     public void takeDamage(final int damage) {
-        this.health -= damage;
+        if (this.shieldCharges > 0) {
+            this.shieldCharges--;
+        } else {
+            this.health -= damage;
+        }
     }
 
     /**
