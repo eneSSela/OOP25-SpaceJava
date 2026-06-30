@@ -185,13 +185,14 @@ public final class GameManagerImpl implements GameManager, Runnable {
                     if (waveManager.isWaveCleared()) {
                         triggerPowerUpScreen();
                     }
-                    final var enemyProjectiles = enemyProjectileController.getProjectileList();
-                    final var playerProjectiles = playerProjController.getProjectileList();
                     waveManager.update(timePerFrame);
                     enemyProjectileController.update(timePerFrame);
                     playerController.update(timePerFrame);
                     playerProjController.update(timePerFrame);
                     playerController.checkEnemyCollision();
+
+                    final var enemyProjectiles = enemyProjectileController.getProjectileList();
+                    final var playerProjectiles = playerProjController.getProjectileList();
                     bunkerController.checkCollisions(playerProjectiles, enemyProjectiles);
 
                     gamePanel.render(waveManager.getEnemies(),
