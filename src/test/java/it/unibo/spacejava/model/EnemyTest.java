@@ -1,4 +1,4 @@
-package it.unibo;
+package it.unibo.spacejava.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import it.unibo.spacejava.Position;
 import it.unibo.spacejava.api.Enemy;
 import it.unibo.spacejava.controller.EnemyProjectileController;
-import it.unibo.spacejava.model.EnemyType;
 import it.unibo.spacejava.model.enemies.BossEnemy;
 import it.unibo.spacejava.model.enemies.EnemyFactory;
 import it.unibo.spacejava.model.enemies.RedEnemy;
@@ -21,7 +20,6 @@ import it.unibo.spacejava.model.enemies.TankEnemy;
 final class EnemyTest {
     private static final int MAXDMG = 999;
     private static final int SCREEN_HEIGTH = 576;
-
 
     //Verifica che l'inizializzazione dei nemici sia corretta, testando EnemyFactory e dei metodi getter di AbstractEnemy.
     @Test

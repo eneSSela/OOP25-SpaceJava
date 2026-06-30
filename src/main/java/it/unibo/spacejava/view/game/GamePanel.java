@@ -224,7 +224,13 @@ public final class GamePanel extends JPanel {
             }
 
             // Disegniamo la scritta "Vite: X" in alto a destra
-            g.drawString("Vite: " + health, HEALTH_X_POSITION, HUD_TEXT_Y_POSITION);
+            final String healthText = "Vite: " + health;
+            g.drawString(healthText, HEALTH_X_POSITION, HUD_TEXT_Y_POSITION);
+
+            final var score = crtlPlayer.getPlayerShip().getScore();
+            final int hudX = g.getFontMetrics().stringWidth(healthText) + HEALTH_X_POSITION + 20;
+            g.setColor(Color.WHITE);
+            g.drawString("Score: " + score.getCurrentRunScore(), hudX, HUD_TEXT_Y_POSITION);
 
             //Disegno le statistiche che possono incrementare dei nemici
 

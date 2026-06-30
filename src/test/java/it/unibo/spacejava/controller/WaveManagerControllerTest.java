@@ -1,4 +1,4 @@
-package it.unibo;
+package it.unibo.spacejava.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -11,9 +11,6 @@ import org.junit.jupiter.api.Test;
 import it.unibo.spacejava.Skin;
 import it.unibo.spacejava.api.Enemy;
 import it.unibo.spacejava.api.Score;
-import it.unibo.spacejava.controller.EnemyProjectileController;
-import it.unibo.spacejava.controller.PlayerProjectileController;
-import it.unibo.spacejava.controller.WaveManagerController;
 import it.unibo.spacejava.model.PlayerShip;
 import it.unibo.spacejava.model.ScoreImpl;
 import it.unibo.spacejava.model.sound.api.SoundManager;

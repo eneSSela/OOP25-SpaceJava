@@ -16,6 +16,7 @@ public final class BossEnemy extends AbstractEnemy {
     private static final int HEALTH_UPGRADE = 5;
     private static final int DEFAULT_HEALTH = 20;
     private static final int DEFAULT_DAMAGE = 2;
+    private static final double DEAFAULT_ATTACK_OFFSET = 30.0;
     private static final int SCORE_BOSS = 1000;
 
     private static int health = DEFAULT_HEALTH;
@@ -35,7 +36,8 @@ public final class BossEnemy extends AbstractEnemy {
             EnemyType.BOSS,
             DEFAULT_PROJECTILE_WIDTH,
             DEFAULT_PROJECTILE_HEIGHT,
-            DEFAULT_DAMAGE
+            DEFAULT_DAMAGE,
+            DEAFAULT_ATTACK_OFFSET
         );
     }
 

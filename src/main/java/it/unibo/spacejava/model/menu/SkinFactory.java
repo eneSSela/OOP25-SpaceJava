@@ -11,8 +11,8 @@ import it.unibo.spacejava.Skin;
 public final class SkinFactory {
 
     private static final int DEFAULT_SKIN_PRICE = 0;
-    private static final int SHIP2_SKIN_PRICE = 10_000;
-    private static final int SHIP3_SKIN_PRICE = 30_000;
+    private static final int SHIP2_SKIN_PRICE = 1000;
+    private static final int SHIP3_SKIN_PRICE = 100_000;
 
     private static final double DEFAULT_MULTIPLIER = 1.0;
     private static final double SHIP2_MULTIPLIER = 1.5;

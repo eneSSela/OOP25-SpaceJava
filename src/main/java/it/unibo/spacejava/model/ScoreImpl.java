@@ -7,12 +7,16 @@ import it.unibo.spacejava.api.Score;
  */
 public final class ScoreImpl implements Score {
     private int totalPoints;
+    private int currentRunScore;
+    private int highScore;
 
     /**
      * Costruttore che inizializza il punteggio a zero.
      */
     public ScoreImpl() {
-        this.totalPoints = 0;
+        this.totalPoints = SaveManager.loadTotalScore();
+        this.highScore = SaveManager.loadHighScore();
+        this.currentRunScore = 0;
     }
 
     /**
@@ -22,7 +26,10 @@ public final class ScoreImpl implements Score {
      */
     @Override
     public void addPoints(final int points) {
-        this.totalPoints += points;
+        if (points > 0) {
+            this.currentRunScore += points;
+            this.totalPoints += points;
+        }
     }
 
     /**
@@ -48,5 +55,26 @@ public final class ScoreImpl implements Score {
     @Override
     public int getTotal() {
         return this.totalPoints;
+    }
+
+    @Override
+    public int getCurrentRunScore() {
+        return this.currentRunScore;
+    }
+
+    @Override
+    public int getHighScore() {
+        return this.highScore;
+    }
+
+    @Override
+    public void resetCurrentRun() {
+        if (this.currentRunScore > this.highScore) {
+            this.highScore = this.currentRunScore;
+            SaveManager.saveScores(this.totalPoints, this.highScore);
+        } else {
+            SaveManager.saveScores(this.totalPoints, this.highScore);
+        }
+        this.currentRunScore = 0;
     }
 }

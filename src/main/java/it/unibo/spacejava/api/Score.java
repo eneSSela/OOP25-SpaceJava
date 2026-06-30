@@ -25,4 +25,23 @@ public interface Score {
      * @return il punteggio totale
      */
     int getTotal();
+
+    /**
+     * Restituisce il punteggio della partita corrente.
+     * 
+     * @return il punteggio della partita corrente
+     */
+    int getCurrentRunScore();
+
+    /**
+     * Restituisce il punteggio più alto.
+     *
+     * @return il punteggio più alto
+     */
+    int getHighScore();
+
+    /**
+     * Resetta il punteggio della partita corrente.
+     */
+    void resetCurrentRun();
 }

@@ -15,6 +15,7 @@ public final class RedEnemy extends AbstractEnemy {
     private static final int DEFAULT_PROJECTILE_WIDTH = 40;
     private static final int DEFAULT_PROJECTILE_HEIGHT = 30;
     private static final int DEFAULT_DAMAGE = 2;
+    private static final double DEAFAULT_ATTACK_OFFSET = 15.0;
     private static final int SCORE_RED = 150;
 
     private static int damage = DEFAULT_DAMAGE;
@@ -33,7 +34,8 @@ public final class RedEnemy extends AbstractEnemy {
             EnemyType.RED,
             DEFAULT_PROJECTILE_WIDTH,
             DEFAULT_PROJECTILE_HEIGHT,
-            DEFAULT_DAMAGE
+            DEFAULT_DAMAGE,
+            DEAFAULT_ATTACK_OFFSET
         );
     }
 

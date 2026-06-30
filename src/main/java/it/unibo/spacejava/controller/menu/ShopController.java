@@ -34,15 +34,6 @@ public final class ShopController extends KeyHandler {
         this.onBack = onBack;
     }
 
-    /**
-     * Restituisce il punteggio attuale del giocatore.
-     *
-     * @return il punteggio attuale
-     */
-    public int getPlyerScore() {
-        return player.getScore().getTotal();
-    }
-
     @Override
     public void keyPressed(final KeyEvent e) {
         super.keyPressed(e);

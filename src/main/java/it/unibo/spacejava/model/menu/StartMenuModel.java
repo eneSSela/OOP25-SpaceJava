@@ -4,13 +4,14 @@ import java.util.List;
 import java.util.Objects;
 
 import it.unibo.spacejava.api.MenuObserver;
+import it.unibo.spacejava.api.StartMenu;
 
 /**
  * Classe che rappresenta  il model per la shcermata del menu iniziale,
  * contiene la logica per la gestione delle ozpioni del menu,e per il lampeggio dell'ozpione slezionata, 
  * imeplementata tramite una lista di listener che notifica la view delle eventale odifica. 
  */
-public class StartMenuModel {
+public class StartMenuModel implements StartMenu {
 
     private final List<String> options = List.of("Gioca", "Seleziona Skin", "Esci");
     private int selectedIndex;
@@ -31,6 +32,7 @@ public class StartMenuModel {
      * 
      * @return la lista delle opzioni del menu
      */
+    @Override
     public List<String> getOptions() {
         return options;
     }
@@ -40,6 +42,7 @@ public class StartMenuModel {
      * 
      * @return l'indice dell'opzione attualmente selezionata
      */
+    @Override
     public int getSelectedIndex() {
         return selectedIndex;
     }
@@ -47,6 +50,7 @@ public class StartMenuModel {
     /**
      * Seleziona l'opzione successiva.
      */
+    @Override
     public void selectNext() {
         selectedIndex = (selectedIndex + 1) % options.size();
         notifyListener();
@@ -55,6 +59,7 @@ public class StartMenuModel {
     /**
      * Seleziona l'opzione precedente.
      */
+    @Override
     public void selectPrevious() {
         selectedIndex = (selectedIndex - 1 + options.size()) % options.size();
         notifyListener();
