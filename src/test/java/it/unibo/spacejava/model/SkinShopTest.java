@@ -3,6 +3,12 @@ package it.unibo.spacejava.model;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,13 +24,24 @@ final class SkinShopTest {
     private static final int POINTS_TO_ADD = 15_000;
     private ShopImpl model;
     private PlayerShip player;
+    private Path temporarySaveFile;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws IOException {
+        temporarySaveFile = Files.createTempFile("spacejava-save", ".properties");
+        System.setProperty("spacejava.saveFile", temporarySaveFile.toString());
+        Files.deleteIfExists(temporarySaveFile);
+
         model = new ShopImpl();
-        player = new PlayerShip(0, 0, SkinFactory.createListOfSkins().get(0), 
+        player = new PlayerShip(0, 0, SkinFactory.createListOfSkins().get(0),
                                 new ScoreImpl());
         this.model.setObserver(new ShopView(model, player));
+    }
+
+    @AfterEach
+    void tearDown() throws IOException {
+        System.clearProperty("spacejava.saveFile");
+        Files.deleteIfExists(temporarySaveFile);
     }
 
     @Test
