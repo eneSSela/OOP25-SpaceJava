@@ -229,6 +229,7 @@ public final class GameManagerImpl implements GameManager, Runnable {
 
                     if (playerController.getPlayerShip().isDead()) {
                         triggerGameOverScreen();
+                        playerController.getPlayerShip().getScore().resetCurrentRun();
                     } else {
                         if (waveManager.isWaveCleared()) {
                             triggerPowerUpScreen();
@@ -264,7 +265,7 @@ public final class GameManagerImpl implements GameManager, Runnable {
 
     private void triggerGameOverScreen() {
         gameKeyHandler.resetState();
-        gameOverModel.setFinalScore(playerController.getPlayerShip().getScore().getTotal());
+        gameOverModel.setFinalScore(playerController.getPlayerShip().getScore().getCurrentRunScore());
         gameOverController.start();
         cardLayout.show(cards, CARD_GAMEOVER);
         gameOverView.requestFocusInWindow();

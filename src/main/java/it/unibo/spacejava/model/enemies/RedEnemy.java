@@ -4,7 +4,7 @@ import it.unibo.spacejava.Position;
 import it.unibo.spacejava.model.EnemyType;
 
 /**
- * RedEnemy è una estenzione della classe astratta AbstractEnemy.
+ * RedEnemy è una estensione della classe astratta AbstractEnemy.
  * Rappresenta una entità nemica con la propria posizione, vita e capacità di attacco.
  * Questo nemico è caratterizzato da un danno aumentato.
  */

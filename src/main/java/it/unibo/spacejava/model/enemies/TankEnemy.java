@@ -4,7 +4,7 @@ import it.unibo.spacejava.Position;
 import it.unibo.spacejava.model.EnemyType;
 
 /**
- * TankEnemy è una estenzione della classe astratta AbstractEnemy.
+ * TankEnemy è una estensione della classe astratta AbstractEnemy.
  * Rappresenta una entità nemica con la propria posizione, vita e capacità di attacco.
  * Questo nemico è caratterizzato da una vita aumentata.
  */
