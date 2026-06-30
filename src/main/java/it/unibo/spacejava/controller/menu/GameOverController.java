@@ -16,8 +16,8 @@ import it.unibo.spacejava.model.sound.SoundManagerImpl;
  */
 public final class GameOverController extends KeyHandler {
 
-    private static final String SELECTION_SOUND_PATH = "/audio/selection.mav";
-    private static final String ENTER_SOUND_PATH = "/audio/enter.mav";
+    private static final String SELECTION_SOUND_PATH = "/audio/selection.wav";
+    private static final String ENTER_SOUND_PATH = "/audio/enter.wav";
     private static final int BLINK_INTERVAL = 500;
 
     private final GameOverModel model;

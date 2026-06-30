@@ -183,7 +183,7 @@ public final class GameManagerImpl implements GameManager, Runnable {
         final PlayerShip playerModel = new PlayerShip(startX, startY, shop.getSelectedSkin(), this.persistentScore);
 
         playerController = new PlayerController(playerModel, gameKeyHandler,
-                                                playerProjController, SCREEN_HEIGTH, enemyProjectileController);
+                                                playerProjController, SCREEN_WIDTH, enemyProjectileController);
 
         waveManager = new WaveManagerController(SCREEN_WIDTH, SoundManagerImpl.getInstance(),
                                                 playerModel, playerProjController, enemyProjectileController);
