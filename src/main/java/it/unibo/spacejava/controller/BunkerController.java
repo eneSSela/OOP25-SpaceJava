@@ -5,6 +5,7 @@ import java.util.List;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.spacejava.api.Bunker;
+import it.unibo.spacejava.api.Enemy;
 import it.unibo.spacejava.api.Projectile;
 import it.unibo.spacejava.model.BunkerImpl;
 
@@ -17,6 +18,7 @@ public final class BunkerController {
     private static final int BUNKER_WIDTH = 80;
     private static final int BUNKER_HEIGHT = 40;
     private static final int BUNKER_HEALTH = 10; // Punti vita per ogni bunker
+    private static final int MAX_DAMAGE = 999;
     private final List<Bunker> bunkers = new ArrayList<>();
 
     private final PlayerProjectileController playerProjController;
@@ -81,6 +83,25 @@ public final class BunkerController {
         bunkers.removeIf(bunker -> bunker != null && bunker.isDestroyed());
     }
 
+    /**
+     * Check if enemies have descended until they physically collide with bunkers.
+     * 
+     * @param enemies the list of the enemies
+     */
+    public void checkEnemyCollisions(final List<Enemy> enemies) {
+        for (final Bunker b : bunkers) {
+            if (!b.isDestroyed()) {
+                for (final Enemy e : enemies) {
+                    if (isCollidingWithEnemy(b, e)) {
+                        b.takeDamage(MAX_DAMAGE);
+                        break;
+                    }
+                }
+            }
+        }
+        bunkers.removeIf(bunker -> bunker != null && bunker.isDestroyed());
+    }
+
     private boolean isColliding(final Bunker b, final Projectile p) {
         return p.getPosition().getX() < b.getPosition().getX() + b.getWidth()
             && p.getPosition().getX() + p.getWidth() > b.getPosition().getX() 
@@ -88,4 +109,10 @@ public final class BunkerController {
             && p.getPosition().getY() + p.getLenght() > b.getPosition().getY();
     }
 
+    private boolean isCollidingWithEnemy(final Bunker b, final Enemy e) {
+        return e.getPosition().getX() < b.getPosition().getX() + b.getWidth() 
+            && e.getPosition().getX() + e.getWidth() > b.getPosition().getX()
+            && e.getPosition().getY() < b.getPosition().getY() + b.getHeight()
+            && e.getPosition().getY() + e.getHeight() > b.getPosition().getY();
+    }
 }

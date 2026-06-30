@@ -41,6 +41,7 @@ public final class GameManagerImpl implements GameManager, Runnable {
     private static final int TILESIZE = 48;
     private static final int SCREEN_WIDTH = TILESIZE * 16;
     private static final int SCREEN_HEIGTH = TILESIZE * 12;
+    private static final int MAX_DAMAGE = 999;
     private static final String BACKGROUND_MUSIC_PATH = "/audio/background_music.wav";
 
     //Componenti del gioco, tra cui il thread del gioco, il pannello di gioco, il gestore dei suoni, 
@@ -241,6 +242,11 @@ public final class GameManagerImpl implements GameManager, Runnable {
                         playerController.update(timePerFrame);
                         playerController.checkEnemyCollision();
                         bunkerController.checkCollisions(playerProjectiles, enemyProjectiles);
+
+                        bunkerController.checkEnemyCollisions(waveManager.getEnemies());
+                        if (waveManager.getLowestEnemyY() >= playerController.getPlayerShip().getPosition().getY()) {
+                            playerController.getPlayerShip().takeDamage(MAX_DAMAGE);
+                        }
 
                         gamePanel.render(waveManager.getEnemies(), playerController, playerProjectiles,
                                         enemyProjectiles, bunkerController.getBunkers(),

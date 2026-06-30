@@ -438,4 +438,16 @@ public final class WaveManagerController {
     public int getBossDamage() {
         return bossDamage;
     }
+
+    /**
+     * Returns the Y coordinate of the lowest point reached by the alien wave.
+     * 
+     * @return the maximum Y (including enemy height) or 0 if there are no enemies
+     */
+    public double getLowestEnemyY() {
+        return this.enemies.stream()
+                .mapToDouble(enemy -> enemy.getPosition().getY() + enemy.getHeight())
+                .max()
+                .orElse(0.0);
+    }
 }
