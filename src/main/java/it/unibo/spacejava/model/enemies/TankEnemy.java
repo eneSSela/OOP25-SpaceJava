@@ -13,19 +13,17 @@ public final class TankEnemy extends AbstractEnemy {
     private static final double DEFAULT_HEIGHT = 40.0;
     private static final int DEFAULT_PROJECTILE_WIDTH = 40;
     private static final int DEFAULT_PROJECTILE_HEIGHT = 30;
-    private static final int DEFAULT_DAMAGE = 1;
     private static final double DEAFAULT_ATTACK_OFFSET = 15.0;
-    private static final int DEFAULT_HEALTH = 3;
     private static final int SCORE_TANK = 200;
-
-    private static int health = DEFAULT_HEALTH;
 
     /**
      * Crea un TankEnemy data una posizione iniziale.
      *
-     * @param position la posizione iniziale.
+     * @param position la posizione iniziale
+     * @param health vita attuale
+     * @param damage danno attuale
      */
-    public TankEnemy(final Position position) {
+    public TankEnemy(final Position position, final int health, final int damage) {
         super(
             position,
             health,
@@ -34,32 +32,9 @@ public final class TankEnemy extends AbstractEnemy {
             EnemyType.TANK,
             DEFAULT_PROJECTILE_WIDTH,
             DEFAULT_PROJECTILE_HEIGHT,
-            DEFAULT_DAMAGE,
+            damage,
             DEAFAULT_ATTACK_OFFSET
         );
-    }
-
-    /**
-     * Aumenta la vita del nemico tank.
-     */
-    public static void upgrade() {
-        health++;
-    }
-
-    /**
-     * Restistuisce la vita del nemico tank per la HUD.
-     * 
-     * @return health
-     */
-    public static int getHUDHealth() {
-        return health;
-    }
-
-    /**
-     * Resets the tank enemy's health stat to its default value.
-     */
-    public static void resetStats() {
-        health = DEFAULT_HEALTH;
     }
 
     /**

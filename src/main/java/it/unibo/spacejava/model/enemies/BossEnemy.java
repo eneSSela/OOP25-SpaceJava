@@ -13,21 +13,17 @@ public final class BossEnemy extends AbstractEnemy {
     private static final double DEFAULT_HEIGHT = 120.0;
     private static final int DEFAULT_PROJECTILE_WIDTH = 80;
     private static final int DEFAULT_PROJECTILE_HEIGHT = 60;
-    private static final int HEALTH_UPGRADE = 5;
-    private static final int DEFAULT_HEALTH = 20;
-    private static final int DEFAULT_DAMAGE = 2;
     private static final double DEAFAULT_ATTACK_OFFSET = 30.0;
     private static final int SCORE_BOSS = 1000;
-
-    private static int health = DEFAULT_HEALTH;
-    private static int damage = DEFAULT_DAMAGE;
 
     /**
      * Crea un BossEnemy data una posizione iniziale.
      *
      * @param position la posizione iniziale
+     * @param health vita attuale
+     * @param damage danno attuale
      */
-    public BossEnemy(final Position position) {
+    public BossEnemy(final Position position, final int health, final int damage) {
         super(
             position,
             health,
@@ -36,43 +32,9 @@ public final class BossEnemy extends AbstractEnemy {
             EnemyType.BOSS,
             DEFAULT_PROJECTILE_WIDTH,
             DEFAULT_PROJECTILE_HEIGHT,
-            DEFAULT_DAMAGE,
+            damage,
             DEAFAULT_ATTACK_OFFSET
         );
-    }
-
-    /**
-     * Aumenta il danno e la vita del nemico boss.
-     */
-    public static void upgrade() {
-        damage++;
-        health = health + HEALTH_UPGRADE;
-    }
-
-    /**
-     * Restistuisce la vita del nemico boss per la HUD.
-     * 
-     * @return health
-     */
-    public static int getHUDHealth() {
-        return health;
-    }
-
-    /**
-     * Restistuisce il danno del nemico boss per la HUD.
-     * 
-     * @return damage
-     */
-    public static int getHUDDamage() {
-        return damage;
-    }
-
-    /**
-     * Resets the boss enemy's health and damage stats to their default values. 
-     */
-    public static void resetStats() {
-        health = DEFAULT_HEALTH;
-        damage = DEFAULT_DAMAGE;
     }
 
     /**

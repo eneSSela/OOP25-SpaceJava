@@ -17,9 +17,6 @@ import it.unibo.spacejava.controller.menu.ShopController;
 import it.unibo.spacejava.controller.menu.StartMenuController;
 import it.unibo.spacejava.model.PlayerShip;
 import it.unibo.spacejava.model.ScoreImpl;
-import it.unibo.spacejava.model.enemies.BossEnemy;
-import it.unibo.spacejava.model.enemies.RedEnemy;
-import it.unibo.spacejava.model.enemies.TankEnemy;
 import it.unibo.spacejava.model.menu.GameOverModel;
 import it.unibo.spacejava.model.menu.PowerUpSelectionModel;
 import it.unibo.spacejava.model.menu.ShopImpl;
@@ -170,10 +167,6 @@ public final class GameManagerImpl implements GameManager, Runnable {
     private void resetGameState() {
         gameKeyHandler.resetState();
 
-        TankEnemy.resetStats();
-        RedEnemy.resetStats();
-        BossEnemy.resetStats();
-
         playerProjController = new PlayerProjectileController();
         enemyProjectileController = new EnemyProjectileController(SCREEN_HEIGTH);
 
@@ -250,7 +243,12 @@ public final class GameManagerImpl implements GameManager, Runnable {
                         bunkerController.checkCollisions(playerProjectiles, enemyProjectiles);
 
                         gamePanel.render(waveManager.getEnemies(), playerController, playerProjectiles,
-                                        enemyProjectiles, bunkerController.getBunkers());
+                                        enemyProjectiles, bunkerController.getBunkers(),
+                                        waveManager.getBaseHealth(), waveManager.getBaseDamage(),
+                                        waveManager.getTankHealth(), waveManager.getTankDamage(),
+                                        waveManager.getRedHealth(), waveManager.getRedDamage(),
+                                        waveManager.getBossHealth(), waveManager.getBossDamage()
+                                    );
                     }
                 }
                 delta--;

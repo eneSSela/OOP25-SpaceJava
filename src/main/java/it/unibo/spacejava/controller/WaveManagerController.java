@@ -6,10 +6,7 @@ import it.unibo.spacejava.api.Enemy;
 import it.unibo.spacejava.api.Projectile;
 import it.unibo.spacejava.model.EnemyType;
 import it.unibo.spacejava.model.PlayerShip;
-import it.unibo.spacejava.model.enemies.BossEnemy;
 import it.unibo.spacejava.model.enemies.EnemyFactory;
-import it.unibo.spacejava.model.enemies.RedEnemy;
-import it.unibo.spacejava.model.enemies.TankEnemy;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,6 +30,31 @@ public final class WaveManagerController {
     private static final String SHOOT_SOUND_PATH = "/audio/shoot.wav";
     private static final String HIT_SOUND_PATH = "/audio/hit.wav";
     private static final String NULL_PARAM_MESSAGE = "Non può esser nullo";
+    private static final int DEFAULT_TANK_HEALTH = 3;
+    private static final int DEFAULT_TANK_DAMAGE = 1;
+    private static final int DEFAULT_RED_HEALTH = 1;
+    private static final int DEFAULT_RED_DAMAGE = 2;
+    private static final int DEFAULT_BOSS_HEALTH = 20;
+    private static final int DEFAULT_BOSS_DAMAGE = 2;
+    private static final int DEFAULT_BASE_HEALTH = 1;
+    private static final int DEFAULT_BASE_DAMAGE = 1;
+    private static final int BOSS_HEALT_UPGRADE = 5;
+
+    private static final EnemyType[] RANDOM_SPAWN_TYPES = {
+        EnemyType.BASE,
+        EnemyType.TANK,
+        EnemyType.RED,
+    };
+
+    private enum UpgradeType {
+        BASE_HEALTH,
+        BASE_DAMAGE,
+        TANK_HEALTH,
+        TANK_DAMAGE,
+        RED_HEALTH,
+        RED_DAMAGE,
+        BOSS
+    }
 
     private double dynamicSpeedX = SPEED_X;
     private double dynamicDescent = DESCENT;
@@ -47,6 +69,14 @@ public final class WaveManagerController {
     private final double screenWidth;
     private int waveNum = 1;
     private boolean waveCleared;
+    private int tankHealth = DEFAULT_TANK_HEALTH;
+    private int tankDamage = DEFAULT_TANK_DAMAGE;
+    private int redHealth = DEFAULT_RED_HEALTH;
+    private int redDamage = DEFAULT_RED_DAMAGE;
+    private int bossHealth = DEFAULT_BOSS_HEALTH;
+    private int bossDamage = DEFAULT_BOSS_DAMAGE;
+    private int baseHealth = DEFAULT_BASE_HEALTH;
+    private int baseDamage = DEFAULT_BASE_DAMAGE;
 
     private double fractionalMovementX;
 
@@ -113,11 +143,12 @@ public final class WaveManagerController {
 
         switch (waveNum) {
             case 1:
+                enemyStatsReset();
                 for (int row = 0; row < rows; row++) {
                     for (int col = 0; col < cols; col++) {
                         final int x = startX + (col * spacingX);
                         final int y = startY + (row * spacingY);
-                        enemies.add(EnemyFactory.createEnemy(EnemyType.BASE, new Position(x, y)));
+                        enemies.add(EnemyFactory.createEnemy(EnemyType.BASE, new Position(x, y), baseHealth, baseDamage));
                     }
                 }
                 break;
@@ -127,21 +158,21 @@ public final class WaveManagerController {
                         final int x = startX + (col * spacingX);
                         final int y = startY + (row * spacingY);
                         if (row == 0) {
-                            enemies.add(EnemyFactory.createEnemy(EnemyType.BASE, new Position(x, y)));
+                            enemies.add(EnemyFactory.createEnemy(EnemyType.BASE, new Position(x, y), baseHealth, baseDamage));
                         } else {
-                            enemies.add(EnemyFactory.createEnemy(EnemyType.TANK, new Position(x, y)));
+                            enemies.add(EnemyFactory.createEnemy(EnemyType.TANK, new Position(x, y), tankHealth, tankDamage));
                         }
                     }
                 }
                 break;
             case BOSS_WAVE_NUM:
-                enemies.add(EnemyFactory.createEnemy(EnemyType.BOSS, new Position(startX, startY)));
+                enemies.add(EnemyFactory.createEnemy(EnemyType.BOSS, new Position(startX, startY), bossHealth, bossDamage));
                 break;
             default:
                 // Aumenta la difficoltà ogni roud dopo i primi tre.
                 increaseDifficulty();
                 if (waveNum % BOSS_WAVE_NUM == 0) {
-                    enemies.add(EnemyFactory.createEnemy(EnemyType.BOSS, new Position(startX, startY)));
+                    enemies.add(EnemyFactory.createEnemy(EnemyType.BOSS, new Position(startX, startY), bossHealth, bossDamage));
                 } else {
                     // Crea un'ondata con nemici casuali.
                     for (int row = 0; row < rows; row++) {
@@ -149,16 +180,16 @@ public final class WaveManagerController {
                             final int x = startX + (col * spacingX);
                             final int y = startY + (row * spacingY);
                             final Position ePos = new Position(x, y);
-                            final int randEnemy = RANDOM_ENEMY.nextInt(3);
-                            switch (randEnemy) {
-                                case 0:
-                                    enemies.add(EnemyFactory.createEnemy(EnemyType.BASE, ePos));
+                            final EnemyType randomType = RANDOM_SPAWN_TYPES[RANDOM_ENEMY.nextInt(RANDOM_SPAWN_TYPES.length)];
+                            switch (randomType) {
+                                case BASE:
+                                    enemies.add(EnemyFactory.createEnemy(EnemyType.BASE, ePos, baseHealth, baseDamage));
                                     break;
-                                case 1:
-                                    enemies.add(EnemyFactory.createEnemy(EnemyType.TANK, ePos));
+                                case TANK:
+                                    enemies.add(EnemyFactory.createEnemy(EnemyType.TANK, ePos, tankHealth, tankDamage));
                                     break;
-                                case 2:
-                                    enemies.add(EnemyFactory.createEnemy(EnemyType.RED, ePos));
+                                case RED:
+                                    enemies.add(EnemyFactory.createEnemy(EnemyType.RED, ePos, redHealth, redDamage));
                                     break;
                                 default:
                                     break;
@@ -294,19 +325,117 @@ public final class WaveManagerController {
      * Sceglie casualmente che tipo di nemico rendere più forte.
      */
     private void increaseDifficulty() {
-        final int select = RANDOM_ENEMY.nextInt(3);
-        switch (select) {
-            case 0:
-                TankEnemy.upgrade();
+        final UpgradeType[] upgrades = UpgradeType.values();
+        final UpgradeType selected = upgrades[RANDOM_ENEMY.nextInt(upgrades.length)];
+        switch (selected) {
+            case BASE_HEALTH:
+                baseHealth++;
                 break;
-            case 1:
-                RedEnemy.upgrade();
+            case BASE_DAMAGE:
+                baseDamage++;
                 break;
-            case 2:
-                BossEnemy.upgrade();
+            case TANK_HEALTH:
+                tankHealth++;
                 break;
-            default:
+            case TANK_DAMAGE:
+                tankDamage++;
+                break;
+            case RED_HEALTH:
+                redHealth++;
+                break;
+            case RED_DAMAGE:
+                redDamage++;
+                break;
+            case BOSS:
+                bossDamage++;
+                bossHealth += BOSS_HEALT_UPGRADE;
                 break;
         }
+    }
+
+    /**
+     * Riporta le statistiche dei nemici al loro stato iniziale.
+     */
+    private void enemyStatsReset() {
+        tankHealth = DEFAULT_TANK_HEALTH;
+        tankDamage = DEFAULT_TANK_DAMAGE;
+        redHealth = DEFAULT_RED_HEALTH;
+        redDamage = DEFAULT_RED_DAMAGE;
+        bossHealth = DEFAULT_BOSS_HEALTH;
+        bossDamage = DEFAULT_BOSS_DAMAGE;
+        baseHealth = DEFAULT_BASE_HEALTH;
+        baseDamage = DEFAULT_BASE_DAMAGE;
+    }
+
+    /**
+     * Restituisce la vita del nemico base.
+     * 
+     * @return vita nemico base
+     */
+    public int getBaseHealth() {
+        return baseHealth;
+    }
+
+    /**
+     * Restituisce il danno del nemico base.
+     * 
+     * @return danno nemico base
+     */
+    public int getBaseDamage() {
+        return baseDamage;
+    }
+
+    /**
+     * Restituisce la vita del nemico tank.
+     * 
+     * @return vita nemico tank
+     */
+    public int getTankHealth() {
+        return tankHealth;
+    }
+
+    /**
+     * Restituisce il danno del nemico tank.
+     * 
+     * @return danno nemico tank
+     */
+    public int getTankDamage() {
+        return tankDamage;
+    }
+
+    /**
+     * Restituisce la vita del nemico red.
+     * 
+     * @return vita nemico red
+     */
+    public int getRedHealth() {
+        return redHealth;
+    }
+
+    /**
+     * Restituisce il danno del nemico red.
+     * 
+     * @return danno nemico red
+     */
+    public int getRedDamage() {
+        return redDamage;
+    }
+
+    /**
+     * Restituisce la vita del nemico boss.
+     * 
+     * @return vita nemico boss
+     */
+    public int getBossHealth() {
+        return bossHealth;
+    }
+
+    /**
+     * Restituisce il danno del nemico boss.
+     * 
+     * @return danno nemico boss
+     */
+    public int getBossDamage() {
+        return bossDamage;
     }
 }

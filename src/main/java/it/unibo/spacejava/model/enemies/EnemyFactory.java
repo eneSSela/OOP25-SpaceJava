@@ -17,21 +17,23 @@ public final class EnemyFactory {
      * 
      * @param type tipo di nemico da creare
      * @param startPosition posizione iniziale per il nemico da creare
+     * @param health vita del nemico da creare
+     * @param damage danno del nemico da creare
      * @return lo specifico nemico creato
      */
-    public static Enemy createEnemy(final EnemyType type, final Position startPosition) {
+    public static Enemy createEnemy(final EnemyType type, final Position startPosition, final int health, final int damage) {
         switch (type) {
             case BASE:
-                return new BaseEnemy(startPosition);
+                return new BaseEnemy(startPosition, health, damage);
 
             case TANK:
-                return new TankEnemy(startPosition);
+                return new TankEnemy(startPosition, health, damage);
 
             case RED:
-                return new RedEnemy(startPosition);
+                return new RedEnemy(startPosition, health, damage);
 
             case BOSS:
-                return new BossEnemy(startPosition);
+                return new BossEnemy(startPosition, health, damage);
 
         }
 

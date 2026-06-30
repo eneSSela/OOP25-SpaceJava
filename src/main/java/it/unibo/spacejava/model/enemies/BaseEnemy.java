@@ -10,28 +10,28 @@ import it.unibo.spacejava.model.EnemyType;
 public final class BaseEnemy extends AbstractEnemy {
     private static final double DEFAULT_WIDTH = 40.0;
     private static final double DEFAULT_HEIGHT = 40.0;
-    private static final int DEFAULT_HEALTH = 1;
     private static final int DEFAULT_PROJECTILE_WIDTH = 40;
     private static final int DEFAULT_PROJECTILE_HEIGHT = 30;
-    private static final int DEFAULT_DAMAGE = 1;
     private static final double DEAFAULT_ATTACK_OFFSET = 15.0;
     private static final int SCORE_BASE = 100;
 
     /**
      * Crea un BaseEnemy data una posizione iniziale.
      *
-     * @param position la posizione iniziale.
+     * @param position la posizione iniziale
+     * @param health vita attuale
+     * @param damage danno attuale
      */
-    public BaseEnemy(final Position position) {
+    public BaseEnemy(final Position position, final int health, final int damage) {
         super(
             position,
-            DEFAULT_HEALTH, 
+            health, 
             DEFAULT_HEIGHT, 
             DEFAULT_WIDTH, 
             EnemyType.BASE, 
             DEFAULT_PROJECTILE_WIDTH, 
             DEFAULT_PROJECTILE_HEIGHT, 
-            DEFAULT_DAMAGE,
+            damage,
             DEAFAULT_ATTACK_OFFSET
         );
     }

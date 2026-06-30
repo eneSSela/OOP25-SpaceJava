@@ -9,9 +9,6 @@ import it.unibo.spacejava.api.Bunker;
 import it.unibo.spacejava.api.Enemy;
 import it.unibo.spacejava.api.Projectile;
 import it.unibo.spacejava.controller.PlayerController;
-import it.unibo.spacejava.model.enemies.BossEnemy;
-import it.unibo.spacejava.model.enemies.RedEnemy;
-import it.unibo.spacejava.model.enemies.TankEnemy;
 
 import javax.swing.JPanel;
 import java.awt.Graphics;
@@ -32,12 +29,16 @@ public final class GamePanel extends JPanel {
     private static final int HUD_TEXT_Y_POSITION = 30;
     private static final int HUD_IMG_Y_POSITION = 15;
     private static final int HUD_ENEMY_IMG_SIZE = 20;
-    private static final int TANK_HUD_IMG_X = 300;
-    private static final int RED_HUD_IMG_X = 425;
-    private static final int BOSS_HUD_IMG_X = 550;
-    private static final int TANK_HEALTH_X = 330;
-    private static final int RED_DAMAGE_X = 455;
-    private static final int TANK_INFO_X = 600;
+    private static final int BASE_HUD_IMG_X = 265;
+    private static final int TANK_HUD_IMG_X = 375;
+    private static final int RED_HUD_IMG_X = 495;
+    private static final int BOSS_HUD_IMG_X = 615;
+    private static final int BASE_STATS_X = 285;
+    private static final int TANK_STATS_X = 400;
+    private static final int RED_STATS_X = 520;
+    private static final int BOSS_STATS_X = 660;
+    private static final String HP_STRING = "Hp:";
+    private static final String DMG_STRING = " Dmg:";
     private static final String FONT_NAME = "Monospaced";
 
     private transient Image baseEnemyImage;
@@ -52,6 +53,14 @@ public final class GamePanel extends JPanel {
     private transient List<Projectile> playerProjectiles;
     private transient List<Projectile> enemyProjectiles;
     private transient List<Bunker> listBunker;
+    private transient int hudBaseHealth;
+    private transient int hudBaseDamage;
+    private transient int hudTankHealth;
+    private transient int hudTankDamage;
+    private transient int hudRedHealth;
+    private transient int hudRedDamage;
+    private transient int hudBossHealth;
+    private transient int hudBossDamage;
 
     /**
      * Costruisce un GamePanel con dimensioni specificate.
@@ -86,15 +95,36 @@ public final class GamePanel extends JPanel {
      * @param player controller del giocatore
      * @param playerProjectile lista dei proiettili del giocatore
      * @param enemyProjectile lista dei proiettili nemici
-     * @param bunkers lista dei bunker attivi 
+     * @param bunkers lista dei bunker attivi
+     * @param baseHealth vita nemico base
+     * @param baseDamage danno nemico base
+     * @param tankHealth vita nemico tank
+     * @param tankDamage danno nemico tank
+     * @param redHealth vita nemico red
+     * @param redDamage danno nemico red
+     * @param bossHealth vita nemico boss
+     * @param bossDamage danno nemico boss
      */
     public void render(final List<Enemy> enemies, final PlayerController player,
-            final List<Projectile> playerProjectile, final List<Projectile> enemyProjectile, final List<Bunker> bunkers) {
+            final List<Projectile> playerProjectile, final List<Projectile> enemyProjectile,
+            final List<Bunker> bunkers,
+            final int baseHealth, final int baseDamage,
+            final int tankHealth, final int tankDamage,
+            final int redHealth, final int redDamage,
+            final int bossHealth, final int bossDamage) {
         this.currentEnemies = List.copyOf(enemies);
         this.crtlPlayer = Objects.requireNonNull(player, "Non può essere nullo");
         this.playerProjectiles = List.copyOf(playerProjectile);
         this.enemyProjectiles = List.copyOf(enemyProjectile);
         this.listBunker = List.copyOf(bunkers);
+        this.hudBaseHealth = baseHealth;
+        this.hudBaseDamage = baseDamage;
+        this.hudTankHealth = tankHealth;
+        this.hudTankDamage = tankDamage;
+        this.hudRedHealth = redHealth;
+        this.hudRedDamage = redDamage;
+        this.hudBossHealth = bossHealth;
+        this.hudBossDamage = bossDamage;
         repaint();
     }
 
@@ -224,18 +254,26 @@ public final class GamePanel extends JPanel {
             }
 
             // Disegniamo la scritta "Vite: X" in alto a destra
-            final String healthText = "Vite: " + health;
+            final String healthText = "Vite:" + health;
             g.drawString(healthText, HEALTH_X_POSITION, HUD_TEXT_Y_POSITION);
 
             final var score = crtlPlayer.getPlayerShip().getScore();
-            final int hudX = g.getFontMetrics().stringWidth(healthText) + HEALTH_X_POSITION + 20;
+            final int hudX = g.getFontMetrics().stringWidth(healthText) + HEALTH_X_POSITION + 10;
             g.setColor(Color.WHITE);
-            g.drawString("Score: " + score.getCurrentRunScore(), hudX, HUD_TEXT_Y_POSITION);
+            g.drawString("Score:" + score.getCurrentRunScore(), hudX, HUD_TEXT_Y_POSITION);
 
             //Disegno le statistiche che possono incrementare dei nemici
 
             g.setColor(Color.ORANGE);
             g.setFont(new Font(FONT_NAME, Font.BOLD, ENEMY_DATA_FONT_SIZE));
+
+            g.drawImage(baseEnemyImage,
+                            BASE_HUD_IMG_X,
+                            HUD_IMG_Y_POSITION,
+                            HUD_ENEMY_IMG_SIZE,
+                            HUD_ENEMY_IMG_SIZE,
+                            null);
+            g.drawString(HP_STRING + hudBaseHealth + DMG_STRING + hudBaseDamage, BASE_STATS_X, HUD_TEXT_Y_POSITION);
 
             g.drawImage(tankEnemyImage,
                             TANK_HUD_IMG_X,
@@ -243,7 +281,7 @@ public final class GamePanel extends JPanel {
                             HUD_ENEMY_IMG_SIZE,
                             HUD_ENEMY_IMG_SIZE,
                             null);
-            g.drawString("Vita:" + TankEnemy.getHUDHealth(), TANK_HEALTH_X, HUD_TEXT_Y_POSITION);
+            g.drawString(HP_STRING + hudTankHealth + DMG_STRING + hudTankDamage, TANK_STATS_X, HUD_TEXT_Y_POSITION);
 
             g.drawImage(redEnemyImage,
                             RED_HUD_IMG_X,
@@ -251,7 +289,7 @@ public final class GamePanel extends JPanel {
                             HUD_ENEMY_IMG_SIZE,
                             HUD_ENEMY_IMG_SIZE,
                             null);
-            g.drawString("Danno:" + RedEnemy.getHUDDamage(), RED_DAMAGE_X, HUD_TEXT_Y_POSITION);
+            g.drawString(HP_STRING + hudRedHealth + DMG_STRING + hudRedDamage, RED_STATS_X, HUD_TEXT_Y_POSITION);
 
             g.drawImage(bossEnemyImage,
                             BOSS_HUD_IMG_X,
@@ -259,8 +297,8 @@ public final class GamePanel extends JPanel {
                             HUD_ENEMY_IMG_SIZE * 2,
                             HUD_ENEMY_IMG_SIZE,
                             null);
-            g.drawString("Vita:" + BossEnemy.getHUDHealth() + " Danno:" + BossEnemy.getHUDDamage(),
-             TANK_INFO_X, HUD_TEXT_Y_POSITION);
+            g.drawString(HP_STRING + hudBossHealth + DMG_STRING + hudBossDamage,
+             BOSS_STATS_X, HUD_TEXT_Y_POSITION);
         }
     }
 
